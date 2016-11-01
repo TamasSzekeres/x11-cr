@@ -1,12 +1,17 @@
 # Definitions for the X window system likely to be used by applications
 
 module X11
-  PROTOCOL           = 11 # current protocol version
-  PROTOCOL_REVISION  =  0 # current minor version
+  X_PROTOCOL           = 11 # current protocol version
+  X_PROTOCOL_REVISION  =  0 # current minor version
+
+  alias Char     = UInt8
 
   alias PChar    = UInt8*
   alias PPChar   = PChar*
   alias PInt32   = Int32*
+  alias PUInt32  = UInt32*
+  alias PInt64   = Int64*
+  alias PUInt64  = UInt64*
 
   alias XID      = UInt64
   alias Mask     = UInt64
@@ -27,8 +32,16 @@ module X11
 
   alias KeyCode = UInt8
 
-  alias PAtom = Atom*
-  alias PKeyCode = KeyCode
+  alias PAtom     = Atom*
+  alias PWindo    = Window*
+  alias PDrawable = Drawable*
+  alias PFont     = Font*
+  alias PPixmap   = Pixmap*
+  alias PCursor   = Cursor*
+  alias PColormap = Colormap*
+  alias PGContext = GContext*
+  alias PKeySym   = KeySym*
+  alias PKeyCode  = KeyCode*
 
   #*****************************************************************
   # RESERVED RESOURCE AND CONSTANT DEFINITIONS

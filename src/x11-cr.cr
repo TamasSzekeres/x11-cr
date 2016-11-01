@@ -33,7 +33,7 @@ module X11Cr
     #end
 
     #X11.close_display d
-    puts X11::PROTOCOL
+    puts X11::X_PROTOCOL
     0
   end
 

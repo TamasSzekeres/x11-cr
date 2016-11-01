@@ -5,6 +5,7 @@ module X11
     alias Status = Int32
 
     alias Bool = Int32
+    alias PBool = Bool*
 
     $_Xdebug : Int32
 
@@ -882,29 +883,2648 @@ module X11
       descent : Int32 # log. descent below baseline for spacing
     end
 
-    fun load_query_font = XLoadQueryFont(display : PDisplay, name : PChar) : PFontStruct
-    fun query_font = XQueryFont(display : PDisplay, fint_id : XID) : PFontStruct
-    fun get_motion_events = XGetMotionEvents(display : PDisplay, w : Window, start : Time, stop : Time, nevents_return : PInt32) : PTimeCoord
-    fun delete_modifiermap_entry = XDeleteModifiermapEntry(modmap : PModifierKeymap, keycode_entry : KeyCode, modifier : Int32) : PModifierKeymap
-    fun get_modifier_mapping = XGetModifierMapping(display : PDisplay) : PModifierKeymap
-    fun insert_modifier_entry = XInsertModiferEntry(modmap : PModifierKeymap, keycode_entry : KeyCode, modifier : Int32) : PModifierKeymap
-    fun new_modifier_map = XNewModifierMap(max_keys_per_mod : Int32) : PModifierKeymap
-    fun create_image = XCreateImage(display : PDisplay, visual : PVisual, depth : UInt32, format : Int32, offset : Int32, data : PChar, width : UInt32, height : UInt32, bitmap_pad : Int32, bytes_per_line : Int32) : PImage
-    fun init_image = XInitImage(image : PImage) : Status
-    fun get_image = XGetImage(display : PDisplay, d : Drawable, x : Int32, y : Int32, width : UInt32, height : UInt32, plane_mask : UInt64, format : Int32) : PImage
-    fun get_sub_image = XGetSubImage(display : PDisplay, d : Drawable, x : Int32, y : Int32, width : UInt32, height : UInt32, plane_mask : UInt64, format : Int32, dest_image : PImage, dest_x : Int32, dest_y : Int32) : PImage
+    fun load_query_font = XLoadQueryFont(
+      display : PDisplay,
+      name : PChar
+    ) : PFontStruct
+
+    fun query_font = XQueryFont(
+      display : PDisplay,
+      fint_id : XID
+    ) : PFontStruct
+
+    fun get_motion_events = XGetMotionEvents(
+      display : PDisplay,
+      w : Window,
+      start : Time,
+      stop : Time,
+      nevents_return : PInt32
+    ) : PTimeCoord
+
+    fun delete_modifiermap_entry = XDeleteModifiermapEntry(
+      modmap : PModifierKeymap,
+      keycode_entry : KeyCode,
+      modifier : Int32
+    ) : PModifierKeymap
+
+    fun get_modifier_mapping = XGetModifierMapping(
+      display : PDisplay
+    ) : PModifierKeymap
+
+    fun insert_modifier_entry = XInsertModiferEntry(
+      modmap : PModifierKeymap,
+      keycode_entry : KeyCode,
+      modifier : Int32
+    ) : PModifierKeymap
+
+    fun new_modifier_map = XNewModifierMap(
+      max_keys_per_mod : Int32
+    ) : PModifierKeymap
+
+    fun create_image = XCreateImage(
+      display : PDisplay,
+      visual : PVisual,
+      depth : UInt32,
+      format : Int32,
+      offset : Int32,
+      data : PChar,
+      width : UInt32,
+      height : UInt32,
+      bitmap_pad : Int32,
+      bytes_per_line : Int32
+    ) : PImage
+
+    fun init_image = XInitImage(
+      image : PImage
+    ) : Status
+
+    fun get_image = XGetImage(
+      display : PDisplay,
+      d : Drawable,
+      x : Int32,
+      y : Int32,
+      width : UInt32,
+      height : UInt32,
+      plane_mask : UInt64,
+      format : Int32
+    ) : PImage
+
+    fun get_sub_image = XGetSubImage(
+      display : PDisplay,
+      d : Drawable,
+      x : Int32,
+      y : Int32,
+      width : UInt32,
+      height : UInt32,
+      plane_mask : UInt64,
+      format : Int32,
+      dest_image : PImage,
+      dest_x : Int32,
+      dest_y : Int32
+    ) : PImage
 
     # X function declarations.
 
-    fun open_display = XOpenDisplay(display_name : PChar) : PDisplay
+    fun open_display = XOpenDisplay(
+      display_name : PChar
+    ) : PDisplay
+
     fun rm_initialize = XrmInitialize() : NoReturn
-    fun fetch_bytes = XFetchBytes(display : PDisplay, nbytes_return : PInt32) : PChar
-    fun fetch_buffer = XFetchBuffer(display : PDisplay, nbytes_return : PInt32, buffer : Int32) : PChar
-    fun get_atom_name = XGetAtomName(display : PDisplay, atom : Atom) : PChar
-    fun get_atom_names = XGetAtomNames(dpy : PDisplay, atoms : PAtom, count : Int32, names_return : PPChar) : Status
-    fun get_default = XGetDefault(display : PDisplay, program : PChar, option : PChar) : PChar
-    fun display_name = XDisplayName(string : PChar) : PChar
-    fun keysym_to_string = XKeysymToString(keysym : KeySym) : PChar
+
+    fun fetch_bytes = XFetchBytes(
+      display : PDisplay,
+      nbytes_return : PInt32
+    ) : PChar
+
+    fun fetch_buffer = XFetchBuffer(
+      display : PDisplay,
+      nbytes_return : PInt32,
+      buffer : Int32
+    ) : PChar
+
+    fun get_atom_name = XGetAtomName(
+      display : PDisplay,
+      atom : Atom
+    ) : PChar
+
+    fun get_atom_names = XGetAtomNames(
+      dpy : PDisplay,
+      atoms : PAtom,
+      count : Int32,
+      names_return : PPChar
+    ) : Status
+
+    fun get_default = XGetDefault(
+      display : PDisplay,
+      program : PChar,
+      option : PChar
+    ) : PChar
+
+    fun display_name = XDisplayName(
+      string : PChar
+    ) : PChar
+
+    fun keysym_to_string = XKeysymToString(
+      keysym : KeySym
+    ) : PChar
+
+    fun synchronize = XSynchronize(
+      display : PDisplay,
+      onoff : Bool
+    ) : PDisplay -> Int32
+
+    fun set_after_function = XSetAfterFunction(
+      display : PDisplay,
+      procedure : PDisplay -> Int32
+    ) : Int32
+
+    fun intern_atom = XInternAtom(
+      display : PDisplay,
+      atom_name : PChar,
+      only_if_exists : Bool
+    ) : Atom
+
+    fun intern_atoms = XInternAtoms(
+      dpy : PDisplay,
+      names : PPChar,
+      count : Int32,
+      onlyIfExists : Bool,
+      atoms_return : PAtom
+    ) : Status
+
+    fun copy_colormap_and_free = XCopyColormapAndFree(
+      display : PDisplay,
+      colormap : Colormap
+    ) : Colormap
+
+    fun create_colormap = XCreateColormap(
+      display : PDisplay,
+      w : Window,
+      vusial : PVisual,
+      alloc : Int32
+    ) : Colormap
+
+    fun create_pixmap_cursor = XCreatePixmapCursor(
+      display : PDisplay,
+      source : Pixmap,
+      mask : Pixmap,
+      foreground_color : PColor,
+      background_color : PColor,
+      x : UInt32,
+      y : UInt32
+    ) : Cursor
+
+    fun create_glyph_curso = XCreateGlyphCursor(
+      display : PDisplay,
+      source_font : Font,
+      mask_font : Font,
+      source_char : UInt32,
+      mask_char : UInt32,
+      foreground_color : PColor,
+      background_color : PColor
+    ) : Cursor
+
+    fun create_font_cursor = XCreateFontCursor(
+      display : PDisplay,
+      shape : UInt32
+    ) : Cursor
+
+    fun load_font = XLoadFont(
+      display : PDisplay,
+      name : PChar
+    ) : Font
+
+    fun create_gc = XCreateGC(
+      display : PDisplay,
+      d : Drawable,
+      valuemask : UInt64,
+      values : PGCValues
+    ) : GC
+
+    fun gc_context_from_gc = XGContextFromGC(
+      gc : GC
+    ) : GC
+
+    fun flush_gc = XFlushGC(
+      display : PDisplay,
+      gc : GC
+    ) : NoReturn
+
+    fun create_pixmap = XCreatePixmap(
+      display : PDisplay,
+      d : Drawable,
+      width : UInt32,
+      height : UInt32,
+      depth : UInt32
+    ) : Pixmap
+
+    fun create_bitmap_from_data = XCreateBitmapFromData(
+      display : PDisplay,
+      d : Drawable,
+      data : PChar,
+      width : UInt32,
+      height : UInt32
+    ) : Pixmap
+
+    fun create_pixmap_from_bitmap_data = XCreatePixmapFromBitmapData(
+      display : PDisplay,
+      d : Drawable,
+      data : PChar,
+      width : UInt32,
+      height : UInt32,
+      fg : UInt64,
+      bg : UInt64,
+      depth : UInt64
+    ) : Pixmap
+
+    fun create_simple_window = XCreateSimpleWindow(
+      display : PDisplay,
+      parent : Window,
+      x : Int32,
+      y : Int32,
+      width : UInt32,
+      height : UInt32,
+      border_width : UInt32,
+      border : UInt64,
+      background : UInt64
+    ) : Window
+
+    fun get_selection_owner = XGetSelectionOwner(
+      display : PDisplay,
+      selection : Atom,
+    ) : Window;
+
+    fun create_window = XCreateWindow(
+      display : PDisplay,
+      parent : Window,
+      x : Int32,
+      y : Int32,
+      width : UInt32,
+      height : UInt32,
+      border_width : UInt32,
+      depth : Int32,
+      c_class : UInt32,
+      visual : PVisual,
+      valuemask : UInt64,
+      attributes : PSetWindowAttributes
+    ) : Window
+
+    fun list_installed_colormaps = XListInstalledColormaps(
+      display : PDisplay,
+      w : Window,
+      num_return : PInt32
+    ) : PColormap
+
+    fun list_fonts = XListFonts(
+      display : PDisplay,
+      pattern : PChar,
+      maxnames : Int32,
+      actual_count_return : PInt32
+    ) : PPChar
+
+    fun list_fonts_with_info = XListFontsWithInfo(
+      display : PDisplay,
+      pattern : PChar,
+      maxnames : Int32,
+      count_return : PInt32,
+      info_return : PFontStruct*
+    ) : PPChar
+
+    fun get_font_path = XGetFontPath(
+      display : PDisplay,
+      npaths_return : PInt32
+    ) : PPChar
+
+    fun list_extensions = XListExtensions(
+      display : PDisplay,
+      nextensions_return : PInt32
+    ) : PPChar
+
+    fun list_properties = XListProperties(
+      display : PDisplay,
+      w : Window,
+      num_prop_return : PInt32
+    ) : PAtom
+
+    fun list_hosts = XListHosts(
+      display : PDisplay,
+      nhosts_return : PInt32,
+      state_return : PBool
+    ) : PHostAddress
+
+    fun keycode_to_keysym = XKeycodeToKeysym(
+      display : PDisplay,
+      keycode : KeyCode,
+      index : Int32
+    ) : KeySym
+
+    fun lookup_keysym = XLookupKeysym(
+      key_event : PKeyEvent,
+      index : Int32
+    ) : KeySym
+
+    fun get_keyboard_mapping = XGetKeyboardMapping(
+      display : PDisplay,
+      first_keycode : KeyCode,
+      keycode_count : Int32,
+      keysyms_per_keycode_return : PInt32
+    ) : PKeySym
+
+    fun string_to_keysym = XStringToKeysym(
+      string : PChar
+    ) : KeySym
+
+    fun max_request_size = XMaxRequestSize(
+      display : PDisplay
+    ) : Int64
+
+    fun extended_map_request_size = XExtendedMaxRequestSize(
+      display : PDisplay
+    ) : Int64
+
+    fun resource_manager_string = XResourceManagerString(
+      display : PDisplay
+    ) : PChar
+
+    fun screen_resource_string = XScreenResourceString(
+      screen : PScreen
+    ) : PChar
+
+    fun display_motion_buffer_size = XDisplayMotionBufferSize(
+      display : PDisplay
+    ) : UInt64
+
+    fun visual_id_from_visual = XVisualIDFromVisual(
+      visual : PVisual
+    ) : VisualID
+
+    # multithread routines
+
+    fun init_threads = XInitThreads() : Status
+
+    fun lock_display = XLockDisplay(
+      display : PDisplay
+    ) : NoReturn
+
+    fun unlock_display = XUnlockDisplay(
+      display : PDisplay
+    ) : NoReturn
+
+    # routines for dealing with extensions
+
+    fun init_extension = XInitExtension(
+      display : PDisplay,
+      name : PChar
+    ) : PExtCodes
+
+    fun add_extension = XAddExtension(
+      display : PDisplay
+    ) : PExtCodes
+
+    fun find_on_extension_list = XFindOnExtensionList(
+      structure : PExtData*,
+      number : Int32
+    ) : PExtData
+
+    fun e_head_of_extension_list = XEHeadOfExtensionList(
+      object : EDataObject
+    ) : PExtData*
+
+    # these are routines for which there are also macros
+    fun root_window = XRootWindow(
+      display : PDisplay,
+      screen_number : Int32
+    ) : Window
+
+    fun default_root_window = XDefaultRootWindow(
+      display : PDisplay
+    ) : Window
+
+    fun root_window_of_screen = XRootWindowOfScreen(
+      screen : PScreen
+    ) : Window
+
+    fun default_visual = XDefaultVisual(
+      display : PDisplay,
+      screen_number : Int32
+    ) : PVisual
+
+    fun default_visual_of_screen = XDefaultVisualOfScreen(
+      screen : PScreen
+    ) : PVisual
+
+    fun default_gc = XDefaultGC(
+      display : PDisplay,
+      screen_number : Int32
+    ) : GC
+
+    fun default_gc_of_screen = XDefaultGCOfScreen(
+      screen : PScreen
+    ) : GC
+
+    fun black_pixel = XBlackPixel(
+      display : PDisplay,
+      screen_number : Int32
+    ) : UInt64
+
+    fun white_pixel = XWhitePixel(
+      display : PDisplay,
+      screen_number : Int32
+    ) : UInt64
+
+    fun all_planes = XAllPlanes() : UInt64
+
+    fun black_pixel_of_screen = XBlackPixelOfScreen(
+      screen : PScreen
+    ) : UInt64
+
+    fun white_pixel_of_screen = XWhitePixelOfScreen(
+      screen : PScreen
+    ) : UInt64
+
+    fun next_request = XNextRequest(
+      display : PDisplay
+    ) : UInt64
+
+    fun last_known_request_processed = XLastKnownRequestProcessed(
+      display : PDisplay
+    ) : UInt64
+
+    fun server_vendor = XServerVendor(
+      display : PDisplay
+    ) : PChar
+
+    fun display_string = XDisplayString(
+      display : PDisplay
+    ) : PChar
+
+    fun default_colormap = XDefaultColormap(
+      display : PDisplay,
+      screen_number : Int32
+    ) : Colormap
+
+    fun default_colormap_of_screen = XDefaultColormapOfScreen(
+      screen : PScreen
+    ) : Colormap
+
+    fun display_of_screen = XDisplayOfScreen(
+      screen : PScreen
+    ) : PDisplay
+
+    fun screen_of_display = XScreenOfDisplay(
+      display : PDisplay,
+      screen_number : Int32
+    ) : PScreen
+
+    fun default_screen_of_display = XDefaultScreenOfDisplay(
+      display : PDisplay
+    ) : PScreen
+
+    fun event_mask_of_screen = XEventMaskOfScreen(
+      screen : PScreen
+    ) : Int64
+
+    fun screen_number_of_screen = XScreenNumberOfScreen(
+      screen : PScreen
+    ) : Int32
+
+    # WARNING, this type not in Xlib spec
+    alias ErrorHandler = PDisplay, PErrorEvent -> Int32
+
+    fun set_error_handler = XSetErrorHandler(
+      handler : ErrorHandler
+    ) : ErrorHandler
+
+    # WARNING, this type not in Xlib spec
+    alias IOErrorHandler = PDisplay -> Int32
+
+    fun set_io_error_handler = XSetIOErrorHandler(
+      handler : IOErrorHandler
+    ) : IOErrorHandler
+
+    fun list_pixmap_formats = XListPixmapFormats(
+      display : PDisplay,
+      count_return : Int32
+    ) : PPixmapFormatValues
+
+    fun list_depths = XListDepths(
+      display : PDisplay,
+      screen_number : Int32,
+      count_return : PInt32
+    ) : PInt32
+
+    # ICCCM routines for things that don't require special include files;
+    # other declarations are given in Xutil.h
+    fun reconfigure_wm_window = XReconfigureWMWindow(
+      display : PDisplay,
+      w : Window,
+      screen_number : Int32,
+      mask : UInt32,
+      changes : PWindowChanges
+    ) : Status
+
+    fun get_wm_protocols = XGetWMProtocols(
+      display : PDisplay,
+      w : Window,
+      protocols_return : PAtom*,
+      count_return : PInt32
+    ) : Status
+
+    fun set_wm_protocols = XSetWMProtocols(
+      display : PDisplay,
+      w : Window,
+      protocols : PAtom,
+      count : Int32
+    ) : Status
+
+    fun iconify_window = XIconifyWindow(
+      display : PDisplay,
+      w : Window,
+      screen_number : Int32
+    ) : Status
+
+    fun withdraw_window = XWithdrawWindow(
+      display : PDisplay,
+      w : Window,
+      screen_number : Int32
+    ) : Status
+
+    fun get_command = XGetCommand(
+      display : PDisplay,
+      w : Window,
+      argv_return : PPChar*,
+      argc_return : PInt32
+    ) : Status
+
+    fun get_wm_colormap_windows = XGetWMColormapWindows(
+      display : PDisplay,
+      w : Window,
+      windows_return : Window**,
+      count_return : Pint32
+    ) : Status
+
+    fun set_wm_colormap_windows = XSetWMColormapWindows(
+      display : PDisplay,
+      w : Window,
+      colormap_windows : PWindow,
+      count : Int32
+    ) : Status
+
+    fun free_string_list = XFreeStringList(
+      list : PPChar
+    ) : NoReturn
+
+     fun set_transient_for_hint = XSetTransientForHint(
+      display : PDisplay,
+      w : Window,
+      prop_window : Window
+    ) : Int32
+
+    # The following are given in alphabetical order
+
+    fun activate_screen_saver = XActivateScreenSaver(
+      display : PDisplay
+    ) : Int32
+
+    fun add_host = XAddHost(
+      display : PDisplay,
+      host : PHostAddress
+    ) : Int32
+
+    fun add_hosts = XAddHosts(
+      display : PDisplay,
+      hosts : PHostAddress,
+      num_hosts : Int32
+    ) : Int32
+
+    fun add_to_extension_list = XAddToExtensionList(
+      structure : PExtData*,
+      ext_data : PExtData
+    ) : Int32
+
+    fun add_to_save_set = XAddToSaveSet(
+      display : PDisplay,
+      w : Window
+    ) : Int32
+
+    fun alloc_color = XAllocColor(
+      display : PDisplay,
+      colormap : Colormap,
+      screen_in_out : PColor
+    ) : Status
+
+    fun alloc_color_cells = XAllocColorCells(
+      display : PDisplay,
+      colormap : Colormap,
+      contig : Bool,
+      plane_masks_return : PUInt64,
+      nplanes : UInt32,
+      pixels_return : PUInt64,
+      npixels : UInt32
+    ) : Status
+
+    fun alloc_color_planes = XAllocColorPlanes(
+      display : PDisplay,
+      colormap : Colormap,
+      contig : Bool,
+      pixels_return : PUInt64,
+      ncolors : Int32,
+      nreds : Int32,
+      ngreens : Int32,
+      nblues : Int32,
+      rmask_return : PUInt64,
+      gmask_return : PUInt64,
+      bmask_return : PUInt64
+    ) : Status
+
+    fun alloc_named_color = XAllocNamedColor(
+      display : PDisplay,
+      colormap : Colormap,
+      color_name : PChar,
+      screen_def_return : PColor,
+      exact_def_return : PColor
+    ) : Status
+
+    fun alloc_events = XAllowEvents(
+      display : PDisplay,
+      event_mode : Int32,
+      time : Time
+    ) : Int32
+
+    fun auto_repeat_off = XAutoRepeatOff(
+      display : PDisplay
+    ) : Int32
+
+    fun auto_repeat_on = XAutoRepeatOn(
+      display : PDisplay
+    ) : Int32
+
+    fun bell = XBell(
+      display : PDisplay,
+      percent : Int32
+    ) : Int32
+
+    fun bitmap_bit_order = XBitmapBitOrder(
+      display : PDisplay
+    ) : Int32
+
+    fun bitmap_pad = XBitmapPad(
+      display : PDisplay
+    ) : Int32
+
+    fun bitmap_unit = XBitmapUnit(
+      display : PDisplay
+    ) : Int32
+
+    fun cells_of_screen = XCellsOfScreen(
+      screen : PScreen
+    ) : Int32
+
+    fun change_active_pointer_grab = XChangeActivePointerGrab(
+      display : PDisplay,
+      event_mask : UInt32,
+      cursor : Cursor,
+      time : Time
+    ) : Int32
+
+    fun change_gc = XChangeGC(
+      display : PDisplay,
+      gc : GC,
+      valuemask : UInt64,
+      values : PGCValues
+    ) : Int32
+
+    fun change_keyboard_control = XChangeKeyboardControl(
+      display : PDisplay,
+      value_mask : UInt64,
+      values : PKeyboardControl
+    ) : Int32
+
+    fun change_keyboard_mapping = XChangeKeyboardMapping(
+      display : PDisplay,
+      first_keycode : Int32,
+      keysyms_per_keycode : Int32,
+      keysyms : PKeySym,
+      num_codes : Int32
+    ) : Int32
+
+    fun change_pointer_control = XChangePointerControl(
+      display : PDisplay,
+      do_accel : Bool,
+      do_threshold : Bool,
+      accel_numerator : Int32,
+      accel_denominator : Int32,
+      threshold : Int32
+    ) : Int32
+
+    fun change_property = XChangeProperty(
+      display : PDisplay,
+      w : Window,
+      property : Atom,
+      type : Atom,
+      format : Int32,
+      mode : Int32,
+      data : PChar,
+      nelements : Int32
+    ) : Int32;
+
+    fun change_save_set = XChangeSaveSet(
+      display : PDisplay,
+      w : Window,
+      change_mode : Int32
+    ) : Int32
+
+    fun change_window_attributes = XChangeWindowAttributes(
+      display : PDisplay,
+      w : Window,
+      valuemask : UInt64,
+      attributes : PSetWindowAttributes
+    ) : Int32
+
+    fun check_if_event = XCheckIfEvent(
+      display : PDisplay,
+      event_return : PEvent,
+      predicate : PDisplay, PEvent, Pointer -> Bool,
+      arg : Pointer
+    ) : Bool
+
+    fun check_mask_event = XCheckMaskEvent(
+      display : PDisplay,
+      event_mask : Int64,
+      event_return : PEvent
+    ) : Bool
+
+    fun check_types_event = XCheckTypedEvent(
+      display : PDisplay,
+      event_type : Int32,
+      event_return : PEvent
+    ) : Bool
+
+    fun check_typed_window_event = XCheckTypedWindowEvent(
+      display : PDisplay,
+      w : Window,
+      event_type : Int32,
+      event_return : PEvent
+    ) : Bool
+
+    fun check_window_event = XCheckWindowEvent(
+      display : PDisplay,
+      w : Window,
+      event_mask : Int64,
+      event_return : PEvent
+    ) : Bool
+
+    fun circulate_subwindows = XCirculateSubwindows(
+      display : PDisplay,
+      w : Window,
+      direction : Int32
+    ) : Int32
+
+    fun circulate_subwindows_down = XCirculateSubwindowsDown(
+      display : PDisplay,
+      w : Window
+    ) : Int32
+
+    fun circulate_subwindows_up = XCirculateSubwindowsUp(
+      display : PDisplay,
+      w : Window
+    ) : Int32
+
+    fun clear_area = XClearArea(
+      display : PDisplay,
+      w : Window,
+      x : Int32,
+      y : Int32,
+      width : UInt32,
+      height : UInt32,
+      exposures : Bool
+    ) : Int32
+
+    fun clear_window = XClearWindow(
+      display : PDisplay,
+      w : Window
+    ) : Int32
+
+    fun close_display = XCloseDisplay(
+      display : PDisplay
+    ) : Int32
+
+    fun configure_window = XConfigureWindow(
+      display : PDisplay,
+      w : Window,
+      value_mask : UInt32,
+      values : PWindowChanges
+    ) : Int32
+
+    fun connection_number = XConnectionNumber(
+      display : PDisplay
+    ) : Int32
+
+    fun convert_selection = XConvertSelection(
+      display : PDisplay,
+      selection : Atom,
+      target : Atom,
+      property : Atom,
+      requestor : Window,
+      time : Time
+    ) : Int32
+
+    fun copy_area = XCopyArea(
+      display : PDisplay,
+      src : Drawable,
+      dest : Drawable,
+      gc : GC,
+      src_x : Int32,
+      src_y : Int32,
+      width : UInt32,
+      height : UInt32,
+      dest_x : Int32,
+      dest_y : Int32
+    ) : Int32
+
+    fun copy_gc = XCopyGC(
+      display : PDisplay,
+      src : GC,
+      valuemask : UInt64,
+      dest : GC
+    ) : Int32
+
+    fun copy_plane = XCopyPlane(
+      display : PDisplay,
+      src : Drawable,
+      dest : Drawable,
+      gc : GC,
+      src_x : Int32,
+      src_y : Int32,
+      width : UInt32,
+      height : UInt32,
+      dest_x : Int32,
+      dest_y : Int32,
+      plane : UInt64
+    ) : Int32
+
+    fun default_depth = XDefaultDepth(
+      display : PDisplay,
+      screen_number : Int32
+    ) : Int32
+
+    fun default_depth_of_screen = XDefaultDepthOfScreen(
+      screen : PScreen
+    ) : Int32
+
+    fun default_screen = XDefaultScreen(
+      display : PDisplay
+    ) : Int32
+
+    fun define_cursor = XDefineCursor(
+      display : PDisplay,
+      w : Window,
+      cursor : Cursor
+    ) : Int32
+
+    fun delete_property = XDeleteProperty(
+      display : PDisplay,
+      w : Window,
+      property : Atom
+    ) : Int32
+
+    fun destroy_window = XDestroyWindow(
+      display : PDisplay,
+      w : Window
+    ) : Int32
+
+    fun destroy_subwindows = XDestroySubwindows(
+      display : PDisplay,
+      w : Window
+    ) : Int32
+
+    fun does_backing_store = XDoesBackingStore(
+      screen : PScreen
+    ) : Int32
+
+    fun does_save_unders = XDoesSaveUnders(
+      screen : PScreen
+    ) : Bool
+
+    fun disable_access_control = XDisableAccessControl(
+      display : PDisplay
+    ) : Int32
+
+
+    fun display_cells = XDisplayCells(
+      display : PDisplay,
+      screen_number : Int32
+    ) : Int32
+
+    fun display_height = XDisplayHeight(
+      display : PDisplay,
+      screen_number : Int32
+    ) : Int32
+
+    fun display_height_mm = XDisplayHeightMM(
+      display : PDisplay,
+      screen_number : Int32
+    ) : Int32
+
+    fun display_keycodes = XDisplayKeycodes(
+      display : PDisplay,
+      min_keycodes_return : PInt32,
+      max_keycodes_return : PInt32
+    ) : Int32
+
+    fun display_planes = XDisplayPlanes(
+      display : PDisplay,
+      screen_number : Int32
+    ) : Int32
+
+    fun display_width = XDisplayWidth(
+      display : PDisplay,
+      screen_number : Int32
+    ) : Int32
+
+    fun display_width_mm = XDisplayWidthMM(
+      display : PDisplay,
+      screen_number : Int32
+    ) : Int32
+
+    fun draw_arc = XDrawArc(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      width : UInt32,
+      height : UInt32,
+      angle1 : Int32,
+      angle2 : Int32
+    ) : Int32
+
+    fun draw_arcs = XDrawArcs(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      arcs : PArc,
+      narcs : Int32
+    ) : Int32
+
+    fun draw_image_string = XDrawImageString(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      string : PChar,
+      length : Int32
+    ) : Int32
+
+    fun draw_image_string_16 = XDrawImageString16(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      string : PChar2b,
+      length : Int32
+    ) : Int32
+
+    fun draw_line = XDrawLine(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      x1 : Int32,
+      y1 : Int32,
+      x2 : Int32,
+      y2 : Int32
+    ) : Int32
+
+    fun draw_lines = XDrawLines(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      points : PPoint,
+      npoints : Int32,
+      mode : Int32
+    ) : Int32
+
+    fun draw_point = XDrawPoint(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      x : Int32,
+      y : Int32
+    ) : Int32
+
+    fun draw_points = XDrawPoints(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      points : PPoint,
+      npoints : Int32,
+      mode : Int32
+    ) : Int32
+
+    fun draw_rectangle = XDrawRectangle(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      width : UInt32,
+      height : UInt32
+    ) : Int32
+
+    fun draw_rectangles = XDrawRectangles(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      rectangles : PRectangle,
+      nrectangles : Int32
+    ) : Int32
+
+    fun draw_segments = XDrawSegments(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      segments : PSegment,
+      nsegments : Int32
+    ) : Int32
+
+    fun draw_string = XDrawString(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      string : PChar,
+      length : Int32
+    ) : Int32
+
+    fun draw_string_16 = XDrawString16(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      string : PChar2b,
+      length : Int32
+    ) : Int32
+
+    fun draw_text = XDrawText(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      items : PTextItem,
+      nitems : Int32
+    ) : Int32
+
+    fun draw_text_16 = XDrawText16(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      items : PTextItem16,
+      nitems : Int32
+    ) : Int32
+
+    fun enable_access_control = XEnableAccessControl(
+      display : PDisplay
+    ) : Int32
+
+    fun events_queued = XEventsQueued(
+      display : PDisplay,
+      mode : Int32
+    ) : Int32
+
+    fun fetch_name = XFetchName(
+      display : PDisplay,
+      w : Window,
+      window_name_return : PPChar
+    ) : Status
+
+    fun fill_arc = XFillArc(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      width : UInt32,
+      height : UInt32,
+      angle1 : Int32,
+      angle2 : Int32
+    ) : Int32
+
+    fun fill_arcs = XFillArcs(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      arcs : PArc,
+      narcs : Int32
+    ) : Int32
+
+    fun fill_polygon = XFillPolygon(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      points : PPoint,
+      npoints :  Int32,
+      shape : Int32,
+      mode : Int32
+    ) : Int32
+
+    fun fill_rectangle = XFillRectangle(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      width : UInt32,
+      height : UInt32
+    ) : Int32
+
+    fun fill_rectangles = XFillRectangles(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      rectangles : PRectangle,
+      nrectangles : Int32
+    ) : Int32
+
+    fun flush = XFlush(
+      display : PDisplay
+    ) : Int32
+
+    fun force_screen_saver = XForceScreenSaver(
+      display : PDisplay,
+      mode : Int32
+    ) : Int32
+
+    fun free = XFree(
+      data : PChar
+    ) : Int32
+
+    fun free_colormap = XFreeColormap(
+      display : PDisplay,
+      colormap : Colormap
+    ) : Int32
+
+    fun free_colors = XFreeColors(
+      display : PDisplay,
+      colormap : Colormap,
+      pixels : PUInt64,
+      npixels : Int32,
+      planes : UInt64
+    ) : Int32
+
+    fun free_cursor = XFreeCursor(
+      display : PDisplay,
+      cursor : Cursor
+    ) : Int32
+
+    fun free_extension_list = XFreeExtensionList(
+      list : PPChar
+    ) : Int32
+
+    fun free_font = XFreeFont(
+      display : PDisplay,
+      font_struct : PFontStruct
+    ) : Int32
+
+    fun free_font_info = XFreeFontInfo(
+      names : PPChar,
+      free_info : PFontStruct,
+      actual_count : Int32
+    ) : Int32
+
+    fun free_font_names = XFreeFontNames(
+      list : PPChar
+    ) : Int32
+
+    fun free_font_path = XFreeFontPath(
+      list : PPChar
+    ) : Int32
+
+    fun free_gc = XFreeGC(
+      display : PDisplay,
+      gc : GC
+    ) : Int32
+
+    fun free_modifiermap = XFreeModifiermap(
+      modmap : PModifierKeymap
+    ) : Int32
+
+    fun free_pixmap = XFreePixmap(
+      display : PDisplay,
+      pixmap : Pixmap
+    ) : Int32
+
+    fun geometry = XGeometry(
+      display : PDisplay,
+      screen : Int32,
+      position : PChar,
+      default_position : PChar,
+      bwidth : UInt32,
+      fwidth : UInt32,
+      fheight : UInt32,
+      xadder : Int32,
+      yadder : Int32,
+      x_return : PInt32,
+      y_return : PInt32,
+      width_return : PInt32,
+      height_return : PInt32
+    ) : Int32
+
+    fun get_error_database_text = XGetErrorDatabaseText(
+      display : PDisplay,
+      name : PChar,
+      message : PChar,
+      default_string : PChar,
+      buffer_return : PChar,
+      length : Int32
+    ) : Int32
+
+    fun get_error_text = XGetErrorText(
+      display : PDisplay,
+      code : Int32,
+      buffer_return : PChar,
+      length : Int32
+    ) : Int32
+
+    fun get_font_property = XGetFontProperty(
+      font_struct : PFontStruct,
+      atom : Atom,
+      value_return : PUInt64
+    ) : Bool
+
+    fun get_gc_values = XGetGCValues(
+      display : PDisplay,
+      gc : GC,
+      valuemask : UInt64,
+      values_return : PGCValues
+    ) : Status
+
+    fun get_geometry = XGetGeometry(
+      display : PDisplay,
+      d : Drawable,
+      root_return : PWindow,
+      x_return : PInt32,
+      y_return : PInt32,
+      width_return : PUInt32,
+      height_return : PInt32,
+      border_width_return : PInt32,
+      depth_return : PInt32
+    ) : Status
+
+    fun get_icon_name = XGetIconName(
+      display : PDisplay,
+      w : Window,
+      icon_name_return : PPChar
+    ) : Status
+
+    fun get_input_focus = XGetInputFocus(
+      display : PDisplay,
+      focus_return : PWindow,
+      revert_to_return : PInt32
+    ) : Int32
+
+    fun get_keyboard_control = XGetKeyboardControl(
+      display : PDisplay,
+      values_return : PKeyboardState
+    ) : Int32
+
+    fun get_pointer_control = XGetPointerControl(
+      display : PDisplay,
+      accel_numerator_return : PInt32,
+      accel_denominator_return : PInt32,
+      threshold_return : PInt32
+    ) : Int32
+
+    fun get_pointer_mapping = XGetPointerMapping(
+      display : PDisplay,
+      map_return : PChar,
+      nmap : Int32
+    ) : Int32
+
+    fun get_screen_saver = XGetScreenSaver(
+      display : PDisplay,
+      timeout_return : PInt32,
+      interval_return : PInt32,
+      prefer_blanking_return : PInt32,
+      allow_exposures_return : PInt32,
+    ) : Int32
+
+    fun get_transient_for_hint = XGetTransientForHint(
+      display : PDisplay,
+      w : Window,
+      prop_window_return : PWindow
+    ) : Status
+
+    fun get_window_property = XGetWindowProperty(
+      display : PDisplay,
+      w : Window,
+      property : Atom,
+      long_offset : Int64,
+      long_length : Int64,
+      delete : Bool,
+      req_type : Atom,
+      actual_type_return : PAtom,
+      actual_format_return : PInt32,
+      nitems_return : PUInt64,
+      bytes_after_return : PUInt64,
+      prop_return : PPChar
+    ) : Int32
+
+    fun get_window_attributes = XGetWindowAttributes(
+      display : PDisplay,
+      w : Window,
+      window_attributes_return : PWindowAttributes
+    ) : Status
+
+    fun grab_button = XGrabButton(
+      display : PDisplay,
+      button : UInt32,
+      modifiers : UInt32,
+      grab_window : Window,
+      owner_events : Bool,
+      event_mask : UInt32,
+      pointer_mode : Int32,
+      keyboard_mode : Int32,
+      confine_to : Window,
+      cursor : Cursor
+    ) : Int32
+
+    fun grab_key = XGrabKey(
+      display : PDisplay,
+      keycode : Int32,
+      modifiers : UInt32,
+      grab_window : Window,
+      owner_events : Bool,
+      pointer_mode : Int32,
+      keyboard_mode : Int32
+    ) : Int32
+
+    fun grab_keyboard = XGrabKeyboard(
+      display : PDisplay,
+      grab_window : Window,
+      owner_events : Bool,
+      pointer_mode : Int32,
+      keyboard_mode : Int32,
+      time : Time
+    ) : Int32
+
+    fun grab_pointer = XGrabPointer(
+      display : PDisplay,
+      grab_window : Window,
+      owner_events : Bool,
+      event_mask : UInt32,
+      pointer_mode : Int32,
+      keyboard_mode : Int32,
+      confine_to : Window,
+      cursor : Cursor,
+      time : Time
+    ) : Int32
+
+    fun grab_server = XGrabServer(
+      display : PDisplay
+    ) : Int32
+
+    fun height_mm_of_screen = XHeightMMOfScreen(
+      screen : PScreen
+    ) : Int32
+
+    fun height_of_screen = XHeightOfScreen(
+      screen : PScreen
+    ) : Int32
+
+    fun if_event = XIfEvent(
+      display : PDisplay,
+      event_return : PEvent,
+      predicate : PDisplay, PEvent, Pointer -> Bool,
+      arg : Pointer
+    );
+
+    fun image_byte_order = XImageByteOrder(
+      display : PDisplay
+    ) : Int32
+
+    fun install_colormap = XInstallColormap(
+      display : PDisplay,
+      colormap : Colormap
+    ) : Int32
+
+    fun keysym_to_keycode = XKeysymToKeycode(
+      display : PDisplay,
+      keysym : KeySym
+    ) : KeyCode
+
+    fun kill_client = XKillClient(
+      display : PDisplay,
+      resource : XID
+    ) : Int32
+
+    fun lookup_color = XLookupColor(
+      display : PDisplay,
+      colormap : Colormap,
+      color_name : PChar,
+      exact_def_return : PColor,
+      screen_def_return : PColor
+    ) : Status
+
+    fun lower_window = XLowerWindow(
+      display : PDisplay,
+      w : Window
+    ) : Int32
+
+    fun map_raised = XMapRaised(
+      display : PDisplay,
+      w : Window
+    ) : Int32
+
+    fun map_subwindows = XMapSubwindows(
+      display : PDisplay,
+      w : Window
+    ) : Int32
+
+    fun map_window = XMapWindow(
+      display : PDisplay,
+      w : Window
+    ) : Int32
+
+    fun mask_event = XMaskEvent(
+      display : PDisplay,
+      event_mask : Int64,
+      event_return : PEvent
+    ) : Int32
+
+    fun max_cmaps_of_screen = XMaxCmapsOfScreen(
+      screen : PSCreen
+    ) : Int32
+
+    fun min_cmaps_of_screen = XMinCmapsOfScreen(
+      screen : PScreen
+    ) : Int32
+
+    fun move_resize_window = XMoveResizeWindow(
+      display : PDisplay,
+      w : Window,
+      x : Int32,
+      y : Int32,
+      width : UInt32,
+      height : UInt32
+    ) : Int32
+
+    fun move_window = XMoveWindow(
+      display : PDisplay,
+      w : Window,
+      x : Int32,
+      y : Int32
+    ) : Int32
+
+    fun next_event = XNextEvent(
+      display : PDisplay,
+      event_return : PEvent
+    ) : Int32
+
+    fun no_op = XNoOp(
+      display : PDisplay
+    ) : Int32
+
+    fun parse_color = XParseColor(
+      display : PDisplay,
+      colormap : Colormap,
+      spec : PChar,
+      exact_def_return : PColor
+    ) : Status
+
+    fun parse_geometry = XParseGeometry(
+      parsestring : PChar,
+      x_return : PInt32,
+      y_return : PInt32,
+      width_return : PUInt32,
+      height_return : PUInt32
+    ) : Int32
+
+    fun peek_event = XPeekEvent(
+      display : PDisplay,
+      event_return : PEvent
+    ) : Int32
+
+    fun peek_if_event = XPeekIfEvent(
+      display : PDisplay,
+      event_return : PEvent,
+      predicate : PDisplay, PEvent, Pointer -> Bool,
+      arg : Pointer
+    ) : Int32
+
+    fun pending = XPending(
+      display : PDisplay
+    ) : Int32
+
+    fun plane_of_screen = XPlanesOfScreen(
+      screen : PScreen
+    ) : Int32
+
+    fun protocol_revision = XProtocolRevision(
+      display : PDisplay
+    ) : Int32
+
+    fun protocol_version = XProtocolVersion(
+      display : PDisplay
+    ) : Int32
+
+    fun put_back_event = XPutBackEvent(
+      display : PDisplay,
+      event : PEvent
+    ) : Int32
+
+    fun put_image = XPutImage(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      image : PImage,
+      src_x : Int32,
+      src_y : Int32,
+      dest_x : Int32,
+      dest_y : Int32,
+      width : UInt32,
+      height : UInt32
+    ) : Int32
+
+    fun q_length = XQLength(
+      display : PDisplay
+    ) : Int32
+
+    fun query_best_cursor = XQueryBestCursor(
+      display : PDisplay,
+      d : Drawable,
+      width : UInt32,
+      height : UInt32,
+      width_return : PUInt32,
+      height_return : PUInt32
+    ) : Status
+
+    fun query_best_size = XQueryBestSize(
+      display : PDisplay,
+      c_class : Int32,
+      which_screen : Drawable,
+      width : UInt32,
+      height : UInt32,
+      width_return : PUInt32,
+      height_return : PUInt32
+    ) : Status
+
+    fun query_best_stipple = XQueryBestStipple(
+      display : PDisplay,
+      which_screen : Drawable,
+      width : UInt32,
+      height : UInt32,
+      width_return : PUInt32,
+      height_return : PUInt32
+    ) : Status
+
+    fun query_best_tile = XQueryBestTile(
+      display : PDisplay,
+      which_screen : Drawable,
+      width : UInt32,
+      height : UInt32,
+      width_return : PUInt32,
+      height_return : PUInt32
+    ) : Status
+
+    fun query_color = XQueryColor(
+      display : PDisplay,
+      colormap : Colormap,
+      def_in_out : PColor
+    ) : Int32
+
+    fun query_colors = XQueryColors(
+      display : PDisplay,
+      colormap : Colormap,
+      defs_in_out : PColor,
+      ncolors : Int32
+    ) : Int32
+
+    fun query_extension = XQueryExtension(
+      display : PDisplay,
+      name : PChar,
+      major_opcode_return : PInt32,
+      first_event_return : PInt32,
+      first_error_return : PInt32
+    ) : Bool
+
+    fun query_keymap = XQueryKeymap(
+      display : PDisplay,
+      keys_return : Char[32]
+    ) : Int32
+
+    fun query_pointer = XQueryPointer(
+      display : PDisplay,
+      w : Window,
+      root_return : PWindow,
+      child_return : PWindow,
+      root_x_return : PInt32,
+      root_y_return : PInt32,
+      win_x_return : PInt32,
+      win_y_return : PInt32,
+      mask_return : PUInt32
+    ) : Bool
+
+    fun query_text_extents = XQueryTextExtents(
+      display : PDisplay,
+      font_ID : XID,
+      string : PChar,
+      nchars : Int32,
+      direction_return : PInt32,
+      font_ascent_return : PInt32,
+      font_descent_return : PInt32,
+      overall_return : PCharStruct
+    ) : Int32
+
+    fun query_text_extents_16 = XQueryTextExtents16(
+      display : PDisplay,
+      font_ID : XID,
+      string : PChar2b,
+      nchars : Int32,
+      direction_return : PInt32,
+      font_ascent_return : PInt32,
+      font_descent_return : PInt32,
+      overall_return : PCharStruct
+    ) : Int32
+
+    fun query_tree = XQueryTree(
+      display : PDisplay,
+      w : Window,
+      root_return : PWindow,
+      parent_return : PWindow,
+      children_return : PWindow*,
+      nchildren_return : UInt32
+    ) : Status
+
+    fun raise_window = XRaiseWindow(
+      display : PDisplay,
+      w : Window
+    ) : Int32
+
+    fun read_bitmap_file = XReadBitmapFile(
+      display : PDisplay,
+      d : Drawable,
+      filename : PChar,
+      width_return : PUInt32,
+      height_return : PUInt32,
+      bitmap_return : PPixmap,
+      x_hot_return : PInt32,
+      y_hot_return : PInt32
+    ) : Int32
+
+    fun read_bitmap_file_data = XReadBitmapFileData(
+      filename : PChar,
+      width_return : PUInt32,
+      height_return : PUInt32,
+      data_return : PPChar,
+      x_hot_return : PInt32,
+      y_hot_return : PInt32
+    ) : Int32
+
+    fun rebind_keysym = XRebindKeysym(
+      display : PDisplay,
+      keysym : KeySym,
+      list : PKeySym,
+      mod_count : Int32,
+      string : PChar,
+      bytes_string : Int32
+    ) : Int32
+
+    fun recolor_cursor = XRecolorCursor(
+      display : PDisplay,
+      cursor : Cursor,
+      foreground_color : PColor,
+      background_color : PColor
+    ) : Int32
+
+    fun refresh_keyboard_mapping = XRefreshKeyboardMapping(
+      event_map : PMappingEvent
+    ) : Int32
+
+    fun remove_from_save_set = XRemoveFromSaveSet(
+      display : PDisplay,
+      w : Window
+    ) : Int32
+
+    fun remove_host = XRemoveHost(
+      display : PDisplay,
+      host : PHostAddress
+    ) : Int32
+
+    fun remove_hosts = XRemoveHosts(
+      display : PDisplay,
+      hosts : PHostAddress,
+      num_hosts : Int32
+    ) : Int32
+
+    fun reparent_window = XReparentWindow(
+      display : PDisplay,
+      w : Window,
+      parent : Window,
+      x : Int32,
+      y : Int32
+    ) : Int32
+
+    fun reset_screen_saver = XResetScreenSaver(
+      display : PDisplay
+    ) : Int32
+
+    fun resize_window = XResizeWindow(
+      display : PDisplay,
+      w : Window,
+      width : UInt32,
+      height : UInt32
+    ) : Int32
+
+    fun restack_windows = XRestackWindows(
+      display : PDisplay,
+      windows : PWindow,
+      nwindows : Int32
+    ) : Int32
+
+    fun rotate_buffers = XRotateBuffers(
+      display : PDisplay,
+      rotate : Int32
+    ) : Int32
+
+    fun rotate_window_properties = XRotateWindowProperties(
+      display : PDisplay,
+      w : Window,
+      properties : PAtom,
+      num_prop : Int32,
+      npositions : Int32
+    ) : Int32
+
+    fun screen_count = XScreenCount(
+      display : PDisplay
+    ) : Int32
+
+    fun select_input = XSelectInput(
+      display : PDisplay,
+      w : Window,
+      event_mask : Int64
+    ) : Int32
+
+    fun send_event = XSendEvent(
+      display : PDisplay,
+      w : Window,
+      propagate : Bool,
+      event_mask : Int64,
+      event_send : PEvent
+    ) : Status
+
+    fun set_access_control = XSetAccessControl(
+      display : PDisplay,
+      mode : Int32
+    ) : Int32
+
+    fun set_arc_mode = XSetArcMode(
+      display : PDisplay,
+      gc : GC,
+      arc_mode : Int32
+    ) : Int32
+
+    fun set_background = XSetBackground(
+      display : PDisplay,
+      gc : GC,
+      background : UInt64
+    ) : Int32
+
+    fun set_clip_mask = XSetClipMask(
+      display : PDisplay,
+      gc : GC,
+      pixmap : Pixmap
+    ) : Int32
+
+    fun set_clip_origin = XSetClipOrigin(
+      display : PDisplay,
+      gc : GC,
+      clip_x_origin : Int32,
+      clip_y_origin : Int32
+    ) : Int32
+
+    fun set_clip_rectangles = XSetClipRectangles(
+      display : PDisplay,
+      gc : GC,
+      clip_x_origin : Int32,
+      clip_y_origin : Int32,
+      rectangles : PRectangle,
+      n : Int32,
+      ordering : Int32
+    ) : Int32
+
+    fun set_close_down_mode = XSetCloseDownMode(
+      display : PDisplay,
+      close_mode : Int32
+    ) : Int32
+
+    fun set_command = XSetCommand(
+      display : PDisplay,
+      w : Window,
+      argv : PPChar,
+      argc : Int32
+    ) : Int32
+
+    fun set_dashes = XSetDashes(
+      display : PDisplay,
+      gc : GC,
+      dash_offset : Int32,
+      dash_list : PChar,
+      n : Int32
+    ) : Int32
+
+    fun set_fill_rule = XSetFillRule(
+      display : PDisplay,
+      gc : GC,
+      fill_rule : Int32
+    ) : Int32
+
+    fun set_fill_style = XSetFillStyle(
+      display : PDisplay,
+      gc : GC,
+      fill_style : Int32
+    ) : Int32
+
+    fun set_font = XSetFont(
+      display : PDisplay,
+      gc : GC,
+      font : Font
+    ) : Int32
+
+    fun set_font_path = XSetFontPath(
+      display : PDisplay,
+      directories : PPChar,
+      ndirs : Int32
+    ) : Int32
+
+    fun set_foreground = XSetForeground(
+      display : PDisplay,
+      gc : GC,
+      foreground : UInt64
+    ) : Int32
+
+    fun set_function = XSetFunction(
+      display : PDisplay,
+      gc : GC,
+      function : Int32
+    ) : Int32
+
+    fun set_graphics_exposures = XSetGraphicsExposures(
+      display : PDisplay,
+      gc : GC,
+      graphics_exposures : Bool
+    ) : Int32
+
+    fun set_icon_name = XSetIconName(
+      display : PDisplay,
+      w : Window,
+      icon_name : PChar
+    ) : Int32
+
+    fun set_input_focus = XSetInputFocus(
+      display : PDisplay,
+      focus : Window,
+      revert_to : Int32,
+      time : Time
+    ) : Int32
+
+    fun set_line_attributes = XSetLineAttributes(
+      display : PDisplay,
+      gc : GC,
+      line_width : UInt32,
+      line_style : Int32,
+      cap_style : Int32,
+      join_style : Int32
+    ) : Int32
+
+    fun set_modifier_mapping = XSetModifierMapping(
+      display : PDisplay,
+      modmap : PModifierKeymap
+    ) : Int32
+
+    fun set_plane_mask = XSetPlaneMask(
+      display : PDisplay,
+      gc : GC,
+      plane_mask : UInt64
+    ) : Int32
+
+    fun set_pointer_mapping = XSetPointerMapping(
+      display : PDisplay,
+      map : PChar,
+      nmap : Int32
+    ) : Int32
+
+    fun set_screen_saver = XSetScreenSaver(
+      display : PDisplay,
+      timeout : Int32,
+      interval : Int32,
+      prefer_blanking : Int32,
+      allow_exposures : Int32
+    ) : Int32
+
+    fun set_selection_owner = XSetSelectionOwner(
+      display : PDisplay,
+      selection : Atom,
+      owner : Window,
+      time : Time
+    ) : Int32
+
+    fun set_state = XSetState(
+      display : PDisplay,
+      gc : GC,
+      foreground : UInt64,
+      background : UInt64,
+      function : Int32,
+      plane_mask : UInt64
+    ) : Int32
+
+    fun set_stipple = XSetStipple(
+      display : PDisplay,
+      gc : GC,
+      stipple : Pixmap
+    ) : Int32
+
+    fun set_subwindow_mode = XSetSubwindowMode(
+      display : PDisplay,
+      gc : GC,
+      subwindow_mode : Int32
+    ) : Int32
+
+    fun set_ts_origin = XSetTSOrigin(
+      display : PDisplay,
+      gc : GC,
+      ts_x_origin : Int32,
+      ts_y_origin : Int32
+    ) : Int32
+
+    fun set_title = XSetTile(
+      display : PDisplay,
+      gc : GC,
+      tile : Pixmap
+    ) : Int32
+
+    fun set_window_background = XSetWindowBackground(
+      display : PDisplay,
+      w : Window,
+      background_pixel : UInt64
+    ) : Int32
+
+    fun set_window_background_pixmap = XSetWindowBackgroundPixmap(
+      display : PDisplay,
+      w : Window,
+      background_pixmap : Pixmap
+    ) : Int32
+
+    fun set_window_border = XSetWindowBorder(
+      display : PDisplay,
+      w : Window,
+      border_pixel : UInt64
+    ) : Int32
+
+    fun set_window_border_pixmap = XSetWindowBorderPixmap(
+      display : PDisplay,
+      w : Window,
+      border_pixmap : Pixmap
+    ) : Int32
+
+    fun set_window_border_width = XSetWindowBorderWidth(
+      display : PDisplay,
+      w : Window,
+      width : UInt32
+    ) : Int32
+
+    fun set_window_colormap = XSetWindowColormap(
+      display : PDisplay,
+      w : Window,
+      colormap : Colormap
+    ) : Int32
+
+    fun store_buffer = XStoreBuffer(
+      display : PDisplay,
+      bytes  : PChar,
+      nbytes : Int32,
+      buffer : Int32
+    ) : Int32
+
+    fun store_bytes = XStoreBytes(
+      display : PDisplay,
+      bytes : PChar,
+      nbytes : Int32
+    ) : Int32
+
+    fun store_color = XStoreColor(
+      display : PDisplay,
+      colormap : Colormap,
+      color : PColor
+    ) : Int32
+
+    fun store_colors = XStoreColors(
+      display : PDisplay,
+      colormap : Colormap,
+      color : PColor,
+      ncolors : Int32
+    ) : Int32
+
+    fun store_name = XStoreName(
+      display : PDisplay,
+      w : Window,
+      window_name : PChar
+    ) : Int32
+
+    fun store_named_color = XStoreNamedColor(
+      display : PDisplay,
+      colormap : Colormap,
+      color : PColor,
+      pixel : UInt64,
+      flags : Int32
+    ) : Int32
+
+    fun sync = XSync(
+      display : PDisplay,
+      discard : Bool
+    ) : Int32
+
+    fun text_extents = XTextExtents(
+      font_struct : PFontStruct,
+      string : PChar,
+      nchars : Int32,
+      direction_return : PInt32,
+      font_ascent_return : PInt32,
+      font_descent_return : PInt32,
+      overall_return : PCharStruct
+    ) : Int32
+
+    fun text_extents_16 = XTextExtents16(
+      font_struct : PFontStruct,
+      string : PChar2b,
+      nchars : Int32,
+      direction_return : PInt32,
+      font_ascent_return : PInt32,
+      font_descent_return : PInt32,
+      overall_return : PCharStruct
+    ) : Int32
+
+    fun text_width = XTextWidth(
+      font_struct : PFontStruct,
+      string : PChar,
+      count : Int32
+    ) : Int32
+
+    fun text_width_16 = XTextWidth16(
+      font_struct : PFontStruct,
+      string : PChar2b,
+      count : Int32
+    ) : Int32
+
+    fun translate_coordinates = XTranslateCoordinates(
+      display : PDisplay,
+      src_w : Window,
+      dest_w : Window,
+      src_x : Int32,
+      src_y : Int32,
+      dest_x_return : PInt32,
+      dest_y_return : PInt32,
+      child_return : PWindow
+    ) : Bool
+
+    fun undefine_cursor = XUndefineCursor(
+      display : PDisplay,
+      w : Window
+    ) : Int32
+
+    fun ungrab_button = XUngrabButton(
+      display : PDisplay,
+      button : UInt32,
+      modifiers : UInt32,
+      grab_window : Window
+    ) : Int32
+
+    fun ungrab_key = XUngrabKey(
+      display : PDisplay,
+      keycode : Int32,
+      modifiers : UInt32,
+      grab_window : Window
+    ) : Int32
+
+    fun ungrab_keyboard = XUngrabKeyboard(
+      display : PDisplay,
+      time : Time
+    ) : Int32
+
+    fun ungrab_pointer = XUngrabPointer(
+      display : PDisplay,
+      time : Time
+    ) : Int32
+
+    fun ungrab_server = XUngrabServer(
+      display : PDisplay
+    ) : Int32
+
+    fun uninstall_colormap = XUninstallColormap(
+      display : PDisplay,
+      colormap : Colormap
+    ) : Int32
+
+    fun unload_font = XUnloadFont(
+      display : PDisplay,
+      font : Font
+    ) : Int32
+
+    fun unmap_subwindows = XUnmapSubwindows(
+      display : PDisplay,
+      w : Window
+    ) : Int32
+
+    fun unmap_window = XUnmapWindow(
+      display : PDisplay,
+      w : Window
+    ) : Int32
+
+    fun vendor_release = XVendorRelease(
+      display : PDisplay
+    ) : Int32
+
+    fun warp_pointer = XWarpPointer(
+      display : PDisplay,
+      src_w : Window,
+      dest_w : Window,
+      src_x : Int32,
+      src_y : Int32,
+      src_width : UInt32,
+      src_height : UInt32,
+      dest_x : Int32,
+      dest_y : Int32
+    ) : Int32
+
+    fun width_mm_of_screen = XWidthMMOfScreen(
+      screen : PScreen
+    ) : Int32
+
+    fun width_of_screen = XWidthOfScreen(
+      screen : PScreen
+    ) : Int32
+
+    fun window_event = XWindowEvent(
+      display : PDisplay,
+      w : Window,
+      event_mask : Int64,
+      event_return : PEvent
+    ) : Int32
+
+    fun write_bitmap_file = XWriteBitmapFile(
+      display : PDisplay,
+      filename : PChar,
+      bitmap : Pixmap,
+      width : UInt32,
+      height : UInt32,
+      x_hot : Int32,
+      y_hot : Int32
+    ) : Int32
+
+    fun supports_locale = XSupportsLocale() : NoReturn
+
+    fun set_locale_modifiers = XSetLocaleModifiers(
+      modifier_list : PChar
+    ) : PChar
+
+    fun open_om = XOpenOM(
+      display : PDisplay,
+      rdb : PrmHashBucketRec,
+      res_name : PChar,
+      res_class : PChar
+    ) : XOM
+
+    fun close_om = XCloseOM(
+      om : XOM
+    ) : Status
+
+    fun set_om_values = XSetOMValues(
+      om : XOM,
+      ...
+    ) : PChar
+
+    fun get_om_values = XGetOMValues(
+      om : XOM,
+      ...
+    ) : PChar;
+
+    fun display_of_om = XDisplayOfOM(
+      om : XOM
+    ) : PDisplay
+
+    fun locale_of_om = XLocaleOfOM(
+      om : XOM
+    ) : PChar
+
+extern XOC XCreateOC(
+    XOM			/* om */,
+    ...
+) _X_SENTINEL(0);
+
+extern void XDestroyOC(
+    XOC			/* oc */
+);
+
+extern XOM XOMOfOC(
+    XOC			/* oc */
+);
+
+extern char *XSetOCValues(
+    XOC			/* oc */,
+    ...
+) _X_SENTINEL(0);
+
+extern char *XGetOCValues(
+    XOC			/* oc */,
+    ...
+) _X_SENTINEL(0);
+
+extern XFontSet XCreateFontSet(
+  display : PDisplay,
+    _Xconst char*	/* base_font_name_list */,
+    char***		/* missing_charset_list */,
+    int*		/* missing_charset_count */,
+    char**		/* def_string */
+);
+
+extern void XFreeFontSet(
+  display : PDisplay,
+    XFontSet		/* font_set */
+);
+
+extern int XFontsOfFontSet(
+    XFontSet		/* font_set */,
+    XFontStruct***	/* font_struct_list */,
+    char***		/* font_name_list */
+);
+
+extern char *XBaseFontNameListOfFontSet(
+    XFontSet		/* font_set */
+);
+
+extern char *XLocaleOfFontSet(
+    XFontSet		/* font_set */
+);
+
+extern Bool XContextDependentDrawing(
+    XFontSet		/* font_set */
+);
+
+extern Bool XDirectionalDependentDrawing(
+    XFontSet		/* font_set */
+);
+
+extern Bool XContextualDrawing(
+    XFontSet		/* font_set */
+);
+
+extern XFontSetExtents *XExtentsOfFontSet(
+    XFontSet		/* font_set */
+);
+
+extern int XmbTextEscapement(
+    XFontSet		/* font_set */,
+    _Xconst char*	/* text */,
+    int			/* bytes_text */
+);
+
+extern int XwcTextEscapement(
+    XFontSet		/* font_set */,
+    _Xconst wchar_t*	/* text */,
+    int			/* num_wchars */
+);
+
+extern int Xutf8TextEscapement(
+    XFontSet		/* font_set */,
+    _Xconst char*	/* text */,
+    int			/* bytes_text */
+);
+
+extern int XmbTextExtents(
+    XFontSet		/* font_set */,
+    _Xconst char*	/* text */,
+    int			/* bytes_text */,
+    XRectangle*		/* overall_ink_return */,
+    XRectangle*		/* overall_logical_return */
+);
+
+extern int XwcTextExtents(
+    XFontSet		/* font_set */,
+    _Xconst wchar_t*	/* text */,
+    int			/* num_wchars */,
+    XRectangle*		/* overall_ink_return */,
+    XRectangle*		/* overall_logical_return */
+);
+
+extern int Xutf8TextExtents(
+    XFontSet		/* font_set */,
+    _Xconst char*	/* text */,
+    int			/* bytes_text */,
+    XRectangle*		/* overall_ink_return */,
+    XRectangle*		/* overall_logical_return */
+);
+
+extern Status XmbTextPerCharExtents(
+    XFontSet		/* font_set */,
+    _Xconst char*	/* text */,
+    int			/* bytes_text */,
+    XRectangle*		/* ink_extents_buffer */,
+    XRectangle*		/* logical_extents_buffer */,
+    int			/* buffer_size */,
+    int*		/* num_chars */,
+    XRectangle*		/* overall_ink_return */,
+    XRectangle*		/* overall_logical_return */
+);
+
+extern Status XwcTextPerCharExtents(
+    XFontSet		/* font_set */,
+    _Xconst wchar_t*	/* text */,
+    int			/* num_wchars */,
+    XRectangle*		/* ink_extents_buffer */,
+    XRectangle*		/* logical_extents_buffer */,
+    int			/* buffer_size */,
+    int*		/* num_chars */,
+    XRectangle*		/* overall_ink_return */,
+    XRectangle*		/* overall_logical_return */
+);
+
+extern Status Xutf8TextPerCharExtents(
+    XFontSet		/* font_set */,
+    _Xconst char*	/* text */,
+    int			/* bytes_text */,
+    XRectangle*		/* ink_extents_buffer */,
+    XRectangle*		/* logical_extents_buffer */,
+    int			/* buffer_size */,
+    int*		/* num_chars */,
+    XRectangle*		/* overall_ink_return */,
+    XRectangle*		/* overall_logical_return */
+);
+
+extern void XmbDrawText(
+  display : PDisplay,
+    Drawable		/* d */,
+    GC			/* gc */,
+    int			/* x */,
+    int			/* y */,
+    XmbTextItem*	/* text_items */,
+    int			/* nitems */
+);
+
+extern void XwcDrawText(
+  display : PDisplay,
+    Drawable		/* d */,
+    GC			/* gc */,
+    int			/* x */,
+    int			/* y */,
+    XwcTextItem*	/* text_items */,
+    int			/* nitems */
+);
+
+extern void Xutf8DrawText(
+  display : PDisplay,
+    Drawable		/* d */,
+    GC			/* gc */,
+    int			/* x */,
+    int			/* y */,
+    XmbTextItem*	/* text_items */,
+    int			/* nitems */
+);
+
+extern void XmbDrawString(
+  display : PDisplay,
+    Drawable		/* d */,
+    XFontSet		/* font_set */,
+    GC			/* gc */,
+    int			/* x */,
+    int			/* y */,
+    _Xconst char*	/* text */,
+    int			/* bytes_text */
+);
+
+extern void XwcDrawString(
+  display : PDisplay,
+    Drawable		/* d */,
+    XFontSet		/* font_set */,
+    GC			/* gc */,
+    int			/* x */,
+    int			/* y */,
+    _Xconst wchar_t*	/* text */,
+    int			/* num_wchars */
+);
+
+extern void Xutf8DrawString(
+  display : PDisplay,
+    Drawable		/* d */,
+    XFontSet		/* font_set */,
+    GC			/* gc */,
+    int			/* x */,
+    int			/* y */,
+    _Xconst char*	/* text */,
+    int			/* bytes_text */
+);
+
+extern void XmbDrawImageString(
+  display : PDisplay,
+    Drawable		/* d */,
+    XFontSet		/* font_set */,
+    GC			/* gc */,
+    int			/* x */,
+    int			/* y */,
+    _Xconst char*	/* text */,
+    int			/* bytes_text */
+);
+
+extern void XwcDrawImageString(
+  display : PDisplay,
+    Drawable		/* d */,
+    XFontSet		/* font_set */,
+    GC			/* gc */,
+    int			/* x */,
+    int			/* y */,
+    _Xconst wchar_t*	/* text */,
+    int			/* num_wchars */
+);
+
+extern void Xutf8DrawImageString(
+  display : PDisplay,
+    Drawable		/* d */,
+    XFontSet		/* font_set */,
+    GC			/* gc */,
+    int			/* x */,
+    int			/* y */,
+    _Xconst char*	/* text */,
+    int			/* bytes_text */
+);
+
+extern XIM XOpenIM(
+    Display*			/* dpy */,
+    struct _XrmHashBucketRec*	/* rdb */,
+    char*			/* res_name */,
+    char*			/* res_class */
+);
+
+extern Status XCloseIM(
+    XIM /* im */
+);
+
+extern char *XGetIMValues(
+    XIM /* im */, ...
+) _X_SENTINEL(0);
+
+extern char *XSetIMValues(
+    XIM /* im */, ...
+) _X_SENTINEL(0);
+
+extern Display *XDisplayOfIM(
+    XIM /* im */
+);
+
+extern char *XLocaleOfIM(
+    XIM /* im*/
+);
+
+extern XIC XCreateIC(
+    XIM /* im */, ...
+) _X_SENTINEL(0);
+
+extern void XDestroyIC(
+    XIC /* ic */
+);
+
+extern void XSetICFocus(
+    XIC /* ic */
+);
+
+extern void XUnsetICFocus(
+    XIC /* ic */
+);
+
+extern wchar_t *XwcResetIC(
+    XIC /* ic */
+);
+
+extern char *XmbResetIC(
+    XIC /* ic */
+);
+
+extern char *Xutf8ResetIC(
+    XIC /* ic */
+);
+
+extern char *XSetICValues(
+    XIC /* ic */, ...
+) _X_SENTINEL(0);
+
+extern char *XGetICValues(
+    XIC /* ic */, ...
+) _X_SENTINEL(0);
+
+extern XIM XIMOfIC(
+    XIC /* ic */
+);
+
+extern Bool XFilterEvent(
+    XEvent*	/* event */,
+    Window	/* window */
+);
+
+extern int XmbLookupString(
+    XIC			/* ic */,
+    XKeyPressedEvent*	/* event */,
+    char*		/* buffer_return */,
+    int			/* bytes_buffer */,
+    KeySym*		/* keysym_return */,
+    Status*		/* status_return */
+);
+
+extern int XwcLookupString(
+    XIC			/* ic */,
+    XKeyPressedEvent*	/* event */,
+    wchar_t*		/* buffer_return */,
+    int			/* wchars_buffer */,
+    KeySym*		/* keysym_return */,
+    Status*		/* status_return */
+);
+
+extern int Xutf8LookupString(
+    XIC			/* ic */,
+    XKeyPressedEvent*	/* event */,
+    char*		/* buffer_return */,
+    int			/* bytes_buffer */,
+    KeySym*		/* keysym_return */,
+    Status*		/* status_return */
+);
+
+extern XVaNestedList XVaCreateNestedList(
+    int /*unused*/, ...
+) _X_SENTINEL(0);
+
+/* internal connections for IMs */
+
+extern Bool XRegisterIMInstantiateCallback(
+    Display*			/* dpy */,
+    struct _XrmHashBucketRec*	/* rdb */,
+    char*			/* res_name */,
+    char*			/* res_class */,
+    XIDProc			/* callback */,
+    XPointer			/* client_data */
+);
+
+extern Bool XUnregisterIMInstantiateCallback(
+    Display*			/* dpy */,
+    struct _XrmHashBucketRec*	/* rdb */,
+    char*			/* res_name */,
+    char*			/* res_class */,
+    XIDProc			/* callback */,
+    XPointer			/* client_data */
+);
+
+typedef void (*XConnectionWatchProc)(
+    Display*			/* dpy */,
+    XPointer			/* client_data */,
+    int				/* fd */,
+    Bool			/* opening */,	 /* open or close flag */
+    XPointer*			/* watch_data */ /* open sets, close uses */
+);
+
+
+extern Status XInternalConnectionNumbers(
+    Display*			/* dpy */,
+    int**			/* fd_return */,
+    int*			/* count_return */
+);
+
+extern void XProcessInternalConnection(
+    Display*			/* dpy */,
+    int				/* fd */
+);
+
+    fun add_connectioin_watch = XAddConnectionWatch(
+      dpy : PDisplay,
+    XConnectionWatchProc	/* callback */,
+    XPointer			/* client_data */
+    ) : Status
+
+    fun remove_connection_watch = XRemoveConnectionWatch(
+      dpy : PDisplay,
+      callback : ConnectionWatchProc,
+      client_data : Pointer
+    ) : NoReturn
+
+    fun set_authorization = XSetAuthorization(
+      name : PChar,
+      namelen : Int32,
+      data : PChar,
+      datalen : Int32
+    ) : NoReturn
+
+    fun _Xmbtowc(
+      wstr : PWChar_t,
+      str : PChar,
+      len : Int32
+    ) : Int32
+
+    fun _Xwctomb(
+      str : PChar,
+      wc : PWChar_t
+    ) : Int32
+
+    fun get_event_data = XGetEventData(
+      dpy : PDisplay,
+      cookie : PGenericEventCookie
+    ) : Bool
+
+    fun free_event_data = XFreeEventData(
+      dpy : PDisplay,
+      cookie : PGenericEventCookie
+    ) : NoReturn
+
   end # lib Xlib
 
   Xlib._Xdebug = 0
