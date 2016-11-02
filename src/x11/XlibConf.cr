@@ -4,4 +4,4 @@ module X11
 
   # Use multi-threaded libc functions?
   XUSE_MTSAFE_API = true
-end
+end # module X11

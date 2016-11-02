@@ -69,4 +69,4 @@ module X11
   XA_WM_TRANSIENT_FOR = 68
 
   XA_LAST_PREDEFINED = 68
-end
+end # module X11

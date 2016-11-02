@@ -28,4 +28,4 @@ module X11
   XK_MATHEMATICAL = true
   XK_BRAILLE      = true
   XK_SINHALA      = true
-end
+end # module X11

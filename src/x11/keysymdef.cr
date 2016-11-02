@@ -2308,3 +2308,4 @@ module X11
     XK_Sinh_luu2              = 0x1000df3 # U+0DF3 SINHALA DIGA GAYANUKITTA
     XK_Sinh_kunddaliya        = 0x1000df4 # U+0DF4 SINHALA KUNDDALIYA
   {% end %} # XK_SINHALA
+end # module X11

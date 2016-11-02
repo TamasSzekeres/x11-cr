@@ -3,9 +3,13 @@ module X11
   lib Xlib
     alias Pointer = UInt8*
     alias Status = Int32
+    alias PStatus = Status*
 
     alias Bool = Int32
     alias PBool = Bool*
+
+    alias WChar_t = UInt64
+    alias PWChar_t = WChar_t*
 
     $_Xdebug : Int32
 
@@ -44,7 +48,7 @@ module X11
       line_width : Int32 # line width
       line_style : Int32 # LineSolid, LineOnOffDash, LineDoubleDash
       cap_style : Int32 # CapNotLast, CapButt, CapRound, CapProjecting
-    	join_style: Int32 # JoinMiter, JoinRound, JoinBevel
+      join_style: Int32 # JoinMiter, JoinRound, JoinBevel
       fill_style : Int32 # FillSolid, FillTiled, FillStippled, FillOpaeueStippled
       fill_rule : Int32 # EvenOddRule, WindingRule
       arc_mode : Int32 # ArcChord, ArcPieSlice
@@ -299,7 +303,7 @@ module X11
     end
 
     alias PPrivate = Pointer
-    alias PXrmHashBucketRec = Pointer
+    alias PrmHashBucketRec = Pointer
 
     alias PDisplay = Display*
     struct Display
@@ -332,7 +336,7 @@ module X11
       private13 : Pointer
       private14 : Pointer
       max_request_size : UInt32 # maximum number 32 bit words in request
-      db : PXrmHashBucketRec
+      db : PrmHashBucketRec
       private15 : PDisplay -> Int32
       display_name : PChar # "host:display" string used on this connect
       default_screen : Int32 # default screen for operations
@@ -472,7 +476,7 @@ module X11
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
       window : Window # "event" window reported relative to
-    	key_vector : UInt8[32];
+      key_vector : UInt8[32];
     end
 
     alias PExposeEvent = ExposeEvent*
@@ -482,9 +486,9 @@ module X11
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
       window : Window
-    	x, y : Int32
-    	width, height : Int32
-    	count : Int32 # if non-zero, at least this many more
+      x, y : Int32
+      width, height : Int32
+      count : Int32 # if non-zero, at least this many more
     end
 
     alias PGraphicsExposeEvent = GraphicsExposeEvent*
@@ -493,11 +497,11 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	drawable : Drawable
+      drawable : Drawable
       x, y : Int32
-    	width, height : Int32
-    	count : Int32 # if non-zero, at least this many more
-    	major_code : Int32 # core is CopyArea or CopyPlane
+      width, height : Int32
+      count : Int32 # if non-zero, at least this many more
+      major_code : Int32 # core is CopyArea or CopyPlane
       minor_code : Int32 # not defined in the core
     end
 
@@ -507,7 +511,7 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	drawable : Drawable
+      drawable : Drawable
       major_code : Int32 # core is CopyArea or CopyPlane
       minor_code : Int32 # not defined in the core
     end
@@ -518,8 +522,8 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	window : Window
-    	state : Int32 # Visibility state
+      window : Window
+      state : Int32 # Visibility state
     end
 
     alias PCreateWindowEvent = CreateWindowEvent*
@@ -528,7 +532,7 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	parent : Window # parent of the window
+      parent : Window # parent of the window
       window : Window # window id of window created
       x, y : Int32 # window location
       width, height : Int32 # size of window
@@ -542,7 +546,7 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	event : Window
+      event : Window
       window : Window
     end
 
@@ -552,9 +556,9 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	event : Window
+      event : Window
       window : Window
-    	from_configure : Bool
+      from_configure : Bool
     end
 
     alias PMapEvent = MapEvent*
@@ -563,9 +567,9 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	event : Window
+      event : Window
       window : Window
-    	override_redirect : Bool # boolean, is override set...
+      override_redirect : Bool # boolean, is override set...
     end
 
     alias PMapRequestEvent = MapRequestEvent*
@@ -574,7 +578,7 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	parent : Window
+      parent : Window
       window : Window
     end
 
@@ -584,10 +588,10 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	event : Window
-    	window : Window
-    	parent : Window
-    	x, y : Int32
+      event : Window
+      window : Window
+      parent : Window
+      x, y : Int32
       override_redirect : Bool
     end
 
@@ -597,9 +601,9 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	event : Window
-    	window : Window
-    	x, y : Int32
+      event : Window
+      window : Window
+      x, y : Int32
       width, height : Int32
       border_width : Int32
       above : Window
@@ -612,9 +616,9 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	event : Window
-    	window : Window
-    	x, y : Int32
+      event : Window
+      window : Window
+      x, y : Int32
     end
 
     alias PResizeRequestEvent = ResizeRequestEvent*
@@ -623,7 +627,7 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	window : Window
+      window : Window
       width, height : Int32
     end
 
@@ -633,9 +637,9 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	parent : Window
+      parent : Window
       window : Window
-    	x, y : Int32
+      x, y : Int32
       width, height : Int32
       border_width : Int32
       above : Window
@@ -649,9 +653,9 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	parent : Window
+      parent : Window
       window : Window
-    	place : Int32 # PlaceOnTop, PlaceOnBottom
+      place : Int32 # PlaceOnTop, PlaceOnBottom
     end
 
     alias PCirculateRequestEvent = CirculateRequestEvent*
@@ -660,9 +664,9 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	parent : Window
+      parent : Window
       window : Window
-    	place : Int32 # PlaceOnTop, PlaceOnBottom
+      place : Int32 # PlaceOnTop, PlaceOnBottom
     end
 
     alias PPropertyEvent = PropertyEvent*
@@ -671,7 +675,7 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	window : Window
+      window : Window
       atom : Atom
       time : Time
       state : Int32 # NewValue, Deleted
@@ -683,7 +687,7 @@ module X11
       serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
-    	window : Window
+      window : Window
       selection : Atom
       time : Time
     end
@@ -711,7 +715,7 @@ module X11
       requestor : Window
       selection : Atom
       target : Atom
-    	property : Atom # ATOM or None
+      property : Atom # ATOM or None
       time : Time
     end
 
@@ -881,6 +885,371 @@ module X11
       per_char : PCharStruct # first_char to last_char information
       ascent : Int32 # log. extent above baseline for spacing
       descent : Int32 # log. descent below baseline for spacing
+    end
+
+    # PolyText routines take these as arguments.
+
+    alias PTextItem = TextItem*
+    struct TextItem
+      chars : PChar # pointer to string
+      nchars : Int32 # number of characters
+      delta : Int32 # delta between strings
+      font : Font # font to print it in, None don't change
+    end
+
+    alias PChar2b = Char2b*
+    struct Char2b # normal 16 bit characters are two bytes
+      byte1 : UInt8
+      byte2 : UInt8
+    end
+
+    alias PTextItem16 = TextItem16*
+    struct TextItem16
+      chars : PChar2b # two byte characters
+      nchars : Int32 # number of characters
+      delta : Int32 # delta between strings
+      font : Font # font to print it in, None don't change
+    end
+
+    alias PEDataObject = EDataObject*
+    union EDataObject
+      display : PDisplay
+      dc : GC
+      visual : PVisual
+      screen : PScreen
+      pixmap_format : PScreenFormat
+      font : PFontStruct
+    end
+
+    alias PFontSetExtents = FontSetExtents*
+    struct FontSetExtents
+      max_ink_extent : Rectangle
+      max_logical_extent : Rectangle
+    end
+
+    # unused:
+    # alias OMProc = () -> NoReturn
+
+    alias XOM = Pointer
+    alias XOC = Pointer
+    alias FontSet = Pointer
+
+    alias PmbTextItem = XmbTextItem*
+    struct XmbTextItem
+      chars : PChar
+      nchars : Int32
+      delta : Int32
+      font_set : FontSet
+    end
+
+    alias PwcTextItem = XwcTextItem*
+    struct XwcTextItem
+      chars : PWChar_t
+      nchars : Int32
+      delta : Int32
+      font_set : FontSet
+    end
+
+    NRequiredCharSet = "requiredCharSet"
+    NQueryOrientation = "queryOrientation"
+    NBaseFontName = "baseFontName"
+    NOMAutomatic = "omAutomatic"
+    NMissingCharSet = "missingCharSet"
+    XNDefaultString = "defaultString"
+    XNOrientation = "orientation"
+    XNDirectionalDependentDrawing = "directionalDependentDrawing"
+    XNContextualDrawing = "contextualDrawing"
+    XNFontInfo = "fontInfo"
+
+    alias POMCharSetList = OMCharSetList*
+    struct OMCharSetList
+      charset_count : Int32
+      charset_list : PPChar
+    end
+
+    alias POrientation = Orientation*
+    enum Orientation
+      OMOrientation_LTR_TTB
+      OMOrientation_RTL_TTB
+      OMOrientation_TTB_LTR
+      OMOrientation_TTB_RTL
+      OMOrientation_Context
+    end
+
+    alias POMOrientation = OMOrientation*
+    struct OMOrientation
+      num_orientation : Int32
+      orientation : POrientation # Input Text description
+    end
+
+    alias POMFontInfo = OMFontInfo*
+    struct OMFontInfo
+      num_font : Int32
+      font_struct_list : PFontStruct*
+      font_name_list : PPChar
+    end
+
+    alias XIM = Pointer*
+    alias XIC = Pointer*
+
+    alias IMProc = XIM, Pointer, Pointer -> Bool
+
+    alias ICProc = XIC, Pointer, Pointer -> Bool
+
+    alias IDProc = PDisplay, Pointer, Pointer -> NoReturn
+
+    alias PIMStyle = IMStyle*
+    alias IMStyle = UInt64
+
+    alias PIMStyles = IMStyles*
+    struct IMStyles
+      count_styles : UInt16
+      supported_styles : PIMStyle
+    end
+
+    IMPreeditArea = 0x0001_i64
+    IMPreeditCallbacks = 0x0002_i64
+    IMPreeditPosition = 0x0004_i64
+    IMPreeditNothing = 0x0008_i64
+    IMPreeditNone = 0x0010_i64
+    IMStatusArea = 0x0100_i64
+    IMStatusCallbacks = 0x0200_i64
+    IMStatusNothing = 0x0400_i64
+    IMStatusNone = 0x0800_i64
+
+    NVaNestedList = "XNVaNestedList"
+    NQueryInputStyle = "queryInputStyle"
+    NClientWindow = "clientWindow"
+    NInputStyle = "inputStyle"
+    NFocusWindow = "focusWindow"
+    NResourceName = "resourceName"
+    NResourceClass = "resourceClass"
+    NGeometryCallback = "geometryCallback"
+    NDestroyCallback = "destroyCallback"
+    NFilterEvents = "filterEvents"
+    NPreeditStartCallback = "preeditStartCallback"
+    NPreeditDoneCallback = "preeditDoneCallback"
+    NPreeditDrawCallback = "preeditDrawCallback"
+    NPreeditCaretCallback = "preeditCaretCallback"
+    NPreeditStateNotifyCallback = "preeditStateNotifyCallback"
+    NPreeditAttributes = "preeditAttributes"
+    NStatusStartCallback = "statusStartCallback"
+    NStatusDoneCallback = "statusDoneCallback"
+    NStatusDrawCallback = "statusDrawCallback"
+    NStatusAttributes = "statusAttributes"
+    NArea = "area"
+    NAreaNeeded = "areaNeeded"
+    NSpotLocation = "spotLocation"
+    NColormap = "colorMap"
+    NStdColormap = "stdColorMap"
+    NForeground = "foreground"
+    NBackground = "background"
+    NBackgroundPixmap = "backgroundPixmap"
+    NFontSet = "fontSet"
+    NLineSpace = "lineSpace"
+    NCursor = "cursor"
+
+    NQueryIMValuesList = "queryIMValuesList"
+    NQueryICValuesList = "queryICValuesList"
+    NVisiblePosition = "visiblePosition"
+    NR6PreeditCallback = "r6PreeditCallback"
+    NStringConversionCallback = "stringConversionCallback"
+    NStringConversion = "stringConversion"
+    NResetState = "resetState"
+    NHotKey = "hotKey"
+    NHotKeyState = "hotKeyState"
+    NPreeditState = "preeditState"
+    NSeparatorofNestedList = "separatorofNestedList"
+
+    BufferOverflow = -1
+    LookupNone = 1
+    LookupChars = 2
+    LookupKeySym = 3
+    LookupBoth = 4
+
+    alias PVaNestedList = VaNestedList*
+    alias VaNestedList = Void*
+
+    alias PIMCallback = IMCallback*
+    struct IMCallback
+      client_data : Pointer
+      callback : IMProc
+    end
+
+    alias PICCallback = ICCallback*
+    struct ICCallback
+      client_data : Pointer
+      callback : ICProc
+    end
+
+    alias PIMFeedback = IMFeedback*
+    alias IMFeedback = UInt64
+
+    IMReverse = 1_i64
+    IMUnderline = (1_i64 << 1)
+    IMHighlight = (1_i64 << 2)
+    IMPrimary = (1_i64 << 5)
+    IMSecondary = (1_i64 << 6)
+    IMTertiary = (1_i64 << 7)
+    IMVisibleToForward = (1_i64 << 8)
+    IMVisibleToBackword = (1_i64 << 9)
+    IMVisibleToCenter = (1_i64 << 10)
+
+    struct IM_Text_string
+      multi_byte : PChar
+      wide_char : PWChar_t
+    end
+
+    alias PIMText = IMText*
+    struct IMText
+      length : UInt16
+      feedback : PIMFeedback
+      encoding_is_wchar : Bool
+      string : IM_Text_string
+    end
+
+    alias PIMPreeditState = IMPreeditState*
+    alias IMPreeditState = UInt64
+
+    IMPreeditUnKnown = 0_i64
+    IMPreeditEnable = 1_i64
+    IMPreeditDisable = (1_i64 << 1)
+
+    alias PIMPreeditStateNotifyCallbackStruct = IMPreeditStateNotifyCallbackStruct*
+    struct IMPreeditStateNotifyCallbackStruct
+      state : IMPreeditState
+    end
+
+    alias PIMResetState = IMResetState*
+    alias IMResetState = UInt64
+
+    IMInitialState  = 1_i64
+    IMPreserveState = (1_i64 << 1)
+
+    alias PIMStringConversionFeedback = IMStringConversionFeedback*
+    alias IMStringConversionFeedback = UInt64
+
+    IMStringConversionLeftEdge   = (0x00000001)
+    IMStringConversionRightEdge  = (0x00000002)
+    IMStringConversionTopEdge    = (0x00000004)
+    IMStringConversionBottomEdge = (0x00000008)
+    IMStringConversionConcealed  = (0x00000010)
+    IMStringConversionWrapped    = (0x00000020)
+
+    union IMStringConversionText_string
+      mbs : PChar
+      wcs: PWChar_t
+    end
+
+    alias PIMStringConversionText = IMStringConversionText*
+    struct IMStringConversionText
+      length : UInt16
+      feedback : PIMStringConversionFeedback
+      encoding_is_wchar : Bool
+      string : IMStringConversionText_string
+    end
+
+    alias PIMStringConversionPosition = IMStringConversionPosition*
+    alias IMStringConversionPosition = UInt16
+
+    alias PIMStringConversionType = IMStringConversionType*
+    alias IMStringConversionType = UInt16
+
+    IMStringConversionBuffer = (0x0001)
+    IMStringConversionLine   = (0x0002)
+    IMStringConversionWord   = (0x0003)
+    IMStringConversionChar   = (0x0004)
+
+    alias PIMStringConversionOperation = IMStringConversionOperation*
+    alias IMStringConversionOperation = UInt16
+
+    IMStringConversionSubstitution = (0x0001)
+    IMStringConversionRetrieval    = (0x0002)
+
+    enum IMCaretDirection
+      IMForwardChar
+      IMBackwardChar
+      IMForwardWord
+      IMBackwardWord
+      IMCaretUp
+      IMCaretDown
+      IMNextLine
+      IMPreviousLine
+      IMLineStart
+      IMLineEnd
+      IMAbsolutePosition
+      IMDontChange
+    end
+
+    alias PIMStringConversionCallbackStruct = IMStringConversionCallbackStruct*
+    struct IMStringConversionCallbackStruct
+      position : IMStringConversionPosition
+      direction : IMCaretDirection
+      operation : IMStringConversionOperation
+      factor : UInt16
+      text : PIMStringConversionText
+    end
+
+    alias PIMPreeditDrawCallbackStruct = IMPreeditDrawCallbackStruct*
+    struct IMPreeditDrawCallbackStruct
+      caret : Int32 # Cursor offset within pre-edit string
+      chg_first : Int32 # Starting change position
+      chg_length : Int32 # Length of the change in character count
+      text : PIMText
+    end
+
+    enum IMCaretStyle
+      IMIsInvisible # Disable caret feedback
+      IMIsPrimary # UI defined caret feedback
+      IMIsSecondary # UI defined caret feedback
+    end
+
+    alias PIMPreeditCaretCallbackStruct = IMPreeditCaretCallbackStruct*
+    struct IMPreeditCaretCallbackStruct
+      position : Int32 # Caret offset within pre-edit string
+      direction : IMCaretDirection # Caret moves direction
+      style : IMCaretStyle # Feedback of the caret
+    end
+
+    enum IMStatusDataType
+      IMTextType
+      IMBitmapType
+    end
+
+    union IMStatusDrawCallbackStruct_data
+      text : PIMText
+      bitmap : Pixmap
+    end
+
+    alias PIMStatusDrawCallbackStruct = IMStatusDrawCallbackStruct*
+    struct IMStatusDrawCallbackStruct
+      type : IMStatusDataType
+      data : IMStatusDrawCallbackStruct_data
+    end
+
+    alias PIMHotKeyTrigger = IMHotKeyTrigger*
+    struct IMHotKeyTrigger
+      keysym : KeySym
+      modifier : Int32
+      modifier_mask : Int32
+    end
+
+    alias PIMHotKeyTriggers = IMHotKeyTriggers*
+    struct IMHotKeyTriggers
+      num_hot_key : Int32
+      key : PIMHotKeyTrigger
+    end
+
+    alias PIMHotKeyState = IMHotKeyState*
+    alias IMHotKeyState = UInt64
+
+    IMHotKeyStateON  = (0x0001_i64)
+    IMHotKeyStateOFF = (0x0002_i64)
+
+    alias PIMValuesList = IMValuesList*
+    struct IMValuesList
+      count_values : UInt16
+      supported_values : PPChar
     end
 
     fun load_query_font = XLoadQueryFont(
@@ -1440,7 +1809,7 @@ module X11
       display : PDisplay,
       w : Window,
       windows_return : Window**,
-      count_return : Pint32
+      count_return : PInt32
     ) : Status
 
     fun set_wm_colormap_windows = XSetWMColormapWindows(
@@ -2339,7 +2708,7 @@ module X11
     ) : Int32
 
     fun max_cmaps_of_screen = XMaxCmapsOfScreen(
-      screen : PSCreen
+      screen : PScreen
     ) : Int32
 
     fun min_cmaps_of_screen = XMinCmapsOfScreen(
@@ -3102,393 +3471,392 @@ module X11
       om : XOM
     ) : PChar
 
-extern XOC XCreateOC(
-    XOM			/* om */,
-    ...
-) _X_SENTINEL(0);
+    fun create_oc = XCreateOC(
+      om : XOM,
+      ...
+    ) : XOC
 
-extern void XDestroyOC(
-    XOC			/* oc */
-);
+    fun destroy_oc = XDestroyOC(
+      oc : XOC
+    ) : NoReturn
 
-extern XOM XOMOfOC(
-    XOC			/* oc */
-);
+    fun om_of_oc = XOMOfOC(
+      oc : XOC
+    ) : XOM
 
-extern char *XSetOCValues(
-    XOC			/* oc */,
-    ...
-) _X_SENTINEL(0);
+    fun set_oc_values = XSetOCValues(
+      oc : XOC,
+      ...
+    ) : PChar;
 
-extern char *XGetOCValues(
-    XOC			/* oc */,
-    ...
-) _X_SENTINEL(0);
+    fun get_oc_values = XGetOCValues(
+      oc : XOC,
+      ...
+    ) : PChar
 
-extern XFontSet XCreateFontSet(
-  display : PDisplay,
-    _Xconst char*	/* base_font_name_list */,
-    char***		/* missing_charset_list */,
-    int*		/* missing_charset_count */,
-    char**		/* def_string */
-);
+    fun create_font_set = XCreateFontSet(
+      display : PDisplay,
+      base_font_name_list : PChar,
+      missing_charset_list : PPChar*,
+      missing_charset_count : PInt32,
+      def_string : PPChar
+    ) : FontSet
 
-extern void XFreeFontSet(
-  display : PDisplay,
-    XFontSet		/* font_set */
-);
+    fun free_font_set = XFreeFontSet(
+      display : PDisplay,
+      font_set : FontSet
+    ) : NoReturn
 
-extern int XFontsOfFontSet(
-    XFontSet		/* font_set */,
-    XFontStruct***	/* font_struct_list */,
-    char***		/* font_name_list */
-);
+    fun fonts_of_font_set = XFontsOfFontSet(
+      font_set : FontSet,
+      font_struct_list : PFontStruct**,
+      font_name_list : PPChar*
+    ) : Int32
 
-extern char *XBaseFontNameListOfFontSet(
-    XFontSet		/* font_set */
-);
+    fun base_font_name_list_of_font_set = XBaseFontNameListOfFontSet(
+      font_set : FontSet
+    ) : PChar
 
-extern char *XLocaleOfFontSet(
-    XFontSet		/* font_set */
-);
+    fun locale_of_font_set = XLocaleOfFontSet(
+      font_set : FontSet
+    ) : PChar
 
-extern Bool XContextDependentDrawing(
-    XFontSet		/* font_set */
-);
+    fun context_dependent_drawing = XContextDependentDrawing(
+      font_set : FontSet
+    ) : Bool
 
-extern Bool XDirectionalDependentDrawing(
-    XFontSet		/* font_set */
-);
+    fun directional_dependent_drawing = XDirectionalDependentDrawing(
+      font_set : FontSet
+    ) : Bool
 
-extern Bool XContextualDrawing(
-    XFontSet		/* font_set */
-);
+    fun contextual_drawing = XContextualDrawing(
+      font_set : FontSet
+    ) : Bool
 
-extern XFontSetExtents *XExtentsOfFontSet(
-    XFontSet		/* font_set */
-);
+    fun extents_of_font_set = XExtentsOfFontSet(
+      font_set : FontSet
+    ) : PFontSetExtents
 
-extern int XmbTextEscapement(
-    XFontSet		/* font_set */,
-    _Xconst char*	/* text */,
-    int			/* bytes_text */
-);
+    fun mb_text_escapement = XmbTextEscapement(
+      font_set: FontSet,
+      text : PChar,
+      bytes_text : Int32
+    ) : Int32
 
-extern int XwcTextEscapement(
-    XFontSet		/* font_set */,
-    _Xconst wchar_t*	/* text */,
-    int			/* num_wchars */
-);
+    fun wc_text_escapement = XwcTextEscapement(
+      font_set : FontSet,
+      text : PWChar_t,
+      num_wchars : Int32
+    ) : Int32
 
-extern int Xutf8TextEscapement(
-    XFontSet		/* font_set */,
-    _Xconst char*	/* text */,
-    int			/* bytes_text */
-);
+    fun utf8_text_escapement = utf8TextEscapement(
+      font_set : FontSet,
+      text : PChar,
+      bytes_text : Int32
+    ) : Int32
 
-extern int XmbTextExtents(
-    XFontSet		/* font_set */,
-    _Xconst char*	/* text */,
-    int			/* bytes_text */,
-    XRectangle*		/* overall_ink_return */,
-    XRectangle*		/* overall_logical_return */
-);
+    fun mb_text_extents = XmbTextExtents(
+      font_set : FontSet,
+      text : PChar,
+      bytes_text : Int32,
+      overall_ink_return : PRectangle,
+      overall_logical_return : PRectangle
+    ) : Int32
 
-extern int XwcTextExtents(
-    XFontSet		/* font_set */,
-    _Xconst wchar_t*	/* text */,
-    int			/* num_wchars */,
-    XRectangle*		/* overall_ink_return */,
-    XRectangle*		/* overall_logical_return */
-);
+    fun wc_text_extents = XwcTextExtents(
+      font_set : FontSet,
+      text : PWChar_t,
+      num_wchars : Int32,
+      overall_ink_return : PRectangle,
+      overall_logical_return : PRectangle
+    ) : Int32
 
-extern int Xutf8TextExtents(
-    XFontSet		/* font_set */,
-    _Xconst char*	/* text */,
-    int			/* bytes_text */,
-    XRectangle*		/* overall_ink_return */,
-    XRectangle*		/* overall_logical_return */
-);
+    fun utf8_text_extents = Xutf8TextExtents(
+      font_set : FontSet,
+      text : PChar,
+      bytes_text : Int32,
+      overall_ink_return : PRectangle,
+      overall_logical_return : PRectangle
+    ) : Int32
 
-extern Status XmbTextPerCharExtents(
-    XFontSet		/* font_set */,
-    _Xconst char*	/* text */,
-    int			/* bytes_text */,
-    XRectangle*		/* ink_extents_buffer */,
-    XRectangle*		/* logical_extents_buffer */,
-    int			/* buffer_size */,
-    int*		/* num_chars */,
-    XRectangle*		/* overall_ink_return */,
-    XRectangle*		/* overall_logical_return */
-);
+    fun mb_text_per_char_extents = XmbTextPerCharExtents(
+      font_set : FontSet,
+      text : PChar,
+      bytes_text : Int32,
+      ink_extents_buffer : PRectangle,
+      logical_extents_buffer : PRectangle,
+      buffer_size : Int32,
+      num_chars : PInt32,
+      overall_ink_return : PRectangle,
+      overall_logical_return : PRectangle
+    ) : Status
 
-extern Status XwcTextPerCharExtents(
-    XFontSet		/* font_set */,
-    _Xconst wchar_t*	/* text */,
-    int			/* num_wchars */,
-    XRectangle*		/* ink_extents_buffer */,
-    XRectangle*		/* logical_extents_buffer */,
-    int			/* buffer_size */,
-    int*		/* num_chars */,
-    XRectangle*		/* overall_ink_return */,
-    XRectangle*		/* overall_logical_return */
-);
+    fun wc_text_per_char_extents = XwcTextPerCharExtents(
+      font_set : FontSet,
+      text : PWChar_t,
+      num_wchars : Int32,
+      ink_extents_buffer : PRectangle,
+      logical_extents_buffer : PRectangle,
+      buffer_size : Int32,
+      num_chars : PInt32,
+      overall_ink_return : PRectangle,
+      overall_logical_return : PRectangle
+    ) : Status
 
-extern Status Xutf8TextPerCharExtents(
-    XFontSet		/* font_set */,
-    _Xconst char*	/* text */,
-    int			/* bytes_text */,
-    XRectangle*		/* ink_extents_buffer */,
-    XRectangle*		/* logical_extents_buffer */,
-    int			/* buffer_size */,
-    int*		/* num_chars */,
-    XRectangle*		/* overall_ink_return */,
-    XRectangle*		/* overall_logical_return */
-);
+    fun utf8_text_per_char_extents = Xutf8TextPerCharExtents(
+      font_set : FontSet,
+      text : PChar,
+      bytes_text : Int32,
+      ink_extents_buffer : PRectangle,
+      logical_extents_buffer : PRectangle,
+      buffer_size : Int32,
+      num_chars : PInt32,
+      overall_ink_return : PRectangle,
+      overall_logical_return : PRectangle
+    ) : Status
 
-extern void XmbDrawText(
-  display : PDisplay,
-    Drawable		/* d */,
-    GC			/* gc */,
-    int			/* x */,
-    int			/* y */,
-    XmbTextItem*	/* text_items */,
-    int			/* nitems */
-);
+    fun mb_draw_text = XmbDrawText(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      text_items : PmbTextItem,
+      nitems : Int32
+    ) : NoReturn
 
-extern void XwcDrawText(
-  display : PDisplay,
-    Drawable		/* d */,
-    GC			/* gc */,
-    int			/* x */,
-    int			/* y */,
-    XwcTextItem*	/* text_items */,
-    int			/* nitems */
-);
+    fun wc_draw_text = XwcDrawText(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      text_items : PwcTextItem,
+      nitems : Int32
+    ) : NoReturn
 
-extern void Xutf8DrawText(
-  display : PDisplay,
-    Drawable		/* d */,
-    GC			/* gc */,
-    int			/* x */,
-    int			/* y */,
-    XmbTextItem*	/* text_items */,
-    int			/* nitems */
-);
+    fun utf8_draw_text = Xutf8DrawText(
+      display : PDisplay,
+      d : Drawable,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      text_items : PmbTextItem,
+      nitems : Int32
+    ) : NoReturn
 
-extern void XmbDrawString(
-  display : PDisplay,
-    Drawable		/* d */,
-    XFontSet		/* font_set */,
-    GC			/* gc */,
-    int			/* x */,
-    int			/* y */,
-    _Xconst char*	/* text */,
-    int			/* bytes_text */
-);
+    fun mb_draw_string = XmbDrawString(
+      display : PDisplay,
+      d : Drawable,
+      font_set : FontSet,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      text : PChar,
+      bytes_text : Int32
+    ) : NoReturn
 
-extern void XwcDrawString(
-  display : PDisplay,
-    Drawable		/* d */,
-    XFontSet		/* font_set */,
-    GC			/* gc */,
-    int			/* x */,
-    int			/* y */,
-    _Xconst wchar_t*	/* text */,
-    int			/* num_wchars */
-);
+    fun wc_draw_string = XwcDrawString(
+      display : PDisplay,
+      d : Drawable,
+      font_set : FontSet,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      text : PWChar_t,
+      num_wchars : Int32
+    ) : NoReturn
 
-extern void Xutf8DrawString(
-  display : PDisplay,
-    Drawable		/* d */,
-    XFontSet		/* font_set */,
-    GC			/* gc */,
-    int			/* x */,
-    int			/* y */,
-    _Xconst char*	/* text */,
-    int			/* bytes_text */
-);
+    fun utf8_draw_string = Xutf8DrawString(
+      display : PDisplay,
+      d : Drawable,
+      font_set : FontSet,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      text : PChar,
+      bytes_text : Int32
+    ) : NoReturn
 
-extern void XmbDrawImageString(
-  display : PDisplay,
-    Drawable		/* d */,
-    XFontSet		/* font_set */,
-    GC			/* gc */,
-    int			/* x */,
-    int			/* y */,
-    _Xconst char*	/* text */,
-    int			/* bytes_text */
-);
+    fun mb_draw_image_string = XmbDrawImageString(
+      display : PDisplay,
+      d : Drawable,
+      font_set : FontSet,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      text : PChar,
+      bytes_text : Int32
+    ) : NoReturn
 
-extern void XwcDrawImageString(
-  display : PDisplay,
-    Drawable		/* d */,
-    XFontSet		/* font_set */,
-    GC			/* gc */,
-    int			/* x */,
-    int			/* y */,
-    _Xconst wchar_t*	/* text */,
-    int			/* num_wchars */
-);
+    fun wc_draw_image_string = XwcDrawImageString(
+      display : PDisplay,
+      d : Drawable,
+      font_set : FontSet,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      text : PWChar_t,
+      num_wchars : Int32
+    ) : NoReturn
 
-extern void Xutf8DrawImageString(
-  display : PDisplay,
-    Drawable		/* d */,
-    XFontSet		/* font_set */,
-    GC			/* gc */,
-    int			/* x */,
-    int			/* y */,
-    _Xconst char*	/* text */,
-    int			/* bytes_text */
-);
+    fun utf8_draw_image_string = Xutf8DrawImageString(
+      display : PDisplay,
+      d : Drawable,
+      font_set : FontSet,
+      gc : GC,
+      x : Int32,
+      y : Int32,
+      text : PChar,
+      bytes_text : Int32
+    ) : NoReturn
 
-extern XIM XOpenIM(
-    Display*			/* dpy */,
-    struct _XrmHashBucketRec*	/* rdb */,
-    char*			/* res_name */,
-    char*			/* res_class */
-);
+    fun open_im = XOpenIM(
+      dpy : PDisplay,
+      rdb : PrmHashBucketRec,
+      res_name : PChar,
+      res_class : PChar
+    ) : XIM
 
-extern Status XCloseIM(
-    XIM /* im */
-);
+    fun close_im = XCloseIM(
+      im : XIM
+    ) : Status
 
-extern char *XGetIMValues(
-    XIM /* im */, ...
-) _X_SENTINEL(0);
+    fun get_im_values = XGetIMValues(
+      im : XIM,
+      ...
+    ) : PChar
 
-extern char *XSetIMValues(
-    XIM /* im */, ...
-) _X_SENTINEL(0);
+    fun set_im_values = XSetIMValues(
+      im : XIM,
+      ...
+    ) : PChar
 
-extern Display *XDisplayOfIM(
-    XIM /* im */
-);
+    fun display_of_im = XDisplayOfIM(
+      im : XIM
+    ) : PDisplay
 
-extern char *XLocaleOfIM(
-    XIM /* im*/
-);
+    fun locale_of_im = XLocaleOfIM(
+      im : XIM
+    ) : PChar
 
-extern XIC XCreateIC(
-    XIM /* im */, ...
-) _X_SENTINEL(0);
+    fun create_ic = XCreateIC(
+      im : XIM,
+      ...
+    ) : XIC
 
-extern void XDestroyIC(
-    XIC /* ic */
-);
+    fun destroy_ic = XDestroyIC(
+      ic : XIC
+    ) : NoReturn
 
-extern void XSetICFocus(
-    XIC /* ic */
-);
+    fun set_ic_focus = XSetICFocus(
+      ic : XIC
+    ) : NoReturn
 
-extern void XUnsetICFocus(
-    XIC /* ic */
-);
+    fun unset_ic_focus = XUnsetICFocus(
+      ic : XIC
+    ) : NoReturn
 
-extern wchar_t *XwcResetIC(
-    XIC /* ic */
-);
+    fun wc_reset_ic = XwcResetIC(
+      ic : XIC
+    ) : PWChar_t
 
-extern char *XmbResetIC(
-    XIC /* ic */
-);
+    fun mb_reset_ic = XmbResetIC(
+      ic : XIC
+    ) : PChar
 
-extern char *Xutf8ResetIC(
-    XIC /* ic */
-);
+    fun utf8_reset_ic = Xutf8ResetIC(
+      ic : XIC
+    ) : PChar
 
-extern char *XSetICValues(
-    XIC /* ic */, ...
-) _X_SENTINEL(0);
+    fun set_ic_values = XSetICValues(
+      ic : XIC,
+      ...
+    ) : PChar
 
-extern char *XGetICValues(
-    XIC /* ic */, ...
-) _X_SENTINEL(0);
+    fun get_ic_values = XGetICValues(
+      ic : XIC,
+      ...
+    ) : PChar
 
-extern XIM XIMOfIC(
-    XIC /* ic */
-);
+    fun im_of_ic = XIMOfIC(
+      ic : XIC
+    ) : XIM
 
-extern Bool XFilterEvent(
-    XEvent*	/* event */,
-    Window	/* window */
-);
+    fun filter_event = XFilterEvent(
+      event : PEvent,
+      window : PWindow
+    ) : Bool
 
-extern int XmbLookupString(
-    XIC			/* ic */,
-    XKeyPressedEvent*	/* event */,
-    char*		/* buffer_return */,
-    int			/* bytes_buffer */,
-    KeySym*		/* keysym_return */,
-    Status*		/* status_return */
-);
+    fun mb_lookup_string = XmbLookupString(
+      ic : XIC,
+      event : PKeyPressedEvent,
+      buffer_return : PChar,
+      bytes_buffer : Int32,
+      keysym_return : PKeySym,
+      status_return : PStatus
+    ) : Int32
 
-extern int XwcLookupString(
-    XIC			/* ic */,
-    XKeyPressedEvent*	/* event */,
-    wchar_t*		/* buffer_return */,
-    int			/* wchars_buffer */,
-    KeySym*		/* keysym_return */,
-    Status*		/* status_return */
-);
+    fun wc_lookup_string = XwcLookupString(
+      ic : XIC,
+      event : PKeyPressedEvent,
+      buffer_return : PWChar_t,
+      wchars_buffer : Int32,
+      keysym_return : PKeySym,
+      status_return : PStatus
+    ) : Int32
 
-extern int Xutf8LookupString(
-    XIC			/* ic */,
-    XKeyPressedEvent*	/* event */,
-    char*		/* buffer_return */,
-    int			/* bytes_buffer */,
-    KeySym*		/* keysym_return */,
-    Status*		/* status_return */
-);
+    fun utf8_lookup_string = Xutf8LookupString(
+      ic : XIC,
+      event : PKeyPressedEvent,
+      buffer_return : PChar,
+      bytes_buffer : Int32,
+      keysym_return : PKeySym,
+      status_return : PStatus
+    ) : Int32
 
-extern XVaNestedList XVaCreateNestedList(
-    int /*unused*/, ...
-) _X_SENTINEL(0);
+    fun va_create_nested_list = XVaCreateNestedList(
+      unused : Int32,
+      ...
+    ) : VaNestedList
 
-/* internal connections for IMs */
+    # internal connections for IMs
 
-extern Bool XRegisterIMInstantiateCallback(
-    Display*			/* dpy */,
-    struct _XrmHashBucketRec*	/* rdb */,
-    char*			/* res_name */,
-    char*			/* res_class */,
-    XIDProc			/* callback */,
-    XPointer			/* client_data */
-);
+    fun register_im_instantiate_callback = XRegisterIMInstantiateCallback(
+      dpy : PDisplay,
+      rdb : PrmHashBucketRec,
+      res_name : PChar,
+      res_class : PChar,
+      callback : IDProc,
+      client_data : Pointer
+    ) : Bool
 
-extern Bool XUnregisterIMInstantiateCallback(
-    Display*			/* dpy */,
-    struct _XrmHashBucketRec*	/* rdb */,
-    char*			/* res_name */,
-    char*			/* res_class */,
-    XIDProc			/* callback */,
-    XPointer			/* client_data */
-);
+    fun unregister_im_instantiate_callback = XUnregisterIMInstantiateCallback(
+      dpy : PDisplay,
+      rdb : PrmHashBucketRec,
+      res_name : PChar,
+      res_class : PChar,
+      callback : IDProc,
+      client_data : Pointer
+    ) : Bool
 
-typedef void (*XConnectionWatchProc)(
-    Display*			/* dpy */,
-    XPointer			/* client_data */,
-    int				/* fd */,
-    Bool			/* opening */,	 /* open or close flag */
-    XPointer*			/* watch_data */ /* open sets, close uses */
-);
+    alias ConnectionWatchProc = PDisplay, Pointer, Int32, Bool, Pointer* -> NoReturn
 
+    fun internal_connection_numbers = XInternalConnectionNumbers(
+      dpy : PDisplay,
+      fd_return : PInt32*,
+      count_return : PInt32
+    ) : Status
 
-extern Status XInternalConnectionNumbers(
-    Display*			/* dpy */,
-    int**			/* fd_return */,
-    int*			/* count_return */
-);
-
-extern void XProcessInternalConnection(
-    Display*			/* dpy */,
-    int				/* fd */
-);
+    fun process_internal_connection = XProcessInternalConnection(
+      dpy : PDisplay,
+      fd : Int32
+    ) : NoReturn
 
     fun add_connectioin_watch = XAddConnectionWatch(
       dpy : PDisplay,
-    XConnectionWatchProc	/* callback */,
-    XPointer			/* client_data */
+      callback : ConnectionWatchProc,
+      client_data : Pointer
     ) : Status
 
     fun remove_connection_watch = XRemoveConnectionWatch(
@@ -3504,13 +3872,13 @@ extern void XProcessInternalConnection(
       datalen : Int32
     ) : NoReturn
 
-    fun _Xmbtowc(
+    fun mbtowc = _Xmbtowc(
       wstr : PWChar_t,
       str : PChar,
       len : Int32
     ) : Int32
 
-    fun _Xwctomb(
+    fun wctomb = _Xwctomb(
       str : PChar,
       wc : PWChar_t
     ) : Int32

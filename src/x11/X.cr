@@ -33,7 +33,7 @@ module X11
   alias KeyCode = UInt8
 
   alias PAtom     = Atom*
-  alias PWindo    = Window*
+  alias PWindow   = Window*
   alias PDrawable = Drawable*
   alias PFont     = Font*
   alias PPixmap   = Pixmap*
@@ -68,7 +68,7 @@ module X11
   # Input Event Masks. Used as event-mask window attribute and as arguments
   # to Grab requests.  Not to be confused with event names.  */
 
-  NoEventMask              =	0_i64
+  NoEventMask              = 0_i64
   KeyPressMask             = (1_i64 << 0)
   KeyReleaseMask           = (1_i64 << 1)
   ButtonPressMask          = (1_i64 << 2)
@@ -196,7 +196,7 @@ module X11
   NotifyAncestor         = 0
   NotifyVirtual          = 1
   NotifyInferior         = 2
-  NotifyNonlinear	       = 3
+  NotifyNonlinear	     = 3
   NotifyNonlinearVirtual = 4
   NotifyPointer	         = 5
   NotifyPointerRoot      = 6
@@ -398,7 +398,7 @@ module X11
 
   # graphics functions, as in GC.alu
 
-  GXclear	       = 0x0	# 0
+  GXclear	     = 0x0	# 0
   GXand          = 0x1	# src AND dst
   GXandReverse   = 0x2 # src AND NOT dst
   GXcopy         = 0x3 # src
@@ -409,7 +409,7 @@ module X11
   GXnor          = 0x8 # NOT src AND NOT dst
   GXequiv        = 0x9 # NOT src XOR dst
   GXinvert       = 0xa # NOT dst
-  GXorReverse	   = 0xb # src OR NOT dst
+  GXorReverse	 = 0xb # src OR NOT dst
   GXcopyInverted = 0xc # NOT src
   GXorInverted   = 0xd # NOT src OR dst
   GXnand         = 0xe # NOT src OR NOT dst
@@ -537,7 +537,7 @@ module X11
   # Flags used in StoreNamedColor, StoreColors
 
   DoRed   = (1_i64 << 0)
-  DoGreen	= (1_i64 << 1)
+  DoGreen = (1_i64 << 1)
   DoBlue  = (1_i64 << 2)
 
   #*****************************************************************
@@ -576,7 +576,7 @@ module X11
   MappingBusy   = 1
   MappingFailed	= 2
 
-  MappingModifier	= 0
+  MappingModifier = 0
   MappingKeyboard = 1
   MappingPointer  = 2
 
