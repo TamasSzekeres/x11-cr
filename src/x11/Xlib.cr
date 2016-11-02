@@ -5,14 +5,30 @@ module X11
     alias Status = Int32
     alias PStatus = Status*
 
-    alias Bool = Int32
     alias PBool = Bool*
+    alias Bool = Int32
+    True = 1
+    False = 0
 
     alias WChar_t = UInt64
     alias PWChar_t = WChar_t*
 
     $_Xdebug : Int32
 
+    fun mblen = _Xmblen(
+      str : PChar,
+      len : Int32
+    ) : Int32
+
+    # API mentioning "UTF8" or "utf8" is an XFree86 extension, introduced in
+    # November 2000. Its presence is indicated through the following macro.
+    X_HAVE_UTF8_STRING = 1
+
+    QueuedAlready      = 0
+    QueuedAfterReading = 1
+    QueuedAfterFlush   = 2
+
+    # Extensions need a way to hang private data on some structures.
     alias PExtData = ExtData*
     struct ExtData
       number : Int32 # number returned by XRegisterExtension
@@ -3896,4 +3912,209 @@ module X11
   end # lib Xlib
 
   Xlib._Xdebug = 0
+
+  macro def self.connection_number(dpy)
+    dpy.value.fd
+  end
+
+  macro def self.root_window(dpy, scr)
+    self.screen_of_display(dpy, scr).value.root
+  end
+
+  macro def self.default_screen(dpy)
+    dpy.value.default_screen
+  end
+
+  macro def self.default_root_window(dpy)
+    self.screen_of_display(dpy, self.default_screen(dpy)).value.root
+  end
+
+  macro def self.default_visual(dpy, scr)
+    self.screen_of_display(dpy, scr).value.root_visual
+  end
+
+  macro def self_default_gc(dpy, scr)
+    self.screen_of_display(dpy, scr).value.default_gc
+  end
+
+  macro def self.black_pixel(dpy, scr)
+    self.screen_of_display(dpy, scr).value.black_pixel
+  end
+
+  macro def self.white_pixel(dpy, scr)
+    self.screen_of_display(dpy, scr).value.white_pixel
+  end
+
+  macro def self.all_planes
+    ~0_u64
+  end
+
+  macro def self.q_length(dpy)
+    dpy.value.qlen
+  end
+
+  macro def self.display_width(dpy, scr)
+    self.screen_of_display(dpy, scr).value.width
+  end
+
+  macro def self.display_height(dpy, scr)
+    self.screen_of_display(dpy,scr).value.height
+  end
+
+  macro def self.display_width_mm(dpy, scr)
+    self.screen_of_display(dpy,scr).value.mwidth
+  end
+
+  macro def self.display_height_mm(dpy, scr)
+    self.screen_of_display(dpy, scr).value.mheight
+  end
+
+  macro def self.display_planes(dpy, scr)
+    self.screen_of_display(dpy, scr).value.root_depth
+  end
+
+  macro def self.displayCells(dpy, scr)
+    self.default_visual(dpy, scr).value.map_entries
+  end
+
+  macro def self.screen_count(dpy)
+    dpy.value.nscreens
+  end
+
+  macro def self.server_vendor(dpy)
+    dpy.value.vendor
+  end
+
+  macro def self.protocol_version(dpy)
+    dpy.value.proto_major_version
+  end
+
+  macro def self.protocol_revision(dpy)
+    dpy.value.proto_minor_version
+  end
+
+  macro def self.vendor_release(dpy)
+    dpy.value.release
+  end
+
+  macro def self.display_string(dpy)
+    dpy.value.display_name
+  end
+
+  macro def self.default_depth(dpy, scr)
+    self.screen_of_display(dpy, scr).value.root_depth
+  end
+
+  macro def self.default_colormap(dpy, scr)
+    self.screen_of_display(dpy, scr).value.cmap
+  end
+
+  macro def self.bitmap_unit(dpy)
+    dpy.value.bitmap_unit
+  end
+
+  macro def self.bitmap_bit_order(dpy)
+    dpy.value.bitmap_bit_order
+  end
+
+  macro def self.bitmap_pad(dpy)
+    dpy.value.bitmap_pad
+  end
+
+  macro def self.image_byte_order(dpy)
+    dpy.value.byte_order
+  end
+
+  macro def self.next_request(dpy)
+    dpy.value.request + 1
+  end
+
+  macro def self.last_known_request_processed(dpy)
+    dpy.value.last_request_read
+  end
+
+  # macros for screen oriented applications (toolkit)
+  macro def self.screen_of_display(dpy, scr)
+    dpy.value.screens[src]
+  end
+
+  macro def self.default_screen_of_display(dpy)
+    self.screen_of_display(dpy, default_screen(dpy))
+  end
+
+  macro def self.display_of_screen(s)
+    s.value.display
+  end
+
+  macro def self.root_window_of_screen(s)
+    s.value.root
+  end
+
+  macro def self.black_pixel_of_screen(s)
+    s.value.black_pixel
+  end
+
+  macro def self.white_pixel_of_screen(s)
+    s.value.white_pixel
+  end
+
+  macro def self.default_colormap_of_screen(s)
+    s.value.cmap
+  end
+
+  macro def self.default_depth_of_screen(s)
+    s.value.root_depth
+  end
+
+  macro def self.default_gc_of_screen(s)
+    s.value.default_gc
+  end
+
+  macro def self.default_visual_of_screen(s)
+    s.value.root_visual
+  end
+
+  macro def self.width_of_screen(s)
+    s.value.width
+  end
+
+  macro def self.height_of_screen(s)
+    s.value.height
+  end
+
+  macro def self.width_mm_of_screen(s)
+    s.value.mwidth
+  end
+
+  macro def self.height_mm_of_screen(s)
+    s.value.mheight
+  end
+
+  macro def self.planes_of_screen(s)
+    s.value.root_depth
+  end
+
+  macro def self.cells_of_screen(s)
+    self.default_visual_of_screen(s).value.map_entries
+  end
+
+  macro def self.min_cmaps_of_screen(s)
+    s.min_maps
+  end
+
+  macro def self.max_cmaps_of_screen(s)
+    s.max_maps
+  end
+
+  macro def self.does_save_unders(s)
+    s.save_unders
+  end
+
+  macro def self.does_backing_store(s)
+    s.backing_store
+  end
+
+  macro def self.event_mask_of_screen(s)
+    s.root_input_mask
+  end
 end # module X11
