@@ -23,12 +23,11 @@ module X11
     if (a > b) then a else b
   end
 
-  def self.mmin(a, b)
+  def self.min(a, b)
     if (a < b) then a else b
   end
 
   # clip region
-
   alias PREGION = REGION*
   struct REGION
     size : Int64
@@ -38,7 +37,7 @@ module X11
   end
 
   # Xutil.cr contains the declaration:
-  # alias _XRegion  = Region*
+  # alias _XRegion = Region*
 
   # 1 if two BOXs overlap.
   # 0 if two BOXs do not overlap.
@@ -69,78 +68,75 @@ module X11
   # Check to see if there is enough memory in the present region.
   def self.MEMCHECK(reg, rect, firstrect)
     if reg.value.numRects >= reg.value.size - 1
-      BoxPtr tmpRect = Xrealloc ((firstrect), \
-                                     (2 * (sizeof(BOX)) * ((reg)->size))); \
-          if (tmpRect == NULL) \
-            return(0);\
-          (firstrect) = tmpRect; \
-          (reg)->size *= 2;\
-          (rect) = &(firstrect)[(reg)->numRects];\
-         }\
-       }
+      tmpRect = X11::realloc((firstrect), (2 * (sizeof(BOX)) * (reg.value.size)))
+      if tmpRect.is_a(Nil)
+        return 0
+        firstrect = tmpRect
+        reg.value.size *= 2
+        rect = &firstrect[reg.value.numRects]
+      end
+    end
+  end
 
-/*  this routine checks to see if the previous rectangle is the same
- *  or subsumes the new rectangle to add.
- */
+  # this routine checks to see if the previous rectangle is the same
+  # or subsumes the new rectangle to add.
+  def self.CHECK_PREVIOUS(Reg, R, Rx1, Ry1, Rx2, Ry2)
+    !((Reg.value.numRects > 0) &&
+      ((R-1).value.y1 == Ry1) &&
+      ((R-1).value.y2 == Ry2) &&
+      ((R-1).value.x1 <= Rx1) &&
+      ((R-1).value.x2 >= Rx2))
+  end
 
-#define CHECK_PREVIOUS(Reg, R, Rx1, Ry1, Rx2, Ry2)\
-               (!(((Reg)->numRects > 0)&&\
-                  ((R-1)->y1 == (Ry1)) &&\
-                  ((R-1)->y2 == (Ry2)) &&\
-                  ((R-1)->x1 <= (Rx1)) &&\
-                  ((R-1)->x2 >= (Rx2))))
+  # add a rectangle to the given Region
+  def self.ADDRECT(reg, r, rx1, ry1, rx2, ry2)
+    if (rx1 < rx2) && (ry1 < ry2) && self.CHECK_PREVIOUS(reg, r, rx1, ry1, rx2, ry2)
+      r.value.x1 = rx1
+      r.value.y1 = ry1
+      r.value.x2 = rx2
+      r.value.y2 = ry2
+      self.EXTENTS(r, reg)
+      reg.value.numRects++
+      r++
+    end
+  end
 
-/*  add a rectangle to the given Region */
-#define ADDRECT(reg, r, rx1, ry1, rx2, ry2){\
-    if (((rx1) < (rx2)) && ((ry1) < (ry2)) &&\
-        CHECK_PREVIOUS((reg), (r), (rx1), (ry1), (rx2), (ry2))){\
-              (r)->x1 = (rx1);\
-              (r)->y1 = (ry1);\
-              (r)->x2 = (rx2);\
-              (r)->y2 = (ry2);\
-              EXTENTS((r), (reg));\
-              (reg)->numRects++;\
-              (r)++;\
-            }\
-        }
+  # add a rectangle to the given Region
+  def self.ADDRECTNOX(reg, r, rx1, ry1, rx2, ry2)
+    if (rx1 < rx2) && (ry1 < ry2) && self.CHECK_PREVIOUS(reg, r, rx1, ry1, rx2, ry2)
+      r.value.x1 = rx1
+      r.value.y1 = ry1
+      r.value.x2 = rx2
+      r.value.y2 = ry2
+      reg.value.numRects++
+      r++
+    end
+  end
 
+  def self.EMPTY_REGION(pReg)
+    pReg.value.numRects = 0
+  end
 
+  def self.REGION_NOT_EMPTY(pReg)
+    pReg.value.numRects
+  end
 
-/*  add a rectangle to the given Region */
-#define ADDRECTNOX(reg, r, rx1, ry1, rx2, ry2){\
-            if ((rx1 < rx2) && (ry1 < ry2) &&\
-                CHECK_PREVIOUS((reg), (r), (rx1), (ry1), (rx2), (ry2))){\
-              (r)->x1 = (rx1);\
-              (r)->y1 = (ry1);\
-              (r)->x2 = (rx2);\
-              (r)->y2 = (ry2);\
-              (reg)->numRects++;\
-              (r)++;\
-            }\
-        }
+  def self.INBOX(r, x, y)
+    (r.x2 > x) &&
+    (r.x1 <= x) &&
+    (r.y2 > y) &&
+    (r.y1 <= y)
+  end
 
-#define EMPTY_REGION(pReg) pReg->numRects = 0
+  # number of points to buffer before sending them off
+  # to scanlines() :  Must be an even number
+  NUMPTSTOBUFFER = 200
 
-#define REGION_NOT_EMPTY(pReg) pReg->numRects
-
-#define INBOX(r, x, y) \
-      ( ( ((r).x2 >  x)) && \
-        ( ((r).x1 <= x)) && \
-        ( ((r).y2 >  y)) && \
-        ( ((r).y1 <= y)) )
-
-/*
- * number of points to buffer before sending them off
- * to scanlines() :  Must be an even number
- */
-#define NUMPTSTOBUFFER 200
-
-/*
- * used to allocate buffers for points and link
- * the buffers together
- */
-typedef struct _POINTBLOCK {
-    XPoint pts[NUMPTSTOBUFFER];
-    struct _POINTBLOCK *next;
-} POINTBLOCK;
+  # used to allocate buffers for points and link
+  # the buffers together
+  alias PPOINTBLOCK = POINTBLOCK*
+  struct POINTBLOCK {
+    pts : Point[NUMPTSTOBUFFER]
+    next : PPOINTBLOCK
+  end
 end # module X11
