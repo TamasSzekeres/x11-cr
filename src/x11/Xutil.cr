@@ -1,14 +1,14 @@
 module X11
   # Bitmask returned by XParseGeometry().  Each bit tells if the corresponding
   # value (x, y, width, height) was found in the parsed string.
-  NoValue = 0x0000
-  XValue = 0x0001
-  YValue = 0x0002
-  WidthValue = 0x0004
+  NoValue     = 0x0000
+  XValue      = 0x0001
+  YValue      = 0x0002
+  WidthValue  = 0x0004
   HeightValue = 0x0008
-  AllValues = 0x000F
-  XNegative = 0x0010
-  YNegative = 0x0020
+  AllValues   = 0x000F
+  XNegative   = 0x0010
+  YNegative   = 0x0020
 
   # new version containing base_width, base_height, and win_gravity fields;
   # used with WM_NORMAL_HINTS.
@@ -176,52 +176,56 @@ module X11
     end
   end
 
-/*
- * Compose sequence status structure, used in calling XLookupString.
- */
-typedef struct _XComposeStatus {
-    XPointer compose_ptr;	/* state table pointer */
-    int chars_matched;		/* match state */
-} XComposeStatus;
+  # Compose sequence status structure, used in calling XLookupString.
+  alias PComposeStatus = ComposeStatus*
+  struct ComposeStatus
+    compose_ptr : Pointer # state table pointer
+    chars_matched : Int32 # match state
+  end
 
-/*
- * Keysym macros, used on Keysyms to test for classes of symbols
- */
-#define IsKeypadKey(keysym) \
-  (((KeySym)(keysym) >= XK_KP_Space) && ((KeySym)(keysym) <= XK_KP_Equal))
+  # Keysym macros, used on Keysyms to test for classes of symbols
 
-#define IsPrivateKeypadKey(keysym) \
-  (((KeySym)(keysym) >= 0x11000000) && ((KeySym)(keysym) <= 0x1100FFFF))
+  def self.IsKeypadKey(keysym : KeySym)
+    (keysym >= XK_KP_Space) && (keysym <= XK_KP_Equal)
+  end
 
-#define IsCursorKey(keysym) \
-  (((KeySym)(keysym) >= XK_Home)     && ((KeySym)(keysym) <  XK_Select))
+  def self.IsPrivateKeypadKey(keysym : KeySym)
+    (keysym >= 0x11000000) && (keysym <= 0x1100FFFF)
+  end
 
-#define IsPFKey(keysym) \
-  (((KeySym)(keysym) >= XK_KP_F1)     && ((KeySym)(keysym) <= XK_KP_F4))
+  def self.IsCursorKey(keysym : KeySym)
+    (keysym >= XK_Home) && (keysym <  XK_Select)
+  end
 
-#define IsFunctionKey(keysym) \
-  (((KeySym)(keysym) >= XK_F1)       && ((KeySym)(keysym) <= XK_F35))
+  def self.IsPFKey(keysym : KeySym)
+    (keysym >= XK_KP_F1) && (keysym <= XK_KP_F4)
+  end
 
-#define IsMiscFunctionKey(keysym) \
-  (((KeySym)(keysym) >= XK_Select)   && ((KeySym)(keysym) <= XK_Break))
+  def self.IsFunctionKey(keysym : KeySym)
+    (keysym >= XK_F1) && (keysym <= XK_F35)
+  end
 
-#ifdef XK_XKB_KEYS
-#define IsModifierKey(keysym) \
-  ((((KeySym)(keysym) >= XK_Shift_L) && ((KeySym)(keysym) <= XK_Hyper_R)) \
-   || (((KeySym)(keysym) >= XK_ISO_Lock) && \
-       ((KeySym)(keysym) <= XK_ISO_Level5_Lock)) \
-   || ((KeySym)(keysym) == XK_Mode_switch) \
-   || ((KeySym)(keysym) == XK_Num_Lock))
-#else
-#define IsModifierKey(keysym) \
-  ((((KeySym)(keysym) >= XK_Shift_L) && ((KeySym)(keysym) <= XK_Hyper_R)) \
-   || ((KeySym)(keysym) == XK_Mode_switch) \
-   || ((KeySym)(keysym) == XK_Num_Lock))
-#endif
-/*
- * opaque reference to Region data type
- */
-typedef struct _XRegion *Region;
+  def self.IsMiscFunctionKey(keysym : KeySym)
+    (keysym >= XK_Select) && (keysym <= XK_Break)
+  end
+
+  ifdef XK_XKB_KEYS
+    def self.IsModifierKey(keysym : KeySym)
+      ((keysym >= XK_Shift_L) && (keysym <= XK_Hyper_R)) ||
+      ((keysym >= XK_ISO_Lock) && (keysym <= XK_ISO_Level5_Lock)) ||
+      (keysym == XK_Mode_switch) ||
+      (keysym == XK_Num_Lock)
+    end
+  else
+    def self.IsModifierKey(keysym : KeySym)
+      ((keysym >= XK_Shift_L) && (keysym <= XK_Hyper_R)) ||
+      (keysym == XK_Mode_switch) ||
+      (keysym == XK_Num_Lock)
+    end
+  end
+
+  # opaque reference to Region data type
+  #alias _XRegion Region*
 
   # Return values from RectInRegion()
   RectangleOut  = 0
@@ -295,8 +299,13 @@ typedef struct _XRegion *Region;
 
   alias Context = Int32
 
-#define XUniqueContext()       ((XContext) XrmUniqueQuark())
-#define XStringToContext(string)   ((XContext) XrmStringToQuark(string))
+  def self.unique_context()
+    rm_unique_quark()
+  end
+
+  def self.string_to_context(string)
+    rm_string_to_quark(string)
+  end
 
   # The following declarations are alphabetized.
 
@@ -506,258 +515,258 @@ typedef struct _XRegion *Region;
 
   fun save_context = XSaveContext(
     display : PDisplay,
-    XID			/* rid */,
-    XContext		/* context */,
-    _Xconst char*	/* data */
-) : Int32
+    rid : XID,
+    context : Context,
+    data : PChar
+  ) : Int32
 
-extern int XSetClassHint(
-  display : PDisplay,
-  w : Window,
-    XClassHint*		/* class_hints */
-) : Int32
+  fun set_class_hint = XSetClassHint(
+    display : PDisplay,
+    w : Window,
+    class_hints : PClassHint
+  ) : Int32
 
-extern int XSetIconSizes(
-  display : PDisplay,
-  w : Window,
-    XIconSize*		/* size_list */,
-    int			/* count */
-) : Int32
+  fun set_icon_sizes = XSetIconSizes(
+    display : PDisplay,
+    w : Window,
+    size_list : PIconSize,
+    count : Int32
+  ) : Int32
 
-extern int XSetNormalHints(
-  display : PDisplay,
-  w : Window,
-    XSizeHints*		/* hints */
-) : Int32
+  fun set_normal_hints = XSetNormalHints(
+    display : PDisplay,
+    w : Window,
+    hints : PSizeHints
+  ) : Int32
 
-extern void XSetRGBColormaps(
-  display : PDisplay,
-  w : Window,
-    XStandardColormap*	/* stdcmaps */,
-    int			/* count */,
-    Atom		/* property */
-) : NoReturn
+  fun set_rgb_colormaps = XSetRGBColormaps(
+    display : PDisplay,
+    w : Window,
+    stdcmaps: PStandardColormap,
+    count : Int32,
+    property : Atom
+  ) : NoReturn
 
-extern int XSetSizeHints(
-  display : PDisplay,
-  w : Window,
-    XSizeHints*		/* hints */,
-    Atom		/* property */
-) : Int32
+  fun setSizeHints = XSetSizeHints(
+    display : PDisplay,
+    w : Window,
+    hints : PSizeHints,
+    property : Atom
+  ) : Int32
 
-extern int XSetStandardProperties(
-  display : PDisplay,
-  w : Window,
-    _Xconst char*	/* window_name */,
-    _Xconst char*	/* icon_name */,
-    Pixmap		/* icon_pixmap */,
-    char**		/* argv */,
-    int			/* argc */,
-    XSizeHints*		/* hints */
-) : Int32
+  fun set_standard_properties = XSetStandardProperties(
+    display : PDisplay,
+    w : Window,
+    window_name : PChar,
+    icon_name : PChar,
+    icon_pixmap : Pixmap,
+    argv : PPChar,
+    argc : Int32,
+    hints : PSizeHints
+  ) : Int32
 
-extern void XSetTextProperty(
-  display : PDisplay,
-  w : Window,
-    XTextProperty*	/* text_prop */,
-    Atom		/* property */
-) : NoReturn
+  fun set_text_property = XSetTextProperty(
+    display : PDisplay,
+    w : Window,
+    text_prop : PTextProperty,
+    property : Atom
+  ) : NoReturn
 
-extern void XSetWMClientMachine(
-  display : PDisplay,
-  w : Window,
-    XTextProperty*	/* text_prop */
-) : NoReturn
+  fun set_wm_client_machine = XSetWMClientMachine(
+    display : PDisplay,
+    w : Window,
+    text_prop : PTextProperty
+  ) : NoReturn
 
-extern int XSetWMHints(
-  display : PDisplay,
-  w : Window,
-    XWMHints*		/* wm_hints */
-) : Int32
+  fun set_wm_hints = XSetWMHints(
+    display : PDisplay,
+    w : Window,
+    wm_hints : PWMHints
+  ) : Int32
 
-extern void XSetWMIconName(
-  display : PDisplay,
-  w : Window,
-    XTextProperty*	/* text_prop */
-) : NoReturn
+  fun set_wm_icon_name = XSetWMIconName(
+    display : PDisplay,
+    w : Window,
+    text_prop : PTextProperty
+  ) : NoReturn
 
-extern void XSetWMName(
-  display : PDisplay,
-  w : Window,
-    XTextProperty*	/* text_prop */
-) : NoReturn
+  fun set_wm_name = XSetWMName(
+    display : PDisplay,
+    w : Window,
+    text_prop : PTextProperty
+  ) : NoReturn
 
-extern void XSetWMNormalHints(
-  display : PDisplay,
-  w : Window,
-    XSizeHints*		/* hints */
-) : NoReturn
+  fun set_wm_normal_hints = XSetWMNormalHints(
+    display : PDisplay,
+    w : Window,
+    hints : PSizeHints
+  ) : NoReturn
 
-extern void XSetWMProperties(
-  display : PDisplay,
-  w : Window,
-    XTextProperty*	/* window_name */,
-    XTextProperty*	/* icon_name */,
-    char**		/* argv */,
-    int			/* argc */,
-    XSizeHints*		/* normal_hints */,
-    XWMHints*		/* wm_hints */,
-    XClassHint*		/* class_hints */
-) : NoReturn
+  fun set_wm_properties = XSetWMProperties(
+    display : PDisplay,
+    w : Window,
+    window_name : PTextProperty,
+    icon_name : PTextProperty,
+    argv : PPChar,
+    argc : Int32,
+    normal_hints : PSizeHints,
+    wm_hints : PWMHints,
+    class_hints : PClassHint
+  ) : NoReturn
 
-extern void XmbSetWMProperties(
-  display : PDisplay,
-  w : Window,
-    _Xconst char*	/* window_name */,
-    _Xconst char*	/* icon_name */,
-    char**		/* argv */,
-    int			/* argc */,
-    XSizeHints*		/* normal_hints */,
-    XWMHints*		/* wm_hints */,
-    XClassHint*		/* class_hints */
-) : NoReturn
+  fun nm_set_wm_properties = XmbSetWMProperties(
+    display : PDisplay,
+    w : Window,
+    window_name : PChar,
+    icon_name : PChar,
+    argv : PPChar,
+    argc : Int32,
+    normal_hints : PSizeHints,
+    wm_hints : PWMHints,
+    class_hints : PClassHint
+  ) : NoReturn
 
-extern void Xutf8SetWMProperties(
-  display : PDisplay,
-  w : Window,
-    _Xconst char*	/* window_name */,
-    _Xconst char*	/* icon_name */,
-    char**		/* argv */,
-    int			/* argc */,
-    XSizeHints*		/* normal_hints */,
-    XWMHints*		/* wm_hints */,
-    XClassHint*		/* class_hints */
-) : NoReturn
+  fun utf8_set_wm_properties = Xutf8SetWMProperties(
+    display : PDisplay,
+    w : Window,
+    window_name : PChar,
+    icon_name : PChar,
+    argv : PPChar,
+    argc : Int32,
+    normal_hints : PSizeHints,
+    wm_hints : PWMHints,
+    class_hints : PClassHint
+  ) : NoReturn
 
-extern void XSetWMSizeHints(
-  display : PDisplay,
-  w : Window,
-    XSizeHints*		/* hints */,
-    Atom		/* property */
-) : NoReturn
+  fun set_wm_size_hints = XSetWMSizeHints(
+    display : PDisplay,
+    w : Window,
+    hints : PSizeHints,
+    property : Atom
+  ) : NoReturn
 
-extern int XSetRegion(
-  display : PDisplay,
-    GC			/* gc */,
-    Region		/* r */
-) : Int32
+  fun set_region = XSetRegion(
+    display : PDisplay,
+    gc : GC,
+    r : Region
+  ) : Int32
 
-extern void XSetStandardColormap(
-  display : PDisplay,
-  w : Window,
-    XStandardColormap*	/* colormap */,
-    Atom		/* property */
-) : NoReturn
+  fun set_standard_colormap = XSetStandardColormap(
+    display : PDisplay,
+    w : Window,
+    colormap : PStandardColormap,
+    property : Atom
+  ) : NoReturn
 
-extern int XSetZoomHints(
-  display : PDisplay,
-  w : Window,
-    XSizeHints*		/* zhints */
-) : Int32
+  fun set_zoom_hints = XSetZoomHints(
+    display : PDisplay,
+    w : Window,
+    zhints : PSizeHints
+  ) : Int32
 
-extern int XShrinkRegion(
-    Region		/* r */,
-    int			/* dx */,
-    int			/* dy */
-) : Int32
+  fun shrink_region = XShrinkRegion(
+    r : Region,
+    dx : Int32,
+    dy : Int32
+  ) : Int32
 
-extern Status XStringListToTextProperty(
-    char**		/* list */,
-    int			/* count */,
-    XTextProperty*	/* text_prop_return */
-) : Status
+  fun string_list_to_text_property = XStringListToTextProperty(
+    list : PPChar,
+    count : Int32,
+    text_prop_return : PTextProperty
+  ) : Status
 
-extern int XSubtractRegion(
-    Region		/* sra */,
-    Region		/* srb */,
-    Region		/* dr_return */
-) : Int32
+  fun subtract_region = XSubtractRegion(
+    sra : Region,
+    srb : Region,
+    dr_return : Region
+  ) : Int32
 
-extern int XmbTextListToTextProperty(
-  display : PDisplay,
-    char**		list,
-    int			count,
-    XICCEncodingStyle	style,
-    XTextProperty*	text_prop_return
-) : Int32
+  fun mb_text_list_to_text_property = XmbTextListToTextProperty(
+    display : PDisplay,
+    list : PPChar,
+    count : Int32,
+    style : ICCEncodingStyle,
+    text_prop_return : PTextProperty
+  ) : Int32
 
-extern int XwcTextListToTextProperty(
-  display : PDisplay,
-    wchar_t**		list,
-    int			count,
-    XICCEncodingStyle	style,
-    XTextProperty*	text_prop_return
-) : Int32
+  fun wc_text_list_to_text_property = XwcTextListToTextProperty(
+    display : PDisplay,
+    list : PWChar_t*,
+    count : Int32,
+    style : ICCEncodingStyle,
+    text_prop_return : PTextProperty
+  ) : Int32
 
-extern int Xutf8TextListToTextProperty(
-  display : PDisplay,
-    char**		list,
-    int			count,
-    XICCEncodingStyle	style,
-    XTextProperty*	text_prop_return
-) : Int32
+  fun utf8_text_list_to_text_property = Xutf8TextListToTextProperty(
+    display : PDisplay,
+    list : PPChar,
+    count : Int32,
+    style : ICCEncodingStyle,
+    text_prop_return : PTextProperty
+  ) : Int32
 
-extern void XwcFreeStringList(
-    wchar_t**		list
-) : NoReturn
+  fun wc_free_string_list = XwcFreeStringList(
+    list : PWChar_t*
+  ) : NoReturn
 
-extern Status XTextPropertyToStringList(
-    XTextProperty*	/* text_prop */,
-    char***		/* list_return */,
-    int*		/* count_return */
-) : Status
+  fun text_property_to_string_list = XTextPropertyToStringList(
+    text_prop : PTextProperty,
+    list_return : PPChar*,
+    count_return : PInt32
+  ) : Status
 
-extern int XmbTextPropertyToTextList(
-  display : PDisplay,
-    const XTextProperty* text_prop,
-    char***		list_return,
-    int*		count_return
-) : Int32
+  fun mb_text_property_to_text_list = XmbTextPropertyToTextList(
+    display : PDisplay,
+    text_prop : PTextProperty,
+    list_return : PPChar*,
+    count_return : PInt32
+  ) : Int32
 
-extern int XwcTextPropertyToTextList(
-  display : PDisplay,
-    const XTextProperty* text_prop,
-    wchar_t***		list_return,
-    int*		count_return
-) : Int32
+  fun wc_text_property_to_text_list = XwcTextPropertyToTextList(
+    display : PDisplay,
+    text_prop : PTextProperty,
+    list_return : PWChar_t**,
+    count_return : Int32
+  ) : Int32
 
-extern int Xutf8TextPropertyToTextList(
-  display : PDisplay,
-    const XTextProperty* text_prop,
-    char***		list_return,
-    int*		count_return
-) : Int32
+  fun utf8_property_to_text_list = Xutf8TextPropertyToTextList(
+    display : PDisplay,
+    text_prop : PTextProperty,
+    list_return : PPChar*,
+    count_return : PInt32
+  ) : Int32
 
-extern int XUnionRectWithRegion(
-    XRectangle*		/* rectangle */,
-    Region		/* src_region */,
-    Region		/* dest_region_return */
-) : Int32
+  fun union_rect_with_region = XUnionRectWithRegion(
+    rectangle : PRectangle,
+    src_region : Region,
+    dest_region_return : Region
+  ) : Int32
 
-extern int XUnionRegion(
-    Region		/* sra */,
-    Region		/* srb */,
-    Region		/* dr_return */
-) : Int32
+  fun union_region = XUnionRegion(
+    sra : Region,
+    srb : Region,
+    dr_return : Region
+  ) : Int32
 
-extern int XWMGeometry(
-  display : PDisplay,
-    int			/* screen_number */,
-    _Xconst char*	/* user_geometry */,
-    _Xconst char*	/* default_geometry */,
-    unsigned int	/* border_width */,
-    XSizeHints*		/* hints */,
-    int*		/* x_return */,
-    int*		/* y_return */,
-    int*		/* width_return */,
-    int*		/* height_return */,
-    int*		/* gravity_return */
-) : Int32
+  fun wm_geometry = XWMGeometry(
+    display : PDisplay,
+    screen_number : Int32,
+    user_geometry : PChar,
+    default_geometry : PChar,
+    border_width : UInt32,
+    hints : PSizeHints,
+    x_return : PInt32,
+    y_return : PInt32,
+    width_return : PInt32,
+    height_return : PInt32,
+    gravity_return : PInt32
+  ) : Int32
 
-extern int XXorRegion(
-    Region		/* sra */,
-    Region		/* srb */,
-    Region		/* dr_return */
-) : Int32
+  fun xor_region = XXorRegion(
+    sra : Region,
+    srb : Region,
+    dr_return : Region
+  ) : Int32
 
 end # module X11
