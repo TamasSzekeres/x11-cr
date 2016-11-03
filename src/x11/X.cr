@@ -8,6 +8,8 @@ module X11
 
   alias PChar    = UInt8*
   alias PPChar   = PChar*
+  alias PInt8    = Int8*
+  alias PUInt8   = UInt8*
   alias PInt32   = Int32*
   alias PUInt32  = UInt32*
   alias PInt64   = Int64*
