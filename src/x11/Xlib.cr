@@ -789,6 +789,7 @@ lib Xlib
     b : UInt8[20]
     s : Int16[10]
     l : Int64[5]
+    ul : UInt64[5]
   end
 
   alias PClientMessageEvent = ClientMessageEvent*

@@ -8,41 +8,48 @@ require "./x11/XlibConf"
 require "./x11/Xtos"
 require "./x11/Xregion"
 require "./x11/Xutil"
+require "./x11/Xmd"
 require "./x11-cr/*"
 
 module X11Cr
-  alias PDisplay = Xlib::PDisplay
-  puts "Hello"
+  WM_DELETE_WINDOW_STR = "WM_DELETE_WINDOW"
 
   def self.main
-    d = uninitialized PDisplay
+    d = uninitialized Xlib::PDisplay
     d = Xlib.open_display(nil)
+    wm_delete_window = Xlib.intern_atom(d, WM_DELETE_WINDOW_STR, 0)
 
     if d.is_a?(Nil)
-      puts "d is nil!"
       return 1
     else
-      puts "d not nil"
     end
 
-    #s = X11.default_screen d
-    #root_win = X11.root_window d, s
-    #black_pix = X11.black_pixel d, s
-    #white_pix = X11.white_pixel d, s
-    #win = X11.create_simple_window d, root_win, 10, 10, 100, 100, 1, black_pix, white_pix
-    #X11.select_input d, win, X11::EventMask::ExposureMask
-    #X11.map_window d, win
+    s = Xlib.default_screen d
+    root_win = Xlib.root_window d, s
+    black_pix = Xlib.black_pixel d, s
+    white_pix = Xlib.white_pixel d, s
+    win = Xlib.create_simple_window d, root_win, 10, 10, 400, 300, 1, black_pix, white_pix
+    Xlib.select_input d, win,
+      X11::ButtonPressMask | X11::ButtonReleaseMask |
+      X11::ButtonMotionMask | X11::ExposureMask | X11::EnterWindowMask |
+      X11::LeaveWindowMask | X11::KeyPressMask | X11::KeyReleaseMask
+    Xlib.map_window d, win
+    Xlib.set_wm_protocols d, win, pointerof(wm_delete_window), 1
 
-    #e = uninitialized X11::Event
-    #while true
-    #  X11.next_event(d, pointerof(e))
-    #  if e.type == X11::EventName::KeyPress
-    #    break
-    #  end
-    #end
+    e = uninitialized Xlib::Event
+    while true
+      if Xlib.pending d
+        Xlib.next_event(d, pointerof(e))
+        case e.type
+        when X11::ClientMessage
+          break if e.client.data.ul[0] == wm_delete_window
+        when X11::KeyPress
+          break
+        end
+      end
+    end
 
-    #X11.close_display d
-    puts X11::X_PROTOCOL
+    Xlib.close_display d
     0
   end
 
