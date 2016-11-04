@@ -1,20 +1,29 @@
 require "./x11/X"
 require "./x11/Xlib"
+require "./x11/cursorfont"
+require "./x11/keysym"
+require "./x11/keysymdef"
+require "./x11/Xatom"
+require "./x11/XlibConf"
+require "./x11/Xtos"
+require "./x11/Xregion"
+require "./x11/Xutil"
 require "./x11-cr/*"
 
 module X11Cr
+  alias PDisplay = Xlib::PDisplay
   puts "Hello"
 
   def self.main
-    #d = uninitialized X11::PDisplay
-    #d = X11.open_display(nil)
+    d = uninitialized PDisplay
+    d = Xlib.open_display(nil)
 
-    #if d.is_a?(Nil)
-    #  puts "d is nil!"
-    #  return 1
-    #else
-    #  puts "d not nil"
-    #end
+    if d.is_a?(Nil)
+      puts "d is nil!"
+      return 1
+    else
+      puts "d not nil"
+    end
 
     #s = X11.default_screen d
     #root_win = X11.root_window d, s

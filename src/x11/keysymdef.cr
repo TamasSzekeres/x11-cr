@@ -953,13 +953,11 @@ module X11
     XK_Arabic_yeh_baree               = 0x10006d2 # U+06D2 ARABIC LETTER YEH BARREE
     XK_Arabic_heh_goal                = 0x10006c1 # U+06C1 ARABIC LETTER HEH GOAL
     XK_Arabic_switch                     = 0xff7e # Alias for mode_switch
-  {% end %}  XK_ARABIC
+  {% end %} # XK_ARABIC
 
-/*
- * Cyrillic
- * Byte 3 = 6
- */
-#ifdef XK_CYRILLIC
+  # Cyrillic
+  # Byte 3 = 6
+  {% if XK_CYRILLIC %}
     XK_Cyrillic_GHE_bar               = 0x1000492 # U+0492 CYRILLIC CAPITAL LETTER GHE WITH STROKE
     XK_Cyrillic_ghe_bar               = 0x1000493 # U+0493 CYRILLIC SMALL LETTER GHE WITH STROKE
     XK_Cyrillic_ZHE_descender         = 0x1000496 # U+0496 CYRILLIC CAPITAL LETTER ZHE WITH DESCENDER
