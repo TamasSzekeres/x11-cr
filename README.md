@@ -13,12 +13,32 @@ dependencies:
     github: TamasSzekeres/x11-cr
 ```
 
+Then run in terminal:
+```bash
+crystal deps
+```
 
 ## Usage
 
 
 ```crystal
-require "./x11/*"
+require "./x11-cr/*"
+
+module YourModule
+  include X11 # For simpler use
+end
+```
+
+For more details see the sample in [/sample](/sample) folder.
+
+## Sample
+
+Build and run the sample:
+```bash
+	mkdir bin
+	crystal build -o bin/sample sample/simple_window.cr --release
+	./bin/sample
+
 ```
 
 ## Contributing
