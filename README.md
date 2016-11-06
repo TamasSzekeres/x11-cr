@@ -21,13 +21,6 @@ dependencies:
 require "./x11/*"
 ```
 
-
-TODO: Write usage instructions here
-
-## Development
-
-TODO: Write development instructions here
-
 ## Contributing
 
 1. Fork it ( https://github.com/TamasSzekeres/x11-cr/fork )

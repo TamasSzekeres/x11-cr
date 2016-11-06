@@ -1,50 +1,50 @@
-lib Xregion
-  alias PBOX = BOX*
-  alias BOX = Box
-  alias BoxRec = Box
-  alias BoxPtr = Box*
-  alias PBox = Box*
-  struct Box
-    x1, x2, y1, y2 : UInt16
-  end
-
-  alias RextangleRec = RECTANGLE
-  alias RectanglePtr = RECTANGLE*
-  struct RECTANGLE
-    x, y, width, height : UInt16
-  end
-
-  TRUE  = 1
-  FALSE = 0
-  MAXSHORT = 32767
-  MINSHORT = -MAXSHORT
-
-  # clip region
-  alias PREGION = REGION*
-  struct REGION
-    size : Int64
-    numRects : Int64
-    rects : PBOX
-    extents : BOX
-  end
-
-  # Xutil.cr contains the declaration:
-  # alias _XRegion = Region*
-
-  # number of points to buffer before sending them off
-  # to scanlines() :  Must be an even number
-  NUMPTSTOBUFFER = 200
-
-  # used to allocate buffers for points and link
-  # the buffers together
-  alias PPOINTBLOCK = POINTBLOCK*
-  struct POINTBLOCK
-    pts : Xlib::Point[NUMPTSTOBUFFER]
-    next : PPOINTBLOCK
-  end
-end # lib Xregion
-
 module X11
+  lib X
+    alias PBOX = BOX*
+    alias BOX = Box
+    alias BoxRec = Box
+    alias BoxPtr = Box*
+    alias PBox = Box*
+    struct Box
+      x1, x2, y1, y2 : UInt16
+    end
+
+    alias RextangleRec = RECTANGLE
+    alias RectanglePtr = RECTANGLE*
+    struct RECTANGLE
+      x, y, width, height : UInt16
+    end
+
+    TRUE  = 1
+    FALSE = 0
+    MAXSHORT = 32767
+    MINSHORT = -MAXSHORT
+
+    # clip region
+    alias PREGION = REGION*
+    struct REGION
+      size : Int64
+      numRects : Int64
+      rects : PBOX
+      extents : BOX
+    end
+
+    # Xutil.cr contains the declaration:
+    # alias _XRegion = Region*
+
+    # number of points to buffer before sending them off
+    # to scanlines() :  Must be an even number
+    NUMPTSTOBUFFER = 200
+
+    # used to allocate buffers for points and link
+    # the buffers together
+    alias PPOINTBLOCK = POINTBLOCK*
+    struct POINTBLOCK
+      pts : Point[NUMPTSTOBUFFER]
+      next : PPOINTBLOCK
+    end
+  end # lib Xregion
+
   def self.max(a, b)
     a > b ? a : b
   end
