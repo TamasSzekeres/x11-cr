@@ -1,14 +1,4 @@
-require "../x11/X"
-require "../x11/Xlib"
-#require "../x11/cursorfont"
-#require "../x11/keysym"
-#require "../x11/keysymdef"
-#require "../x11/Xatom"
-#require "../x11/XlibConf"
-#require "../x11/Xtos"
-#require "../x11/Xregion"
-#require "../x11/Xutil"
-#require "../x11/Xmd"
+require "../src/*"
 
 module X11Sample
   include X11

@@ -1,3 +1,5 @@
+require "./Xtos"
+
 module X11
   # Xmd.cr: MACHINE DEPENDENT DECLARATIONS.
 
