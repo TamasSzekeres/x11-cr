@@ -1,6 +1,6 @@
 # x11-cr
 
-X11 bindinds for Crystal language.
+X11 bindings for Crystal language.
 
 ## Installation
 
