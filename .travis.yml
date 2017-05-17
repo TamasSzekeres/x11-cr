@@ -1,1 +1,14 @@
+os:
+  - linux
+
 language: crystal
+
+crystal:
+  - latest
+
+script:
+  - crystal spec
+
+branches:
+  only:
+    - master
