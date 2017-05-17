@@ -40,7 +40,7 @@ Build and run the sample:
   ./bin/sample
 
 ```
-![Simple Window](https://raw.githubusercontent.com/TamasSzekeres/x11-cr/master/sample/sample-window.png)
+![Simple Window](https://raw.githubusercontent.com/TamasSzekeres/x11-cr/master/sample/simple-window.png)
 
 ## Contributing
 
