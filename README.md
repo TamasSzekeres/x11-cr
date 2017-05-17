@@ -35,11 +35,12 @@ For more details see the sample in [/sample](/sample) folder.
 
 Build and run the sample:
 ```bash
-	mkdir bin
-	crystal build -o bin/sample sample/simple_window.cr --release
-	./bin/sample
+  mkdir bin
+  crystal build -o bin/sample sample/simple_window.cr --release
+  ./bin/sample
 
 ```
+![Simple Window](https://raw.githubusercontent.com/TamasSzekeres/x11-cr/master/sample/sample_window.png)
 
 ## Contributing
 
