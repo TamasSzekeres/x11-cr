@@ -2,6 +2,8 @@
 
 X11 bindings for Crystal language.
 
+[![Build Status](https://travis-ci.org/TamasSzekeres/x11-cr.svg?branch=master)](https://travis-ci.org/TamasSzekeres/x11-cr)
+
 ## Installation
 
 
