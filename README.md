@@ -3,6 +3,8 @@
 X11 bindings for Crystal language.
 
 [![Build Status](https://travis-ci.org/TamasSzekeres/x11-cr.svg?branch=master)](https://travis-ci.org/TamasSzekeres/x11-cr)
+[![Dependency Status](https://shards.rocks/badge/github/TamasSzekeres/x11-cr/status.svg)](https://shards.rocks/github/TamasSzekeres/x11-cr)
+[![devDependency Status](https://shards.rocks/badge/github/TamasSzekeres/x11-cr/dev_status.svg)](https://shards.rocks/github/TamasSzekeres/x11-cr)
 
 ## Installation
 
@@ -11,7 +13,7 @@ Add this to your application's `shard.yml`:
 
 ```yaml
 dependencies:
-  x11-cr:
+  x11:
     github: TamasSzekeres/x11-cr
 ```
 
@@ -24,7 +26,7 @@ crystal deps
 
 
 ```crystal
-require "./x11-cr/*"
+require "x11"
 
 module YourModule
   include X11 # For simpler use
