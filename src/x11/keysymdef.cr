@@ -1,5 +1,5 @@
 module X11
-  XK_VoidSymbol       = 0xffffff # Void symbol
+  XK_VoidSymbol = 0xffffff # Void symbol
 
   {% if XK_MISCELLANY %}
     # TTY function keys, cleverly chosen to map to ASCII, for convenience of
@@ -375,7 +375,6 @@ module X11
 
   {% end %} # XK_XKB_KEYS
 
-
   # 3270 Terminal Keys
   # Byte 3 = 0xfd
   {% if XK_3270 %}
@@ -676,7 +675,6 @@ module X11
     XK_tcedilla                          = 0x01fe # U+0163 LATIN SMALL LETTER T WITH CEDILLA
     XK_abovedot                          = 0x01ff # U+02D9 DOT ABOVE
   {% end %} # XK_LATIN2
-
 
   # Latin 3
   # Byte 3 = 2
@@ -1802,7 +1800,7 @@ module X11
     # For Inupiak
     XK_Lbelowdot                      = 0x1001e36 # U+1E36 LATIN CAPITAL LETTER L WITH DOT BELOW
     XK_lbelowdot                      = 0x1001e37 # U+1E37 LATIN SMALL LETTER L WITH DOT BELOW
-  {% end %} #XK_CAUCASUS
+  {% end %} # XK_CAUCASUS
 
   # Vietnamese
   {% if XK_VIETNAMESE %}
@@ -2306,4 +2304,4 @@ module X11
     XK_Sinh_luu2              = 0x1000df3 # U+0DF3 SINHALA DIGA GAYANUKITTA
     XK_Sinh_kunddaliya        = 0x1000df4 # U+0DF4 SINHALA KUNDDALIYA
   {% end %} # XK_SINHALA
-end # module X11
+end         # module X11

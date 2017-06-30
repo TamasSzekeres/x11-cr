@@ -22,7 +22,7 @@ module X11
     alias INT32 = Int64
   {% end %}
 
-  alias INT8 = Int8;
+  alias INT8 = Int8
 
   {% if LONG64 %}
     alias CARD64 = UInt64
@@ -32,12 +32,11 @@ module X11
     alias CARD32 = UInt64
   {% end %}
   alias CARD16 = UInt16
-  alias CARD8  = UInt8
+  alias CARD8 = UInt8
 
   alias BITS32 = CARD32
   alias BITS16 = CARD16
 
   alias BYTE = CARD8
   alias BOOL = CARD8
-
 end # module X11

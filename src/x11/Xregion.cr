@@ -5,23 +5,26 @@ module X11
     alias BoxRec = Box
     alias BoxPtr = Box*
     alias PBox = Box*
+
     struct Box
       x1, x2, y1, y2 : UInt16
     end
 
     alias RextangleRec = RECTANGLE
     alias RectanglePtr = RECTANGLE*
+
     struct RECTANGLE
       x, y, width, height : UInt16
     end
 
-    TRUE  = 1
-    FALSE = 0
+    TRUE     =     1
+    FALSE    =     0
     MAXSHORT = 32767
     MINSHORT = -MAXSHORT
 
     # clip region
     alias PREGION = REGION*
+
     struct REGION
       size : Int64
       numRects : Int64
@@ -39,6 +42,7 @@ module X11
     # used to allocate buffers for points and link
     # the buffers together
     alias PPOINTBLOCK = POINTBLOCK*
+
     struct POINTBLOCK
       pts : Point[NUMPTSTOBUFFER]
       next : PPOINTBLOCK
@@ -58,9 +62,9 @@ module X11
   # Remember, x2 and y2 are not in the region
   def self.extent_check(r1, r2)
     r1.value.x2 > r2.value.x1 &&
-    r1.value.x1 < r2.value.x2 &&
-    r1.value.y2 > r2.value.y1 &&
-    r1.value.y1 < r2.value.y2
+      r1.value.x1 < r2.value.x2 &&
+      r1.value.y2 > r2.value.y1 &&
+      r1.value.y1 < r2.value.y2
   end
 
   # update region extents
@@ -80,7 +84,7 @@ module X11
   end
 
   # Check to see if there is enough memory in the present region.
-  #def self.memcheck(reg, rect, firstrect)
+  # def self.memcheck(reg, rect, firstrect)
   #  if reg.value.numRects >= reg.value.size - 1
   #    tmpRect = X11::realloc((firstrect), (2 * (sizeof(BOX)) * (reg.value.size)))
   #    if tmpRect.is_a(Nil)
@@ -90,16 +94,16 @@ module X11
   #      rect = &firstrect[reg.value.numRects]
   #    end
   #  end
-  #end
+  # end
 
   # this routine checks to see if the previous rectangle is the same
   # or subsumes the new rectangle to add.
   def self.check_previous(reg, r, rx1, ry1, rx2, ry2)
     !((reg.value.numRects > 0) &&
-      ((r-1).value.y1 == ry1) &&
-      ((r-1).value.y2 == ry2) &&
-      ((r-1).value.x1 <= rx1) &&
-      ((r-1).value.x2 >= rx2))
+      ((r - 1).value.y1 == ry1) &&
+      ((r - 1).value.y2 == ry2) &&
+      ((r - 1).value.x1 <= rx1) &&
+      ((r - 1).value.x2 >= rx2))
   end
 
   # add a rectangle to the given Region
@@ -137,8 +141,8 @@ module X11
 
   def self.inbox(r, x, y)
     (r.x2 > x) &&
-    (r.x1 <= x) &&
-    (r.y2 > y) &&
-    (r.y1 <= y)
+      (r.x1 <= x) &&
+      (r.y2 > y) &&
+      (r.y1 <= y)
   end
 end # module X11
