@@ -1,0 +1,17 @@
+name: sample_window
+version: 0.1.0
+
+authors:
+  - Wes <me@wmoxam.com>
+
+targets:
+  sample_window:
+    main: src/sample_window.cr
+
+dependencies:
+  x11:
+    path: ../../.
+
+crystal: 0.22.0
+
+license: MIT
