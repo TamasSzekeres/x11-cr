@@ -1,4 +1,4 @@
-require "../src/*"
+require "x11"
 
 module X11Sample
   include X11
