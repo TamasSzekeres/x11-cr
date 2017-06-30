@@ -1,57 +1,57 @@
 # Definitions for the X window system likely to be used by applications
 
 module X11
-  X_PROTOCOL           = 11 # current protocol version
-  X_PROTOCOL_REVISION  =  0 # current minor version
+  X_PROTOCOL          = 11 # current protocol version
+  X_PROTOCOL_REVISION =  0 # current minor version
 
-  alias Char     = UInt8
+  alias Char = UInt8
 
-  alias PChar    = UInt8*
-  alias PPChar   = PChar*
-  alias PInt8    = Int8*
-  alias PUInt8   = UInt8*
-  alias PInt32   = Int32*
-  alias PUInt32  = UInt32*
-  alias PInt64   = Int64*
-  alias PUInt64  = UInt64*
+  alias PChar = UInt8*
+  alias PPChar = PChar*
+  alias PInt8 = Int8*
+  alias PUInt8 = UInt8*
+  alias PInt32 = Int32*
+  alias PUInt32 = UInt32*
+  alias PInt64 = Int64*
+  alias PUInt64 = UInt64*
 
-  alias XID      = UInt64
-  alias Mask     = UInt64
-  alias Atom     = UInt64
+  alias XID = UInt64
+  alias Mask = UInt64
+  alias Atom = UInt64
   alias VisualID = UInt64
-  alias Time     = UInt64
+  alias Time = UInt64
 
   # Resources
 
-  alias Window   = XID
+  alias Window = XID
   alias Drawable = XID
-  alias Font     = XID
-  alias Pixmap   = XID
-  alias Cursor   = XID
+  alias Font = XID
+  alias Pixmap = XID
+  alias Cursor = XID
   alias Colormap = XID
   alias GContext = XID
-  alias KeySym   = XID
+  alias KeySym = XID
 
   alias KeyCode = UInt8
 
-  alias PAtom     = Atom*
-  alias PWindow   = Window*
+  alias PAtom = Atom*
+  alias PWindow = Window*
   alias PDrawable = Drawable*
-  alias PFont     = Font*
-  alias PPixmap   = Pixmap*
-  alias PCursor   = Cursor*
+  alias PFont = Font*
+  alias PPixmap = Pixmap*
+  alias PCursor = Cursor*
   alias PColormap = Colormap*
   alias PGContext = GContext*
-  alias PKeySym   = KeySym*
-  alias PKeyCode  = KeyCode*
+  alias PKeySym = KeySym*
+  alias PKeyCode = KeyCode*
 
-  #*****************************************************************
+  # *****************************************************************
   # RESERVED RESOURCE AND CONSTANT DEFINITIONS
-  #*****************************************************************
+  # *****************************************************************
 
-  None            = 0_i64 # universal null resource or null atom
-  ParentRelative  = 1_i64 # background pixmap in CreateWindow and ChangeWindowAttributes
-  CopyFromParent  = 0_i64 # border pixmap in CreateWindow and ChangeWindowAttributes special VisualID and special window class passed to CreateWindow
+  None           = 0_i64 # universal null resource or null atom
+  ParentRelative = 1_i64 # background pixmap in CreateWindow and ChangeWindowAttributes
+  CopyFromParent = 0_i64 # border pixmap in CreateWindow and ChangeWindowAttributes special VisualID and special window class passed to CreateWindow
 
   PointerWindow   = 0_i64 # destination window in SendEvent
   InputFocus      = 1_i64 # destination window in SendEvent
@@ -63,9 +63,9 @@ module X11
   CurrentTime     = 0_i64 # special Time
   NoSymbol        = 0_i64 # special KeySym
 
-  #*****************************************************************
+  # *****************************************************************
   # EVENT DEFINITIONS
-  #*****************************************************************
+  # *****************************************************************
 
   # Input Event Masks. Used as event-mask window attribute and as arguments
   # to Grab requests.  Not to be confused with event names.  */
@@ -101,14 +101,14 @@ module X11
   # confused with event masks above.  They start from 2 because 0 and 1
   # are reserved in the protocol for errors and replies. */
 
-  KeyPress         = 2
-  KeyRelease       = 3
-  ButtonPress      = 4
-  ButtonRelease    = 5
-  MotionNotify     = 6
-  EnterNotify      = 7
-  LeaveNotify      = 8
-  FocusIn          = 9
+  KeyPress         =  2
+  KeyRelease       =  3
+  ButtonPress      =  4
+  ButtonRelease    =  5
+  MotionNotify     =  6
+  EnterNotify      =  7
+  LeaveNotify      =  8
+  FocusIn          =  9
   FocusOut         = 10
   KeymapNotify     = 11
   Expose           = 12
@@ -118,7 +118,7 @@ module X11
   CreateNotify     = 16
   DestroyNotify    = 17
   UnmapNotify      = 18
-  MapNotify	       = 19
+  MapNotify        = 19
   MapRequest       = 20
   ReparentNotify   = 21
   ConfigureNotify  = 22
@@ -161,7 +161,6 @@ module X11
   Mod4MapIndex    = 6
   Mod5MapIndex    = 7
 
-
   # button masks.  Used in same manner as Key masks above. Not to be confused
   #   with button names below.
 
@@ -173,12 +172,11 @@ module X11
 
   AnyModifier = (1 << 15) # used in GrabButton, GrabKey
 
-
   # button names. Used as arguments to GrabButton and as detail in ButtonPress
   #   and ButtonRelease events.  Not to be confused with button masks above.
   #   Note that 0 is already defined above as "AnyButton".
 
-  Button1	=	1
+  Button1 = 1
   Button2 = 2
   Button3 = 3
   Button4 = 4
@@ -191,24 +189,24 @@ module X11
   NotifyUngrab       = 2
   NotifyWhileGrabbed = 3
 
-  NotifyHint         = 1 # for MotionNotify events
+  NotifyHint = 1 # for MotionNotify events
 
   # Notify detail
 
   NotifyAncestor         = 0
   NotifyVirtual          = 1
   NotifyInferior         = 2
-  NotifyNonlinear	     = 3
+  NotifyNonlinear        = 3
   NotifyNonlinearVirtual = 4
-  NotifyPointer	         = 5
+  NotifyPointer          = 5
   NotifyPointerRoot      = 6
   NotifyDetailNone       = 7
 
   # Visibility notify
 
   VisibilityUnobscured        = 0
-  VisibilityPartiallyObscured =	1
-  VisibilityFullyObscured     =	2
+  VisibilityPartiallyObscured = 1
+  VisibilityFullyObscured     = 2
 
   # Circulation request
 
@@ -220,7 +218,7 @@ module X11
   FamilyInternet  = 0 # IPv4
   FamilyDECnet    = 1
   FamilyChaos     = 2
-  FamilyInternet6 = 6	# IPv6
+  FamilyInternet6 = 6 # IPv6
 
   # authentication families not tied to a specific protocol
   FamilyServerInterpreted = 5
@@ -232,7 +230,7 @@ module X11
 
   # Color Map notification
 
-  ColormapUninstalled =	0
+  ColormapUninstalled = 0
   ColormapInstalled   = 1
 
   # GrabPointer, GrabButton, GrabKeyboard, GrabKey Modes
@@ -265,26 +263,26 @@ module X11
   RevertToPointerRoot = PointerRoot
   RevertToParent      = 2
 
-  #*****************************************************************
+  # *****************************************************************
   # ERROR CODES
-  #*****************************************************************
+  # *****************************************************************
 
-  Success           = 0_i32	# everything's okay
-  BadRequest        = 1_i32 # bad request code
-  BadValue          = 2_i32 # int parameter out of range
-  BadWindow         = 3_i32 # parameter not a Window
-  BadPixmap         = 4_i32 # parameter not a Pixmap
-  BadAtom           = 5_i32 # parameter not an Atom
-  BadCursor         = 6_i32 # parameter not a Cursor
-  BadFont           = 7_i32	# parameter not a Font
-  BadMatch          = 8_i32 # parameter mismatch
-  BadDrawable       = 9_i32 # parameter not a Pixmap or Window
-  BadAccess         = 10_i32 # depending on context:
-      #	- key/button already grabbed
-      # - attempt to free an illegal cmap entry
-      #	- attempt to store into a read-only color map entry.
-      # - attempt to modify the access control list from other than the local host.
-  BadAlloc          = 11_i32	# insufficient resources
+  Success     =  0_i32 # everything's okay
+  BadRequest  =  1_i32 # bad request code
+  BadValue    =  2_i32 # int parameter out of range
+  BadWindow   =  3_i32 # parameter not a Window
+  BadPixmap   =  4_i32 # parameter not a Pixmap
+  BadAtom     =  5_i32 # parameter not an Atom
+  BadCursor   =  6_i32 # parameter not a Cursor
+  BadFont     =  7_i32 # parameter not a Font
+  BadMatch    =  8_i32 # parameter mismatch
+  BadDrawable =  9_i32 # parameter not a Pixmap or Window
+  BadAccess   = 10_i32 # depending on context:
+  #	- key/button already grabbed
+  # - attempt to free an illegal cmap entry
+  #	- attempt to store into a read-only color map entry.
+  # - attempt to modify the access control list from other than the local host.
+  BadAlloc          = 11_i32 # insufficient resources
   BadColor          = 12_i32 # no such colormap
   BadGC             = 13_i32 # parameter not a GC
   BadIDChoice       = 14_i32 # choice not in range or already used
@@ -292,12 +290,12 @@ module X11
   BadLength         = 16_i32 # Request length incorrect
   BadImplementation = 17_i32 # server is defective
 
-  FirstExtensionError	= 128
+  FirstExtensionError = 128
   LastExtensionError  = 255
 
-  #*****************************************************************
+  # *****************************************************************
   # WINDOW DEFINITIONS
-  #*****************************************************************
+  # *****************************************************************
 
   # Window classes used by CreateWindow
   # Note that CopyFromParent is already defined as 0 above
@@ -333,19 +331,18 @@ module X11
   CWSibling     = (1 << 5)
   CWStackMode   = (1 << 6)
 
-
   # Bit Gravity
 
-  ForgetGravity    = 0
-  NorthWestGravity = 1
-  NorthGravity     = 2
-  NorthEastGravity = 3
-  WestGravity      = 4
-  CenterGravity    = 5
-  EastGravity      = 6
-  SouthWestGravity = 7
-  SouthGravity     = 8
-  SouthEastGravity = 9
+  ForgetGravity    =  0
+  NorthWestGravity =  1
+  NorthGravity     =  2
+  NorthEastGravity =  3
+  WestGravity      =  4
+  CenterGravity    =  5
+  EastGravity      =  6
+  SouthWestGravity =  7
+  SouthGravity     =  8
+  SouthEastGravity =  9
   StaticGravity    = 10
 
   # Window gravity + bit gravity above
@@ -394,14 +391,14 @@ module X11
   PropModePrepend = 1
   PropModeAppend  = 2
 
-  #*****************************************************************
+  # *****************************************************************
   # GRAPHICS DEFINITIONS
-  #*****************************************************************
+  # *****************************************************************
 
   # graphics functions, as in GC.alu
 
-  GXclear	     = 0x0	# 0
-  GXand          = 0x1	# src AND dst
+  GXclear        = 0x0 # 0
+  GXand          = 0x1 # src AND dst
   GXandReverse   = 0x2 # src AND NOT dst
   GXcopy         = 0x3 # src
   GXandInverted  = 0x4 #  NOT src AND dst
@@ -411,7 +408,7 @@ module X11
   GXnor          = 0x8 # NOT src AND NOT dst
   GXequiv        = 0x9 # NOT src XOR dst
   GXinvert       = 0xa # NOT dst
-  GXorReverse	 = 0xb # src OR NOT dst
+  GXorReverse    = 0xb # src OR NOT dst
   GXcopyInverted = 0xc # NOT src
   GXorInverted   = 0xd # NOT src OR dst
   GXnand         = 0xe # NOT src OR NOT dst
@@ -462,14 +459,14 @@ module X11
 
   # CoordinateMode for drawing routines
 
-  CoordModeOrigin   = 0	# relative to the origin
+  CoordModeOrigin   = 0 # relative to the origin
   CoordModePrevious = 1 # relative to previous point
 
   # Polygon shapes
 
-  Complex   = 0	# paths may intersect
+  Complex   = 0 # paths may intersect
   Nonconvex = 1 # no paths intersect, but not convex
-  Convex    = 2	# wholly convex
+  Convex    = 2 # wholly convex
 
   # Arc modes for PolyFillArc
 
@@ -505,9 +502,9 @@ module X11
 
   GCLastBit = 22
 
-  #*****************************************************************
+  # *****************************************************************
   # FONTS
-  #*****************************************************************
+  # *****************************************************************
 
   # used in QueryFont -- draw direction
 
@@ -516,9 +513,9 @@ module X11
 
   FontChange = 255
 
-  #*****************************************************************
+  # *****************************************************************
   #  IMAGING
-  #*****************************************************************
+  # *****************************************************************
 
   # ImageFormat -- PutImage, GetImage
 
@@ -526,15 +523,14 @@ module X11
   XYPixmap = 1 # depth == drawable depth
   ZPixmap  = 2 # depth == drawable depth
 
-  #*****************************************************************
+  # *****************************************************************
   # COLOR MAP STUFF
-  #*****************************************************************
+  # *****************************************************************
 
   # For CreateColormap
 
   AllocNone = 0 # create map with no entries
   AllocAll  = 1 # allocate entire map writeable
-
 
   # Flags used in StoreNamedColor, StoreColors
 
@@ -542,9 +538,9 @@ module X11
   DoGreen = (1_i64 << 1)
   DoBlue  = (1_i64 << 2)
 
-  #*****************************************************************
+  # *****************************************************************
   # CURSOR STUFF
-  #*****************************************************************
+  # *****************************************************************
 
   # QueryBestSize Class
 
@@ -552,11 +548,11 @@ module X11
   TileShape    = 1 # size tiled fastest
   StippleShape = 2 # size stippled fastest
 
-  #*****************************************************************
+  # *****************************************************************
   # KEYBOARD/POINTER STUFF
-  #*****************************************************************
+  # *****************************************************************
 
-  AutoRepeatModeOff	    = 0
+  AutoRepeatModeOff     = 0
   AutoRepeatModeOn      = 1
   AutoRepeatModeDefault = 2
 
@@ -575,16 +571,16 @@ module X11
   KBAutoRepeatMode  = (1_i64 << 0)
 
   MappingSuccess = 0
-  MappingBusy   = 1
-  MappingFailed	= 2
+  MappingBusy    = 1
+  MappingFailed  = 2
 
   MappingModifier = 0
   MappingKeyboard = 1
   MappingPointer  = 2
 
-  #*****************************************************************
+  # *****************************************************************
   # SCREEN SAVER STUFF
-  #*****************************************************************
+  # *****************************************************************
 
   DontPreferBlanking = 0
   PreferBlanking     = 1
@@ -602,9 +598,9 @@ module X11
   ScreenSaverReset  = 0
   ScreenSaverActive = 1
 
-  #*****************************************************************
+  # *****************************************************************
   # HOSTS AND CONNECTIONS
-  #*****************************************************************
+  # *****************************************************************
 
   # for ChangeHosts
 
@@ -626,7 +622,6 @@ module X11
   PseudoColor = 3
   TrueColor   = 4
   DirectColor = 5
-
 
   # Byte order  used in imageByteOrder and bitmapBitOrder
 
