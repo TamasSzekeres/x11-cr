@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - move sample to /examples folder
 ### Updated
 - README.md
+- shard.yml (version)
+- .editorconfig
 
 ## [0.2.0] - 2017-05-17
 ### Added
