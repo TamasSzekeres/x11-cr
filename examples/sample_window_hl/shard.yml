@@ -1,0 +1,17 @@
+name: sample_window_hl
+version: 0.1.0
+
+authors:
+  - Tamás Szekeres <szektam2@gmail.com>
+
+targets:
+  sample_window:
+    main: src/sample_window_hl.cr
+
+dependencies:
+  x11:
+    path: ../../.
+
+crystal: 0.22.0
+
+license: MIT
