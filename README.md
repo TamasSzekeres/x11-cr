@@ -33,18 +33,19 @@ module YourModule
 end
 ```
 
-For more details see the sample in [/sample](/sample) folder.
+For more details see the sample in [/examples/sample_window](/examples/sample_window) folder.
 
 ## Sample
 
 Build and run the sample:
 ```bash
-  mkdir bin
-  crystal build -o bin/sample sample/simple_window.cr --release
-  ./bin/sample
+  cd examples/sample_window
+  make install
+  make
+  ./sample_window
 
 ```
-![Simple Window](https://raw.githubusercontent.com/TamasSzekeres/x11-cr/master/sample/simple-window.png)
+![Simple Window](https://raw.githubusercontent.com/TamasSzekeres/x11-cr/master/examples/sample_window/screenshot/sample_window.png)
 
 ## Contributing
 
