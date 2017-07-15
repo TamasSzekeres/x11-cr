@@ -2,9 +2,12 @@ require "./c/Xlib"
 
 module X11
   include C
+
   class Display
+    # Pointer to the underlieing XDisplay object.
     getter dpy : X::PDisplay
 
+    # Opens a new display.
     def initialize(name : String? = nil)
       if name.is_a?(String)
         @dpy = X.open_display name.to_unsafe
@@ -19,6 +22,20 @@ module X11
 
     def close : Int32
       X.close_display @dpy
+    end
+
+    # The load_query_font function provides the most common way for accessing a font.
+    # load_query_font both opens (loads) the specified font and returns a pointer to the appropriate FontStruct structure.
+    # If the font name is not in the Host Portable Character Encoding, the result is implementation dependent.
+    # If the font does not exist, load_query_font returns nil.
+    # *name* Specifies the name of the font.
+    def load_query_font(name : String) : FontStruct?
+      pfs = X.load_query_font(@dpy, name.to_unsafe)
+      pfs.null? ? nil : FontStruct.new(self, pfs)
+    end
+
+    def atom_name(atom : Atom | X11::C::Atom) : String
+      String.new X.get_atom_name(@dpy, atom.to_u64)
     end
 
     # The create_simple_window function creates an unmapped InputOutput subwindow for a specified parent window,

@@ -17,6 +17,7 @@ module X11::C
 
     $_Xdebug : Int32
 
+    # Returns the number of characters pointed to by "str". Only "len" bytes in "str" are used in determining the character count returned. "Str" may point at characters from any valid codeset in the current locale.
     fun mblen = _Xmblen(
       str : PChar,
       len : Int32
