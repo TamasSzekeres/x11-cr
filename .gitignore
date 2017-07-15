@@ -5,6 +5,7 @@
 /.crystal/
 /.shards/
 /examples/sample_window/sample_window
+/examples/sample_window_hl/sample_window_hl
 
 
 # Libraries don't need dependency lock
