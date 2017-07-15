@@ -1,4 +1,4 @@
-module X11
+module X11::C
   lib X
     alias PBOX = BOX*
     alias BOX = Box

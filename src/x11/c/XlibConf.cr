@@ -1,4 +1,4 @@
-module X11
+module X11::C
   # Threading support?
   XTHREADS = true
 

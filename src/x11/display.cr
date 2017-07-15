@@ -1,4 +1,7 @@
+require "./c/Xlib"
+
 module X11
+  include C
   class Display
     getter dpy : X::PDisplay
 

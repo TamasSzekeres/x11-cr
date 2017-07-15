@@ -1,4 +1,4 @@
-module X11
+module X11::C
   XC_NUM_GLYPHS          = 154
   XC_X_CURSOR            =   0
   XC_ARROW               =   2

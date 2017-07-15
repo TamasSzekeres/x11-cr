@@ -1,6 +1,6 @@
 # Definitions for the X window system likely to be used by applications
 
-module X11
+module X11::C
   X_PROTOCOL          = 11 # current protocol version
   X_PROTOCOL_REVISION =  0 # current minor version
 

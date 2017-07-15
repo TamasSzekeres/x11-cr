@@ -1,4 +1,4 @@
-module X11
+module X11::C
   XA_PRIMARY             =  1
   XA_SECONDARY           =  2
   XA_ARC                 =  3

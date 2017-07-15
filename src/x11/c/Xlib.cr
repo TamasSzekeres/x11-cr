@@ -1,4 +1,6 @@
-module X11
+require "./X"
+
+module X11::C
   @[Link("X11")]
   lib X
     alias Pointer = UInt8*

@@ -1,4 +1,4 @@
-module X11
+module X11::C
   # default keysyms
   XK_MISCELLANY   = true
   XK_XKB_KEYS     = true
