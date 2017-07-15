@@ -23,24 +23,24 @@ module X11Sample
     # Set Window Title.
     d.store_name win, "Simple Window"
 
-    # display_string = "Hello X11!"
+    display_string = "Hello X11!"
 
-    # while true
-    #   if d.pending
-    #     e = d.next_event
-    #     case e.type
-    #     when Expose
-    #       d.draw_string win, d.default_gc(s), 10, 50, display_string, display_string.size
-    #     when ClientMessage
-    #       break if e.client.data.ul[0] == wm_delete_window
-    #     when KeyPress
-    #       break
-    #    end
-    #  end
-    #end
+    while true
+      if d.pending
+        e = d.next_event
+        case e.type
+        when Expose
+          d.draw_string win, d.default_gc(s), 10, 50, display_string
+        when ClientMessage
+          break if e.client.data.ul[0] == wm_delete_window
+        when KeyPress
+          break
+       end
+     end
+    end
 
-    #d.destroy_window win
-    #d.close_display
+    d.destroy_window win
+    d.close
     0
   end
 
