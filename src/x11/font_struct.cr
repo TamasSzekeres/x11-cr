@@ -12,6 +12,10 @@ module X11
       raise BadAllocException.new if @font_struct.null?
     end
 
+    def finalize
+      X.free_font @display.dpy, @font_struct
+    end
+
     # Returns the font's name.
     def name : String
       property_name Atom::Font
