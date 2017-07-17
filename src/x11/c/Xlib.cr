@@ -1429,7 +1429,7 @@ module X11::C
     fun create_colormap = XCreateColormap(
       display : PDisplay,
       w : Window,
-      vusial : PVisual,
+      visual : PVisual,
       alloc : Int32
     ) : Colormap
 
@@ -1443,7 +1443,7 @@ module X11::C
       y : UInt32
     ) : Cursor
 
-    fun create_glyph_curso = XCreateGlyphCursor(
+    fun create_glyph_cursor = XCreateGlyphCursor(
       display : PDisplay,
       source_font : Font,
       mask_font : Font,
