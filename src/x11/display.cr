@@ -519,19 +519,45 @@ module X11
       X.load_font @dpy, name.to_unsafe
     end
 
+    def create_gc(d : Drawable, valuemask : UInt64, values : GCValues) : GC
+      X.create_gc @dpy, d, valuemask, values.values
+    end
+
+    def self.gc_context_from_gc(gc : GC) : GC
+      X.gc_context_from_gc gc
+    end
+
+    def flush_gc(gc : GC)
+      X.flush_gc @dpy, fc
+      self
+    end
+
+    def create_pixmap(d : Drawable, width : UInt32, height : UInt32, depth : UInt32) : Pixmap
+      X.create_pixmap @dpy, d, width, height, depth
+    end
+
+    def create_bitmap_from_data(d : Drawable, data : String, width : UInt32, height : UInt32) : Pixmap
+      X.create_bitmap_from_data @dpy, d, data.to_unsafe, width, height
+    end
+
+    def create_pixmap_from_bitmap_data(d : Drawable, data : String, width : UInt32, height : UInt32, fg : UInt64, bg : UInt64, depth : UInt64) : Pixmap
+      X.create_pixmap_from_bitmap_data @dpy, d, data.to_unsafe, width, height, fg, bg, depth
+    end
+
     def default_visual(screen_number : Int32) : Visual
       Visual.new(self, X.default_visual(@dpy, screen_number))
     end
 
-    # The create_simple_window function creates an unmapped InputOutput subwindow for a specified parent window,
-    # returns the window ID of the created window, and causes the X server to generate a CreateNotify event.
-    # The created window is placed on top in the stacking order with respect to siblings.
-    # Any part of the window that extends outside its parent window is clipped.
-    # The border_width for an InputOnly window must be zero, or a BadMatch error results.
-    # create_simple_window inherits its depth, class, and visual from its parent.
-    # All other window attributes, except background and border, have their default values.
-    def create_simple_window(parent, x, y, width, height, border_width, border, background)
+    def create_simple_window(parent : Window, x : Int32, y : Int32, width : UInt32, height : UInt32, border_width : UInt32, border : UInt64, background : UInt64) : Window
       X.create_simple_window @dpy, parent, x, y, width, height, border_width, border, background
+    end
+
+    def selection_owner(selection : Atom | X11::C::Atom) : Window
+      X.get_selection_owner @dpy, selection.to_u64
+    end
+
+    def create_window(parent : Window, x : Int32, y : Int32, width : UInt32, height : UInt32, border_width : UInt32, depth : Int32, c_class : UInt32, visual : Visual, valuemask : UInt64, attributes : SetWindowAttributes) : Window
+      X.create_window @dpy, parent, x, y, width, height, border_width, depth, c_class, visual.to_unsafe, valuemask, attributes.to_unsafe
     end
 
     def destroy_window(w : Window) : Int32

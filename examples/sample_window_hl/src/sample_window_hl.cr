@@ -12,7 +12,7 @@ module X11Sample
     root_win = d.root_window s
     black_pix = d.black_pixel s
     white_pix = d.white_pixel s
-    win = d.create_simple_window root_win, 10, 10, 400, 300, 1, black_pix, white_pix
+    win = d.create_simple_window root_win, 10, 10, 400_u32, 300_u32, 1_u32, black_pix, white_pix
     d.select_input win,
       ButtonPressMask | ButtonReleaseMask |
       ButtonMotionMask | ExposureMask | EnterWindowMask |

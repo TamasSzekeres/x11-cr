@@ -26,5 +26,9 @@ module X11
     def create_image(depth : UInt32, format : Int32, offset : Int32, data : Bytes, width : UInt32, height : UInt32, bitmap_pad : Int32, bytes_per_line : Int32) : Image
       Image.new(self, X.create_image(@display.dpy, @visual, depth, format, offset, data.to_unsafe, width, height, bitmap_pad, bytes_per_line))
     end
+
+    def to_unsafe : X11::C::X::PVisual
+      @visual
+    end
   end
 end
