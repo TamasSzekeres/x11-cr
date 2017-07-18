@@ -519,45 +519,239 @@ module X11
       X.load_font @dpy, name.to_unsafe
     end
 
+    # Creates a graphics context.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **valuemask** Specifies which components in the GC are to be set using
+    # the information in the specified values structure. This argument is the
+    # bitwise inclusive OR of zero or more of the valid GC component mask bits.
+    # - **values** Specifies any values as specified by the valuemask.
+    #
+    # ###Description
+    # The `create_gc` function creates a graphics context and returns a GC.
+    # The GC can be used with any destination drawable having the same root and
+    # depth as the specified drawable. Use with other drawables results in a **BadMatch** error.
+    #
+    # `create_gc` can generate **BadAlloc**, **BadDrawable**, **BadFont**, **BadMatch**, **BadPixmap**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadDrawable** A value for a `Drawable` argument does not name a defined `Window` or `Pixmap`.
+    # - **BadFont** A value for a font argument does not name a defined font (or, in some cases, `GContext`).
+    # - **BadMatch** An **InputOnly** window is used as a `Drawable`.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and range but fails to match in some other way required by the request.
+    # - **BadPixmap** A value for a `Pixmap` argument does not name a defined `Pixmap`.
+    # - **BadValue** Some numeric value falls outside the range of values accepted by the request.
+    # Unless a specific range is specified for an argument, the full range defined
+    # by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
     def create_gc(d : Drawable, valuemask : UInt64, values : GCValues) : GC
       X.create_gc @dpy, d, valuemask, values.values
     end
 
+    # Returns GC-context from GC.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC for which you want the resource ID.
     def self.gc_context_from_gc(gc : GC) : GC
       X.gc_context_from_gc gc
     end
 
+    # Forces GC component change.
+    #
+    # ###Arguments
+    # - **display** Specifies the connection to the X server.
+    # - **gc** Specifies the GC.
+    #
+    # ###Description
+    # Force sending GC component changes.
     def flush_gc(gc : GC)
       X.flush_gc @dpy, fc
       self
     end
 
+    # Creates a pixmap.
+    #
+    # ###Arguments
+    # - **d** Specifies which screen the pixmap is created on.
+    # - **width**, **height** Specify the width and height, which define the dimensions of the pixmap.
+    # - **depth** Specifies the depth of the pixmap.
+    #
+    # ###Description
+    # The `create_pixmap` function creates a pixmap of the width, height,
+    # and depth you specified and returns a pixmap ID that identifies it.
+    # It is valid to pass an **InputOnly** window to the drawable argument.
+    # The width and height arguments must be nonzero, or a **BadValue** error results.
+    # The depth argument must be one of the depths supported by the screen of the specified drawable, or a **BadValue** error results.
+    #
+    # The server uses the specified drawable to determine on which screen to create the pixmap.
+    # The pixmap can be used only on this screen and only with other drawables of the same depth (see `copy_plane`
+    # for an exception to this rule). The initial contents of the pixmap are undefined.
+    #
+    # `create_pixmap` can generate **BadAlloc**, **BadDrawable**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadDrawable** A value for a `Drawable` argument does not name a defined `Window` or `Pixmap`.
+    # - **BadValue** Some numeric value falls outside the range of values accepted by the request.
+    # Unless a specific range is specified for an argument, the full range defined
+    # by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
     def create_pixmap(d : Drawable, width : UInt32, height : UInt32, depth : UInt32) : Pixmap
       X.create_pixmap @dpy, d, width, height, depth
     end
 
-    def create_bitmap_from_data(d : Drawable, data : String, width : UInt32, height : UInt32) : Pixmap
+    # Creates a pixmap from data.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable that indicates the screen.
+    # - **data** Specifies the location of the bitmap data.
+    # - **width**, **height** Specify the width and height.
+    #
+    # ###Description
+    # The `create_bitmap_from_data` function allows you to include in your C program (using #include)
+    # a bitmap file that was written out by `write_bitmap_file` (X version 11 format only)
+    # without reading in the bitmap file. The following example creates a gray bitmap:
+    # ```c
+    # #include "gray.bitmap"
+    #
+    # Pixmap bitmap;
+    # bitmap = XCreateBitmapFromData(display, window, gray_bits, gray_width, gray_height);
+    # ```
+    # If insufficient working storage was allocated, `create_bitmap_from_data` returns **None**.
+    # It is your responsibility to free the bitmap using `free_pixmap` when finished.
+    #
+    # `create_bitmap_from_data` can generate a **BadAlloc** and **BadGC** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    def create_bitmap_from_data(d : Drawable, data : Bytes, width : UInt32, height : UInt32) : Pixmap
       X.create_bitmap_from_data @dpy, d, data.to_unsafe, width, height
     end
 
-    def create_pixmap_from_bitmap_data(d : Drawable, data : String, width : UInt32, height : UInt32, fg : UInt64, bg : UInt64, depth : UInt64) : Pixmap
+    # Creates a pixmap.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable that indicates the screen.
+    # - **data** Specifies the data in bitmap format.
+    # - **width**, **height** Specify the width and height.
+    # - **fg**, **bg** Specify the foreground and background pixel values to use.
+    # - **depth** Specifies the depth of the pixmap.
+    #
+    # ###Description
+    # The `create_pixmap_from_bitmap_data` function creates a pixmap of the given
+    # depth and then does a bitmap-format `put_image` of the data into it.
+    # The depth must be supported by the screen of the specified drawable, or a **BadMatch** error results.
+    #
+    # `create_pixmap_from_bitmap_data` can generate **BadAlloc**, **BadDrawable**, **BadGC**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadDrawable** A value for a `Drawable` argument does not name a defined `Window` or `Pixmap`.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a `Drawable`.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and range but fails to match in some other way required by the request.
+    def create_pixmap_from_bitmap_data(d : Drawable, data : Bytes, width : UInt32, height : UInt32, fg : UInt64, bg : UInt64, depth : UInt64) : Pixmap
       X.create_pixmap_from_bitmap_data @dpy, d, data.to_unsafe, width, height, fg, bg, depth
     end
 
-    def default_visual(screen_number : Int32) : Visual
-      Visual.new(self, X.default_visual(@dpy, screen_number))
-    end
-
+    # Creates an unmapped subwindow.
+    #
+    # ###Description
+    # The `create_simple_window function creates an unmapped **InputOutput** subwindow
+    # for a specified parent window, returns the window ID of the created window,
+    # and causes the X server to generate a **CreateNotify** event.
+    # The created window is placed on top in the stacking order with respect to siblings.
+    # Any part of the window that extends outside its parent window is clipped.
+    # The `border_width` for an **InputOnly** window must be zero, or a **BadMatch** error results.
+    # `create_simple_window` inherits its depth, class, and visual from its parent.
+    # All other window attributes, except background and border, have their default values.
+    #
+    # `create_simple_window` can generate **BadAlloc**, **BadMatch**, **BadValue**, and **BadWindow** errors.
+    #
+    # For more information see: `create_window`.
     def create_simple_window(parent : Window, x : Int32, y : Int32, width : UInt32, height : UInt32, border_width : UInt32, border : UInt64, background : UInt64) : Window
       X.create_simple_window @dpy, parent, x, y, width, height, border_width, border, background
     end
 
+    # Returns the selection owner.
+    #
+    # ###Arguments
+    # - **display** Specifies the connection to the X server.
+    # - **selection** Specifies the selection atom whose owner you want returned.
+    #
+    # ###Description
+    # The `selection_owner` function returns the window ID associated with
+    # the window that currently owns the specified selection. If no selection was
+    # specified, the function returns the constant `None`. If `None` is returned, there is no owner for the selection.
+    #
+    # `selection_owner` can generate a **BadAtom** error.
+    #
+    # ###Diagnostics
+    # - **BadAtom** A value for an `Atom` argument does not name a defined `Atom`.
     def selection_owner(selection : Atom | X11::C::Atom) : Window
       X.get_selection_owner @dpy, selection.to_u64
     end
 
+    # Creates a window.
+    #
+    # ###Arguments
+    # - **attributes** Specifies the structure from which the values (as specified by the value mask) are to be taken. The value mask should have the appropriate bits set to indicate which attributes have been set in the structure.
+    # - **background** Specifies the background pixel value of the window.
+    # - **border** Specifies the border pixel value of the window.
+    # - **border_width** Specifies the width of the created window's border in pixels.
+    # - **class** Specifies the created window's class. You can pass `InputOutput`,
+    # `InputOnly`, or **CopyFromParent**. A class of **CopyFromParent** means the class is taken from the parent.
+    # - **depth** Specifies the window's depth. A depth of **CopyFromParent** means the depth is taken from the parent.
+    # - **parent** Specifies the parent window.
+    # - **valuemask** Specifies which window attributes are defined in the attributes argument.
+    # This mask is the bitwise inclusive OR of the valid attribute mask bits. If valuemask is zero, the attributes are ignored and are not referenced.
+    # - **visual**Specifies the visual type. A visual of **CopyFromParent** means the visual type is taken from the parent.
+    # - **width**, **height** Specify the width and height, which are the created window's inside dimensions and do not include the created window's borders
+    # - **x**, **y** Specify the x and y coordinates, which are the top-left outside corner of the window's borders and are relative to the inside of the parent window's borders.
+    #
+    # #Description
+    # The `create_window` function creates an unmapped subwindow for a specified parent window,
+    # returns the window ID of the created window, and causes the X server to generate a `CreateNotify` event.
+    # The created window is placed on top in the stacking order with respect to siblings.
+    #
+    # The coordinate system has the X axis horizontal and the Y axis vertical with the origin [0, 0] at the upper-left corner.
+    # Coordinates are integral, in terms of pixels, and coincide with pixel centers.
+    # Each window and pixmap has its own coordinate system. For a window, the origin is inside the border at the inside, upper-left corner.
+    #
+    # The border_width for an **InputOnly** window must be zero, or a **BadMatch** error results.
+    # For class **InputOutput**, the visual type and depth must be a combination supported for the screen,
+    # or a BadMatch error results. The depth need not be the same as the parent,
+    # but the parent must not be a window of class **InputOnly**, or a **BadMatch** error results.
+    # For an **InputOnly** window, the depth must be zero, and the visual must be
+    # one supported by the screen. If either condition is not met, a **BadMatch** error results.
+    # The parent window, however, may have any depth and class. If you specify any invalid window attribute for a window, a **BadMatch** error results.
+    #
+    # The created window is not yet displayed (mapped) on the user's display.
+    # To display the window, call `map_window`. The new window initially uses
+    # the same cursor as its parent. A new cursor can be defined for the new window
+    # by calling `define_cursor`. The window will not be visible on the screen
+    # unless it and all of its ancestors are mapped and it is not obscured by any of its ancestors.
+    #
+    # `create_window can generate **BadAlloc**, **BadColor**, **BadCursor**, **BadMatch**, **BadPixmap**, **BadValue**, and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested resource or server memory.
+    # - **BadColor** A value for a `Colormap` argument does not name a defined `Colormap`.
+    # - **BadCursor** A value for a `Cursor` argument does not name a defined `Cursor`.
+    # - **BadMatch** The values do not exist for an **InputOnly** window.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and range but fails to match in some other way required by the request.
+    # - **BadPixmap** A value for a `Pixmap` argument does not name a defined `Pixmap`.
+    # - **BadValue** Some numeric value falls outside the range of values accepted by the request.
+    # Unless a specific range is specified for an argument, the full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a `Window` argument does not name a defined `Window`.
     def create_window(parent : Window, x : Int32, y : Int32, width : UInt32, height : UInt32, border_width : UInt32, depth : Int32, c_class : UInt32, visual : Visual, valuemask : UInt64, attributes : SetWindowAttributes) : Window
       X.create_window @dpy, parent, x, y, width, height, border_width, depth, c_class, visual.to_unsafe, valuemask, attributes.to_unsafe
+    end
+
+    def default_visual(screen_number : Int32) : Visual
+      Visual.new(self, X.default_visual(@dpy, screen_number))
     end
 
     def destroy_window(w : Window) : Int32
