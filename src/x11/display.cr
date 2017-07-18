@@ -515,7 +515,7 @@ module X11
     # ###Diagnostics
     # - **BadAlloc** The server failed to allocate the requested source or server memory.
     # - **BadName** A font or color of the specified name does not exist.
-    def load_font(name : String) : Font
+    def load_font(name : String) : X11::X::Font
       X.load_font @dpy, name.to_unsafe
     end
 
@@ -545,7 +545,7 @@ module X11
     # - **BadValue** Some numeric value falls outside the range of values accepted by the request.
     # Unless a specific range is specified for an argument, the full range defined
     # by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
-    def create_gc(d : Drawable, valuemask : UInt64, values : GCValues) : GC
+    def create_gc(d : Drawable, valuemask : UInt64, values : GCValues) : X11::X::GC
       X.create_gc @dpy, d, valuemask, values.values
     end
 
@@ -553,7 +553,7 @@ module X11
     #
     # ###Arguments
     # - **gc** Specifies the GC for which you want the resource ID.
-    def self.gc_context_from_gc(gc : GC) : GC
+    def self.gc_context_from_gc(gc : X11::C::GC) : X11::C::GC
       X.gc_context_from_gc gc
     end
 
@@ -565,7 +565,7 @@ module X11
     #
     # ###Description
     # Force sending GC component changes.
-    def flush_gc(gc : GC)
+    def flush_gc(gc : X11::C::GC)
       X.flush_gc @dpy, fc
       self
     end
@@ -710,7 +710,7 @@ module X11
     # - **width**, **height** Specify the width and height, which are the created window's inside dimensions and do not include the created window's borders
     # - **x**, **y** Specify the x and y coordinates, which are the top-left outside corner of the window's borders and are relative to the inside of the parent window's borders.
     #
-    # #Description
+    # ###Description
     # The `create_window` function creates an unmapped subwindow for a specified parent window,
     # returns the window ID of the created window, and causes the X server to generate a `CreateNotify` event.
     # The created window is placed on top in the stacking order with respect to siblings.
@@ -748,6 +748,25 @@ module X11
     # - **BadWindow** A value for a `Window` argument does not name a defined `Window`.
     def create_window(parent : Window, x : Int32, y : Int32, width : UInt32, height : UInt32, border_width : UInt32, depth : Int32, c_class : UInt32, visual : Visual, valuemask : UInt64, attributes : SetWindowAttributes) : Window
       X.create_window @dpy, parent, x, y, width, height, border_width, depth, c_class, visual.to_unsafe, valuemask, attributes.to_unsafe
+    end
+
+    def installed_colormaps(w : Window) : Array(Colormap)
+      pcolormaps = X.list_installed_colormaps @dpy, w, out num
+      return [] of Colormap if pcolormaps.null? || num <= 0
+      colormaps = Array(Colormap).new num
+      (0...num).each do |i|
+        colormaps[i] = pcolormaps[0].value
+      end
+      colormaps
+    end
+
+    def fonts(pattern : String, maxnames : Int32) : Array(String)
+      pstrings = X.list_fonts @dpy, pattern.to_unsafe, out count
+      return [] of String if pstrings.null? || count <= 0
+      font_names = Array(String).new count
+      (0...count).each do |i|
+        font_names[i] = String.new pstrings[i]
+      end
     end
 
     def default_visual(screen_number : Int32) : Visual
@@ -806,6 +825,11 @@ module X11
 
     def white_pixel(scr)
       X.white_pixel @dpy, scr
+    end
+
+    # Pointer to the underlieing XDisplay object.
+    def to_unsafe : X11::C::X::PDisplay
+      @dpy
     end
   end
 end
