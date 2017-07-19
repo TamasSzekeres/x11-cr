@@ -769,6 +769,72 @@ module X11
       end
     end
 
+    def fonts_with_info(pattern : String, maxnames : Int32) : Array(String)
+    end
+
+    def font_path : Array(String)
+    end
+
+    def extensions : Array(String)
+    end
+
+    def properties(w : X11::C::Window) : Array(Atom | X11::C::Atom)
+    end
+
+    def hosts : Array(HostAddress)
+    end
+
+    def keycode_to_keysym(keycode : X11::C::KeyCode, index : Int32) : X11::C::KeySym
+    end
+
+    def lookup_keysym(key_event : KeyEvent, index : Int32) : X11::C::KeySym
+    end
+
+    def keyboard_mapping(first_keycode : X11::C::KeyCode, keycode_count : Int32) : Array(KeySym)
+    end
+
+    def self.string_to_keysym(string : String) : X11::C::KeySym
+      X.string_to_keysym string.to_unsafe
+    end
+
+    def max_request_size : Int64
+      X.max_request_size @dpy
+    end
+
+    def extended_map_request_size : Int64
+      X.extended_map_request_size @dpy
+    end
+
+    def resource_manager_string : String
+      pstr = X.resource_manager_string @dpy
+      return "" if pstr.null?
+      str = String.new pstr
+      X.free pstr
+      str
+    end
+
+    # TODO: implement this, make Screen class?
+    # def self.screen_resource_string(screen : PScreen) : String
+    # end
+
+    def motion_buffer_size : UInt64
+      X.display_motion_buffer_size @dpy
+    end
+
+    def self.init_threads : X11::C::Status
+      X.init_threads
+    end
+
+    def lock
+      X.lock_display
+      self
+    end
+
+    def unlock
+      X.unlock_display @dpy
+      self
+    end
+
     def default_visual(screen_number : Int32) : Visual
       Visual.new(self, X.default_visual(@dpy, screen_number))
     end

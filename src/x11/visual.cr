@@ -27,6 +27,10 @@ module X11
       Image.new(self, X.create_image(@display.dpy, @visual, depth, format, offset, data.to_unsafe, width, height, bitmap_pad, bytes_per_line))
     end
 
+    def visual_id : X11::C::VisualID
+      X.visual_id_from_visual @visual
+    end
+
     def to_unsafe : X11::C::X::PVisual
       @visual
     end

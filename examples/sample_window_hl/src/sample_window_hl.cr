@@ -25,6 +25,15 @@ module X11Sample
 
     display_string = "Hello X11!"
 
+    pcolormaps = X.list_installed_colormaps d.dpy, win, out num
+    puts "num colormaps: #{num}"
+    # return [] of Colormap if pcolormaps.null? || num <= 0
+    # colormaps = Array(Colormap).new num
+    # (0...num).each do |i|
+    #   colormaps[i] = pcolormaps[0].value
+    # end
+    # colormaps
+
     while true
       if d.pending
         e = d.next_event
