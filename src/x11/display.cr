@@ -750,6 +750,7 @@ module X11
       X.create_window @dpy, parent, x, y, width, height, border_width, depth, c_class, visual.to_unsafe, valuemask, attributes.to_unsafe
     end
 
+    # TODO: test & document
     def installed_colormaps(w : Window) : Array(Colormap)
       pcolormaps = X.list_installed_colormaps @dpy, w, out num
       return [] of Colormap if pcolormaps.null? || num <= 0
@@ -760,6 +761,7 @@ module X11
       colormaps
     end
 
+    # TODO: test & document
     def fonts(pattern : String, maxnames : Int32) : Array(String)
       pstrings = X.list_fonts @dpy, pattern.to_unsafe, out count
       return [] of String if pstrings.null? || count <= 0
@@ -769,18 +771,66 @@ module X11
       end
     end
 
+    # TODO: implement this
     def fonts_with_info(pattern : String, maxnames : Int32) : Array(String)
     end
 
+    # TODO: implement this
     def font_path : Array(String)
     end
 
+    # Lists supported extensions.
+    #
+    # ###Description
+    #
+    # The `extensions` function returns a list of all extensions supported by the server.
+    # If the data returned by the server is in the Latin Portable Character Encoding,
+    # then the returned strings are in the Host Portable Character Encoding.
+    # Otherwise, the result is implementation dependent.
     def extensions : Array(String)
+      pstrings = X.list_extensions @dpy, out num_extensions
+      return [] of String if num_extensions == 0
+      strings = Array(String).new
+      (0...num_extensions).each do |i|
+        strings << String.new((pstrings + i).value)
+      end
+      strings
     end
 
-    def properties(w : X11::C::Window) : Array(Atom | X11::C::Atom)
+    # Return property-atoms.
+    #
+    # ###Arguments
+    #
+    # - **w** Specifies the window whose property list you want to obtain.
+    #
+    # ###Description
+    #
+    # The `properties` function returns an array of atom properties
+    # that are defined for the specified window or returns empty array if no properties were found.
+    #
+    # `properties` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    #
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def properties(w : X11::C::Window) : Array(X11::C::Atom)
+      patoms = X.list_properties @dpy, w, out num_properties
+      return [] of X11::C::Atom if num_properties == 0
+      atoms = Array(X11::C::Atom).new
+      (0...num_properties).each do |i|
+        atoms << patoms[i]
+      end
+      atoms
     end
 
+    # Return current access control list.
+    #
+    # ###Description
+    #
+    # The `hosts` function returns the current access control list as well as whether
+    # the use of the list at connection setup was enabled or disabled. `hosts` allows a
+    # program to find out what machines can make connections. It also returns an array of host objects
+    # that were allocated by the function.
     def hosts : Array(HostAddress)
     end
 
