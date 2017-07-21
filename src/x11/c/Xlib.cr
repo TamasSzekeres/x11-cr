@@ -1843,7 +1843,7 @@ module X11::C
       list : PPChar
     ) : NoReturn
 
-     fun set_transient_for_hint = XSetTransientForHint(
+    fun set_transient_for_hint = XSetTransientForHint(
       display : PDisplay,
       w : Window,
       prop_window : Window

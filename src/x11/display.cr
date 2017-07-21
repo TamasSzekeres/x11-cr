@@ -1068,6 +1068,188 @@ module X11
       values
     end
 
+    # TODO: implement & document
+    def reconfigure_wm_window
+    end
+
+    # Returns the list of atoms stored in the WM_PROTOCOLS propertystored in the WM_PROTOCOLS property.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `wm_protocols` function returns the list of atoms stored in the WM_PROTOCOLS property on the specified window.
+    # These atoms describe window manager protocols in which the owner of this window
+    # is willing to participate. If the property exists, is of type `Atom`,
+    # is of format 32, and the atom WM_PROTOCOLS can be interned.
+    #
+    # `wm_protocols` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def wm_protocols(w : X11::C::Window) : Array(X11::C::Atom)
+      status = X.get_wm_protocols @dpy, w, out patoms, out count
+      return [] of X11::C::Atom if status == 0 || count <= 0
+      atoms = Array(X11::C::Atom).new
+      (0...count).each do |i|
+        atoms << patoms[i]
+      end
+      X.free patoms.as(PChar)
+      atoms
+    end
+
+    # Replaces the WM_PROTOCOLS property on the specified window.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **protocols** Specifies the list of protocols.
+    #
+    # ###Description
+    # The `set_wm_protocols` function replaces the WM_PROTOCOLS property on the
+    # specified window with the list of atoms specified by the protocols argument.
+    # If the property does not already exist, `set_wm_protocols` sets the WM_PROTOCOLS property
+    # on the specified window to the list of atoms specified by the protocols argument.
+    # The property is stored with a type of `X11::C::Atom` and a format of 32.
+    # If it cannot intern the WM_PROTOCOLS atom, `set_wm_protocols` returns a zero status.
+    # Otherwise, it returns a nonzero status.
+    #
+    # `set_wm_protocols` can generate **BadAlloc** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def set_wm_protocols(w : X11::C::Window, protocols : Array(Atom | X11::C::Atom)) : X11::C::X::Status
+      X.set_wm_protocols @dpy, w, protocols.to_unsafe.as(X11::C::PAtom), protocols.size
+    end
+
+    # Sends a WM_CHANGE_STATE ClientMessage event.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    #
+    # ###Description
+    # The `iconify_window` function sends a WM_CHANGE_STATE ClientMessage event
+    # with a format of 32 and a first data element of **IconicState** and a window
+    # of w to the root window of the specified screen with an event mask set to
+    # **SubstructureNotifyMask** | **SubstructureRedirectMask**.
+    # Window managers may elect to receive this message and if the window is in
+    # its normal state, may treat it as a request to change the window's state
+    # from normal to iconic. If the WM_CHANGE_STATE property cannot be interned,
+    # `iconify_window` does not send a message and returns a zero status.
+    # It returns a nonzero status if the client message is sent successfully; otherwise, it returns a zero status.
+    def iconify_window(w : X11::C::Window, screen_number : Int32) : X11::C::X::Status
+      X.iconify_window @dpy, w, screen_number
+    end
+
+    # Unmaps the specified window.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    #
+    # ###Description
+    # The `withdraw_window` function unmaps the specified window and sends a
+    # synthetic **UnmapNotify** event to the root window of the specified screen.
+    # Window managers may elect to receive this message and may treat it as a
+    # request to change the window's state to withdrawn. When a window is in
+    # the withdrawn state, neither its normal nor its iconic representations is visible.
+    # It returns a nonzero status if the **UnmapNotify** event is successfully sent; otherwise, it returns a zero status.
+    #
+    # `withdraw_window` can generate a **BadWindow** error.
+    # ###Diagnostics
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def withdraw_window(w : X11::C::Window, screen_number : Int32) : X11::C::X::Status
+      X.withdraw_window @dpy, w, screen_number
+    end
+
+    # Reads the WM_COMMAND property from the
+    # specified windowreads the WM_COMMAND property from the
+    # specified window.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `get_command` function reads the WM_COMMAND property from the
+    # specified window and returns a string list. If the WM_COMMAND property exists,
+    # it is of type STRING and format 8. If sufficient memory can be allocated
+    # to contain the string list, `get_command` returns an array of strings.
+    # Otherwise, it returns an empty array. If the data returned by the server is in the Latin Portable Character Encoding,
+    # then the returned strings are in the Host Portable Character Encoding.
+    # Otherwise, the result is implementation dependent.
+    def command(w : X11::C::Window) : Array(String)
+      status = X.get_command @dpy, w, out argv, out argc
+      return [] of String if status == 0 || argc <= 0
+      commands = Array(String).new
+      (0...argc).each do |i|
+        commands << String.new argv[i]
+      end
+      X.free argv[0]
+      commands
+    end
+
+    # Returns the list of window identifiers stored in the WM_COLORMAP_WINDOWS property.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `wm_colormap_windows` function returns the list of window identifiers
+    # stored in the WM_COLORMAP_WINDOWS property on the specified window.
+    # These identifiers indicate the colormaps that the window manager may need
+    # to install for this window.
+    #
+    # `wm_colormap_windows` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def wm_colormap_windows(w : X11::C::Window) : Array(X11::C::Window)
+      status = X.get_wm_colormap_windows @dpy, w, out pwindows, out count
+      puts "win count = #{count}"
+      p pwindows
+      return [] of X11::C::Window if status == 0 | count <= 0
+      windows = Array(X11::C::Window).new
+      (0...count).each do |i|
+        windows << pwindows[i]
+      end
+      windows
+    end
+
+    # Replaces the WM_COLORMAP_WINDOWS property on the specified window.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **colormap_windows** Specifies the list of windows.
+    #
+    # ###Description
+    # The `set_wm_colormap_windows` function replaces the WM_COLORMAP_WINDOWS
+    # property on the specified window with the list of windows specified by
+    # the colormap_windows argument. It the property does not already exist,
+    # `set_wm_colormap_windows` sets the WM_COLORMAP_WINDOWS property on the
+    # specified window to the list of windows specified by the colormap_windows argument.
+    # The property is stored with a type of WINDOW and a format of 32.
+    # If it cannot intern the WM_COLORMAP_WINDOWS atom, `set_wm_colormap_windows` returns a zero status.
+    # Otherwise, it returns a nonzero status.
+    #
+    # `set_wm_colormap_windows` can generate **BadAlloc** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def set_wm_colormap_windows(w : X11::C::Window, colormap_windows : Array(X11::C::Window)) : X11::C::X::Status
+      X.set_wm_colormap_windows @dpy, w, colormap_windows.to_unsafe, colormap_windows.size
+    end
+
+    # TODO: implement & document
+    def set_transient_for_hint
+    end
+
+    # Activates the screen saver.
+    def activate_screen_saver : Int32
+      X.activate_screen_saver @dpy
+    end
+
     def destroy_window(w : Window) : Int32
       X.destroy_window @dpy, w
     end
@@ -1092,10 +1274,6 @@ module X11
 
     def draw_string(d, gc, x : Int32, y : Int32, string : String) : Int32
       X.draw_string @dpy, d, gc, x, y, string.to_unsafe, string.size
-    end
-
-    def set_wm_protocols(w : Window, protocols : PAtom, count : Int32)
-      X.set_wm_protocols @dpy, w, protocols, count
     end
 
     def store_name(w : Window, name : String) : Int32

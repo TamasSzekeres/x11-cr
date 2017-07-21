@@ -8,7 +8,7 @@ module X11Sample
     d = Display.new
     wm_delete_window = d.intern_atom(WM_DELETE_WINDOW_STR, false)
 
-    s = d.default_screen
+    s = d.default_screen_number
     root_win = d.root_window s
     black_pix = d.black_pixel s
     white_pix = d.white_pixel s
@@ -18,21 +18,14 @@ module X11Sample
       ButtonMotionMask | ExposureMask | EnterWindowMask |
       LeaveWindowMask | KeyPressMask | KeyReleaseMask
     d.map_window win
-    d.set_wm_protocols win, pointerof(wm_delete_window), 1
+    d.set_wm_protocols win, [wm_delete_window]
 
     # Set Window Title.
     d.store_name win, "Simple Window"
 
     display_string = "Hello X11!"
 
-    pcolormaps = X.list_installed_colormaps d.dpy, win, out num
-    puts "num colormaps: #{num}"
-    # return [] of Colormap if pcolormaps.null? || num <= 0
-    # colormaps = Array(Colormap).new num
-    # (0...num).each do |i|
-    #   colormaps[i] = pcolormaps[0].value
-    # end
-    # colormaps
+    d.activate_screen_saver
 
     while true
       if d.pending
