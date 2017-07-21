@@ -1914,7 +1914,7 @@ module X11::C
       exact_def_return : PColor
     ) : Status
 
-    fun alloc_events = XAllowEvents(
+    fun allow_events = XAllowEvents(
       display : PDisplay,
       event_mode : Int32,
       time : Time

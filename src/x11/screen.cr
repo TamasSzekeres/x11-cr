@@ -52,6 +52,12 @@ module X11
       X.screen_number_of_screen @screen
     end
 
+    # Returns the number of colormap cells in the default colormap.
+    def cells : Int32
+      X.cells_of_screen @screen
+    end
+
+    # Returns the underlieing `X11::C::X::PScreen` pointer
     def to_unsafe : X11::C::X::PScreen
       @screen
     end

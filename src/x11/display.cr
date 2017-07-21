@@ -1241,13 +1241,215 @@ module X11
       X.set_wm_colormap_windows @dpy, w, colormap_windows.to_unsafe, colormap_windows.size
     end
 
-    # TODO: implement & document
-    def set_transient_for_hint
+    # Sets the WM_TRANSIENT_FOR property of the specified window to the specified prop_window.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **prop_window** Specifies the window that the WM_TRANSIENT_FOR property is to be set to.
+    #
+    # ###Description
+    # The `set_transient_for_hint` function sets the WM_TRANSIENT_FOR property of the specified window to the specified prop_window.
+    # `set_transient_for_hint` can generate **BadAlloc** and **BadWindow** errors.
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def set_transient_for_hint(w : X11::C::Window, prop_window : X11::C::Window) : Int32
+      X.set_transient_for_hint @dpy, w, prop_window
     end
 
     # Activates the screen saver.
     def activate_screen_saver : Int32
       X.activate_screen_saver @dpy
+    end
+
+    # TODO: implement & document
+    # def add_host(host : PHostAddress) : Int32
+    # end
+
+    # TODO: implement & document
+    # def add_hosts(hosts : PHostAddress, num_hosts : Int32) : Int32
+    # end
+
+    # Adds the specified window to the client's save-set.
+    #
+    # ###Arguments
+    # - **w** Specifies the window that you want to add to the client's save-set.
+    #
+    # ###Description
+    # The `add_to_save_set` function adds the specified window to the client's save-set.
+    # The specified window must have been created by some other client, or a **BadMatch** error results.
+    # `add_to_save_set` can generate **BadMatch** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and range but fails to match in some other way required by the request.
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def add_to_save_set(w : X11::C::Window) : Int32
+      X.add_to_save_set @dpy, w
+    end
+
+    # TODO: implement & document
+    # def alloc_color(colormap : Colormap, screen_in_out : PColor) : X11::C::X::Status
+    # end
+
+    # TODO: implement & document
+    # def alloc_color_cells(colormap : Colormap, contig : Bool, plane_masks_return : PUInt64, nplanes : UInt32, pixels_return : PUInt64, npixels : UInt32) : Status
+    # end
+
+    # TODO: implement & document
+    # def alloc_color_planes(display : PDisplay, colormap : Colormap, contig : Bool, pixels_return : PUInt64, ncolors : Int32, nreds : Int32, ngreens : Int32, nblues : Int32, rmask_return : PUInt64, gmask_return : PUInt64,   bmask_return : PUInt64) : Status
+    # end
+
+    # TODO: implement & document
+    # def alloc_named_color(colormap : Colormap, color_name : PChar, screen_def_return : PColor, exact_def_return : PColor ) : Status
+    # end
+
+    # Releases some queued events if the client has caused a device to freeze.
+    #
+    # ###Arguments
+    # - **event_mode** Specifies the event mode. You can pass **AsyncPointer**,
+    # **SyncPointer**, **AsyncKeyboard**, **SyncKeyboard**, **ReplayPointer**,
+    # **ReplayKeyboard**, **AsyncBoth**, or **SyncBoth**.
+    # - **time** Specifies the time. You can pass either a timestamp or **CurrentTime**.
+    #
+    # ###Description
+    # The `allow_events` function releases some queued events if the client has caused a device to freeze.
+    # It has no effect if the specified time is earlier than the last-grab time of the
+    # most recent active grab for the client or if the specified time is later
+    # than the current X server time. Depending on the event_mode argument, the following occurs:
+    # - **AsyncPointer** If the pointer is frozen by the client, pointer event
+    # processing continues as usual. If the pointer is frozen twice by the client
+    # on behalf of two separate grabs, **AsyncPointer** thaws for both.
+    # **AsyncPointer** has no effect if the pointer is not frozen by the client,
+    # but the pointer need not be grabbed by the client.
+    # - **SyncPointer** If the pointer is frozen and actively grabbed by the client,
+    # pointer event processing continues as usual until the next **ButtonPress**
+    # or **ButtonRelease** event is reported to the client. At this time, the
+    # pointer again appears to freeze. However, if the reported event causes the
+    # pointer grab to be released, the pointer does not freeze. **SyncPointer**
+    # has no effect if the pointer is not frozen by the client or if the pointer is not grabbed by the client.
+    # - **ReplayPointer** If the pointer is actively grabbed by the client and
+    # is frozen as the result of an event having been sent to the client
+    # (either from the activation of a `grab_button` or from a previous
+    # `allow_events` with mode **SyncPointer** but not from a `grab_pointer`),
+    # the pointer grab is released and that event is completely reprocessed.
+    # This time, however, the function ignores any passive grabs at or above
+    # (towards the root of) the grab_window of the grab just released. The request
+    # has no effect if the pointer is not grabbed by the client or if the pointer
+    # is not frozen as the result of an event.
+    # - **AsyncKeyboard** If the keyboard is frozen by the client, keyboard event
+    # processing continues as usual. If the keyboard is frozen twice by the
+    # client on behalf of two separate grabs, **AsyncKeyboard** thaws for both.
+    # **AsyncKeyboard** has no effect if the keyboard is not frozen by the client,
+    # but the keyboard need not be grabbed by the client.
+    # - **SyncKeyboard** If the keyboard is frozen and actively grabbed by the client,
+    # keyboard event processing continues as usual until the next **KeyPress** or
+    # **KeyRelease** event is reported to the client. At this time, the keyboard
+    # again appears to freeze. However, if the reported event causes the keyboard
+    # grab to be released, the keyboard does not freeze. **SyncKeyboard** has no
+    # effect if the keyboard is not frozen by the client or if the keyboard is not grabbed by the client.
+    # - **ReplayKeyboard** If the keyboard is actively grabbed by the client and
+    # is frozen as the result of an event having been sent to the client
+    # (either from the activation of a `grab_key` or from a previous `allow_events`
+    # with mode **SyncKeyboard** but not from a `grab_keyboard`), the keyboard
+    # grab is released and that event is completely reprocessed. This time,
+    # however, the function ignores any passive grabs at or above (towards the root of)
+    # the grab_window of the grab just released. The request has no effect if the
+    # keyboard is not grabbed by the client or if the keyboard is not frozen as the result of an event.
+    # - **SyncBoth** If both pointer and keyboard are frozen by the client,
+    # event processing for both devices continues as usual until the next
+    # **ButtonPress**, **ButtonRelease**, **KeyPress**, or **KeyRelease** event
+    # is reported to the client for a grabbed device (button event for the pointer,
+    # key event for the keyboard), at which time the devices again appear to freeze.
+    # However, if the reported event causes the grab to be released, then the
+    # devices do not freeze (but if the other device is still grabbed, then a
+    # subsequent event for it will still cause both devices to freeze).
+    # **SyncBoth** has no effect unless both pointer and keyboard are frozen by
+    # the client. If the pointer or keyboard is frozen twice by the client on
+    # behalf of two separate grabs, **SyncBoth** thaws for both (but a subsequent
+    # freeze for **SyncBoth** will only freeze each device once).
+    # - **AsyncBoth** If the pointer and the keyboard are frozen by the client,
+    # event processing for both devices continues as usual. If a device is frozen
+    # twice by the client on behalf of two separate grabs, **AsyncBoth** thaws
+    # for both. **AsyncBoth** has no effect unless both pointer and keyboard are frozen by the client.
+    # - **AsyncPointer**, **SyncPointer**, and **ReplayPointer** have no effect
+    # on the processing of keyboard events. **AsyncKeyboard**, **SyncKeyboard**,
+    # and **ReplayKeyboard** have no effect on the processing of pointer events.
+    # It is possible for both a pointer grab and a keyboard grab (by the same or
+    # different clients) to be active simultaneously. If a device is frozen on
+    # behalf of either grab, no event processing is performed for the device.
+    # It is possible for a single device to be frozen because of both grabs.
+    # In this case, the freeze must be released on behalf of both grabs before
+    # events can again be processed. If a device is frozen twice by a single client,
+    # then a single **AllowEvents** releases both.
+    #
+    # `allow_events` can generate a **BadValue** error.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values
+    # accepted by the request. Unless a specific range is specified for an argument,
+    # the full range defined by the argument's type is accepted. Any argument
+    # defined as a set of alternatives can generate this error.
+    def allow_events(event_mode : Int32, time : X11::C::Time) : Int32
+      X.allow_events @dpy, event_mode, time
+    end
+
+    # Turns off auto-repeat for the keyboard on the specified display.
+    def auto_repeat_off : Int32
+      X.auto_repeat_off @dpy
+    end
+
+    # Turns on auto-repeat for the keyboard on the specified display
+    def auto_repeat_on : Int32
+      X.auto_repeat_on
+    end
+
+    # Rings the bell on the keyboard.
+    #
+    # ###Arguments
+    # - **percent** Specifies the volume for the bell, which can range from -100 to 100 inclusive.
+    #
+    # ###Description
+    # The `bell` function rings the bell on the keyboard, if possible.
+    # The specified volume is relative to the base volume for the keyboard.
+    # If the value for the percent argument is not in the range -100 to 100 inclusive,
+    # a **BadValue** error results. The volume at which the bell rings when the percent argument is nonnegative is:
+    # ```
+    # base - [(base * percent) / 100] + percent
+    # ```
+    # The volume at which the bell rings when the percent argument is negative is:
+    # ```
+    # base + [(base * percent) / 100]
+    # ```
+    # To change the base volume of the bell, use `change_keyboard_control`.
+    #
+    # `bell` can generate a **BadValue** error.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values
+    # accepted by the request. Unless a specific range is specified for an argument,
+    # the full range defined by the argument's type is accepted. Any argument
+    # defined as a set of alternatives can generate this error.
+    def bell(percent : Int32) : Int32
+      X.bell @dpy, percent
+    end
+
+    # Within each bitmap unit, the left-most bit in the bitmap as displayed on
+    # the screen is either the least-significant or most-significant bit in the unit.
+    # This function can return **LSBFirst** or **MSBFirst**.
+    def bitmap_bit_order : Int32
+      X.bitmap_bit_order @dpy
+    end
+
+    # Each scanline must be padded to a multiple of bits returned by this function.
+    def bitmap_pad : Int32
+      X.bitmap_pad @dpy
+    end
+
+    # Returns the size of a bitmap's scanline unit in bits.
+    # The scanline is calculated in multiples of this value.
+    def bitmap_unit : Int32
+      X.bitmap_pad @dpy
     end
 
     def destroy_window(w : Window) : Int32

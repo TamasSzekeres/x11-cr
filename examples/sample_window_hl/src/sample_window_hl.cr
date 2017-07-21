@@ -25,7 +25,7 @@ module X11Sample
 
     display_string = "Hello X11!"
 
-    d.activate_screen_saver
+    d.bell 100
 
     while true
       if d.pending
