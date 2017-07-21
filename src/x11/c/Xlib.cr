@@ -1773,7 +1773,7 @@ module X11::C
 
     fun list_pixmap_formats = XListPixmapFormats(
       display : PDisplay,
-      count_return : Int32
+      count_return : PInt32
     ) : PPixmapFormatValues
 
     fun list_depths = XListDepths(

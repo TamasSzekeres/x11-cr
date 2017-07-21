@@ -3,9 +3,16 @@ require "./c/Xlib"
 module X11
   include C
 
+  enum DisplayInitialization
+    Name
+    PDisplay
+  end
+
   class Display
     # Pointer to the underlieing XDisplay object.
     getter dpy : X::PDisplay
+
+    getter? closed : Bool = false
 
     # Opens a connection to the X server that controls a display.
     #
@@ -39,6 +46,12 @@ module X11
       else
         @dpy = X.open_display nil
       end
+      @initialization = DisplayInitialization::Name
+    end
+
+    def initialize(@dpy : X11::C::X::PDisplay)
+      raise BadAllocException.new if @dpy.null?
+      @initialization = DisplayInitialization::PDisplay
     end
 
     def finalize
@@ -46,7 +59,13 @@ module X11
     end
 
     def close : Int32
-      X.close_display @dpy
+      res = 0
+      if @initialization == DisplayInitialization::Name
+        res = X.close_display @dpy
+      end
+      @dpy = X11::C::X::PDisplay.null
+      @closed = true
+      res
     end
 
     # The `load_query_font` function provides the most common way for accessing a font.
@@ -831,30 +850,38 @@ module X11
     # the use of the list at connection setup was enabled or disabled. `hosts` allows a
     # program to find out what machines can make connections. It also returns an array of host objects
     # that were allocated by the function.
+    # TODO: implement
     def hosts : Array(HostAddress)
     end
 
+    # TODO: implement & document
     def keycode_to_keysym(keycode : X11::C::KeyCode, index : Int32) : X11::C::KeySym
     end
 
+    # TODO: implement & document
     def lookup_keysym(key_event : KeyEvent, index : Int32) : X11::C::KeySym
     end
 
+    # TODO: implement & document
     def keyboard_mapping(first_keycode : X11::C::KeyCode, keycode_count : Int32) : Array(KeySym)
     end
 
+    # TODO: document
     def self.string_to_keysym(string : String) : X11::C::KeySym
       X.string_to_keysym string.to_unsafe
     end
 
+    # TODO: document
     def max_request_size : Int64
       X.max_request_size @dpy
     end
 
+    # TODO: document
     def extended_map_request_size : Int64
       X.extended_map_request_size @dpy
     end
 
+    # TODO: document
     def resource_manager_string : String
       pstr = X.resource_manager_string @dpy
       return "" if pstr.null?
@@ -867,26 +894,178 @@ module X11
     # def self.screen_resource_string(screen : PScreen) : String
     # end
 
+    # TODO: document
     def motion_buffer_size : UInt64
       X.display_motion_buffer_size @dpy
     end
 
+    # TODO: document
     def self.init_threads : X11::C::Status
       X.init_threads
     end
 
+    # TODO: document
     def lock
       X.lock_display
       self
     end
 
+    # TODO: document
     def unlock
       X.unlock_display @dpy
       self
     end
 
+    # Returns the root window of the specified screen.
+    #
+    # ###Arguments
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    #
+    # ###See Also
+    # - `default_root_window`
+    def root_window(screen_number : Int32) : X11::C::Window
+      X.root_window @dpy, screen_number
+    end
+
+    # Returns the root window of the default screen.
+    def default_root_window : X11::C::Window
+      X.default_root_window @dpy
+    end
+
+    #Returns the default visual type for the specified screen.
+    #
+    # ###Arguments
+    # - **screen_number** Specifies the appropriate screen number on the host server.
     def default_visual(screen_number : Int32) : Visual
       Visual.new(self, X.default_visual(@dpy, screen_number))
+    end
+
+    # Returns the default graphics context for the root window of the specified screen.
+    #
+    # ###Arguments
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    #
+    # ###Description
+    # This GC is created for the convenience of simple applications and contains
+    # the default GC components with the foreground and background pixel values initialized to the black and white pixels for the screen, respectively.
+    def default_gc(screen_number : Int32) : X11::C::X::GC
+      X.default_gc @dpy, screen_number
+    end
+
+    # Returns the black pixel value for the specified screen.
+    #
+    # ###Arguments
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    def black_pixel(screen_number : Int32) : UInt64
+      X.black_pixel @dpy, screen_number
+    end
+
+    # Returns the white pixel value for the specified screen.
+    #
+    # ###Arguments
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    def white_pixel(screen_number : Int32) : UInt64
+      X.white_pixel @dpy, screen_number
+    end
+
+    # Returns a value with all bits set to 1 suitable for use in a plane argument to a procedure.
+    def self.all_planes : UInt64
+      X.all_planes
+    end
+
+    # Returns the full serial number that is to be used for the next request.
+    # Serial numbers are maintained separately for each display connection.
+    def next_request : UInt64
+      X.next_request @dpy
+    end
+
+    # Returns the full serial number of the last request known by Xlib to have
+    # been processed by the X server. Xlib automatically sets this number when replies,
+    # events, and errors are received. extract the full serial number of the last
+    # request known by Xlib to have been processed by the X server.
+    # Xlib automatically sets this number when replies, events, and errors are received.
+    def last_known_request_processed : UInt64
+      X.last_known_request_processed @dpy
+    end
+
+    # Returns string that provides some identification of the owner of the X server implementation.
+    # If the data returned by the server is in the Latin Portable Character Encoding,
+    # then the string is in the Host Portable Character Encoding. Otherwise,
+    # the contents of the string are implementation dependent.
+    def server_vendor : String
+      pstr = X.server_vendor @dpy
+      return "" if pstr.null?
+      String.new pstr
+    end
+
+    # Returns the string that was passed to `new` when the current display was opened.
+    # On POSIX-conformant systems, if the passed string was **nil**,
+    # these return the value of the DISPLAY environment variable when the current display was opened.
+    # These are useful to applications that invoke the **fork** system call
+    # and want to open a new connection to the same display from the child process as well as for printing error messages.
+    def display_string : String
+      pstr = X.display_string @dpy
+      return "" if pstr.null?
+      String.new pstr
+    end
+
+    # Returns the default colormap ID for allocation on the specified screen.
+    # Most routine allocations of color should be made out of this colormap.
+    #
+    # ###Arguments
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    def default_colormap(screen_number : Int32) : X11::C::Colormap
+      X.default_colormap @dpy, screen_number
+    end
+
+    # Returns the indicated screen.
+    #
+    # ###Arguments
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    def screen(screen_number : Int32) : Screen
+      Screen.new(X.screen_of_display(@dpy, screen_number))
+    end
+
+    # Returns default screen.
+    def default_screen : Screen
+      Screen.new(X.default_screen_of_display(@dpy))
+    end
+
+    # Returns informations of the supported pixel formats.
+    #
+    # ###Description
+    # The `pixmap_formats` function returns an array of `PixmapFormatValues` objects
+    # that describe the types of Z format images supported by the specified display.
+    # If insufficient memory is available, `pixmap_formats` returns empty array.
+    def pixmap_formats : Array(PixmapFormatValues)
+      pvalues = X.list_pixmap_formats @dpy, out count
+      return [] of PixmapFormatValues if count <= 0
+      values = Array(PixmapFormatValues).new
+      (0...count).each do |i|
+        values << PixmapFormatValues.new pvalues[i]
+      end
+      X.free pvalues.as(PChar)
+      values
+    end
+
+    # Returns the array of depths that are available on the specified screen.
+    #
+    # ###Arguments
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    #
+    # ###Description
+    # The `depths` function returns the array of depths that are available on the specified screen.
+    # If the specified screen_number is valid and sufficient memory for the array can be allocated,
+    # otherwise it returns an empty array.
+    def depths(screen_number : Int32) : Array(Int32)
+      pvalues = X.list_depths @dpy, screen_number, out count
+      return [] of Int32 if count <= 0
+      values = Array(Int32).new
+      (0...count).each do |i|
+        values << pvalues[i]
+      end
+      X.free pvalues.as(PChar)
+      values
     end
 
     def destroy_window(w : Window) : Int32
@@ -923,24 +1102,8 @@ module X11
       X.store_name @dpy, w, name.to_unsafe
     end
 
-    def default_screen
+    def default_screen_number : Int32
       X.default_screen @dpy
-    end
-
-    def root_window(scr) : Window
-      X.root_window @dpy, scr
-    end
-
-    def default_gc(scr)
-      X.default_gc @dpy, scr
-    end
-
-    def black_pixel(scr)
-      X.black_pixel @dpy, scr
-    end
-
-    def white_pixel(scr)
-      X.white_pixel @dpy, scr
     end
 
     # Pointer to the underlieing XDisplay object.
