@@ -7,5 +7,9 @@ module X11
     def initialize(@values : X11::C::X::PGCValues)
       raise BadAllocException.new if @values.null?
     end
+
+    def to_unsafe : X11::C::X::PGCValues
+      @values
+    end
   end
 end

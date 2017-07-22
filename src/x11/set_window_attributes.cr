@@ -3,11 +3,11 @@ require "./c/Xlib"
 module X11
   class SetWindowAttributes
     def initialize(attributes : X11::C::X::PSetWindowAttributes)
+      raise BadAllocException.new if attributes.null?
       @attributes = attributes.value
     end
 
-    def initialize(attributes : X11::C::X::SetWindowAttributes)
-      @attributes = attributes
+    def initialize(@attributes : X11::C::X::SetWindowAttributes)
     end
 
     def initialize

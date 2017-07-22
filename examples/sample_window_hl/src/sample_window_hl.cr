@@ -25,8 +25,6 @@ module X11Sample
 
     display_string = "Hello X11!"
 
-    d.bell 100
-
     while true
       if d.pending
         e = d.next_event

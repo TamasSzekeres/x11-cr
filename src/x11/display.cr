@@ -862,8 +862,49 @@ module X11
     def lookup_keysym(key_event : KeyEvent, index : Int32) : X11::C::KeySym
     end
 
-    # TODO: implement & document
-    def keyboard_mapping(first_keycode : X11::C::KeyCode, keycode_count : Int32) : Array(KeySym)
+    # Returns the symbols for the specified number of KeyCodes starting with first_keycode.
+    #
+    # ###Arguments
+    # - **first_keycode** Specifies the first KeyCode that is to be returned.
+    # - **keycode_count** Specifies the number of KeyCodes that are to be returned.
+    #
+    # ###Description
+    # The `keyboard_mapping` function returns the symbols for the specified
+    # number of KeyCodes starting with first_keycode. The value specified in
+    # first_keycode must be greater than or equal to min_keycode as returned by
+    # `display_keycodes`, or a **BadValue** error results. In addition, the
+    # following expression must be less than or equal to max_keycode as returned by `display_keycodes`:
+    # ```
+    # first_keycode + keycode_count - 1
+    # ```
+    # If this is not the case, a **BadValue** error results. The number of elements in the KeySyms list is:
+    # ```
+    # keycode_count * keysyms_per_keycode
+    # ```
+    # KeySym number N, counting from zero, for KeyCode K has the following index in the list, counting from zero:
+    # ```
+    # (K - first_code) * keysyms_per_code + N
+    # ```
+    # The X server arbitrarily chooses the keysyms_per_keycode value to be large
+    # enough to report all requested symbols. A special KeySym value of
+    # **NoSymbol** is used to fill in unused elements for individual KeyCodes.
+    #
+    # `keyboard_mapping` can generate a **BadValue** error.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values
+    # accepted by the request. Unless a specific range is specified for an
+    # argument, the full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    def keyboard_mapping(first_keycode : X11::C::KeyCode, keycode_count : Int32) : Array(X11::C::KeySym)
+      pkeysyms = X.get_keyboard_mapping @dpy, first_keycode, keycode_count, out keysyms_per_keycode
+      return [] of X11::C::KeySym if keysyms_per_keycode == 0 || pkeysyms.null?
+      keysyms = Array(X11::C::KeySym).new
+      (0...keycode_count * keysyms_per_keycode).each do |i|
+        keysyms << (pkeysyms + i).value
+      end
+      X.free pkeysyms.as(PChar)
+      keysyms
     end
 
     # TODO: document
@@ -1450,6 +1491,102 @@ module X11
     # The scanline is calculated in multiples of this value.
     def bitmap_unit : Int32
       X.bitmap_pad @dpy
+    end
+
+    # Changes the specified dynamic parameters if the pointer is actively grabbed by the client.
+    #
+    # ###Arguments
+    # - **event_mask** Specifies which pointer events are reported to the client.
+    # The mask is the bitwise inclusive OR of the valid pointer event mask bits.
+    # - **cursor** Specifies the cursor that is to be displayed or **None**.
+    # - **time** Specifies the time. You can pass either a timestamp or **CurrentTime**.
+    #
+    # ###Description
+    # The `change_active_pointer_grab` function changes the specified dynamic
+    # parameters if the pointer is actively grabbed by the client and if the specified
+    # time is no earlier than the last-pointer-grab time and no later than the
+    # current X server time. This function has no effect on the passive parameters
+    #  of a `grab_button`. The interpretation of event_mask and cursor is the
+    # same as described in `grab_pointer`.
+    # `change_active_pointer_grab` can generate **BadCursor** and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadCursor** A value for a Cursor argument does not name a defined Cursor.
+    # - **BadValue** Some numeric value falls outside the range of values accepted by the request.
+    # Unless a specific range is specified for an argument, the full range
+    # defined by the argument's type is accepted. Any argument defined as a set
+    # of alternatives can generate this error.
+    def change_active_pointer_grab(event_mask : UInt32, cursor : X11::C::Cursor, time : X11::C::Time) : Int32
+      X.change_active_pointer_grab @dpy, event_mask, cursor, time
+    end
+
+    # Changes the components specified by valuemask for the specified GC.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **valuemask** Specifies which components in the GC are to be changed
+    # using information in the specified values structure. This argument is
+    # the bitwise inclusive OR of zero or more of the valid GC component mask bits.
+    # - **values** Specifies any values as specified by the valuemask.
+    #
+    # ###Description
+    # The `change_gc` function changes the components specified by valuemask for
+    # the specified GC. The values argument contains the values to be set. The
+    # values and restrictions are the same as for `create_gc`. Changing the
+    # clip-mask overrides any previous `set_clip_rectangles` request on the context.
+    # Changing the dash-offset or dash-list overrides any previous `set_dashes`
+    # request on the context. The order in which components are verified and
+    # altered is server-dependent. If an error is generated, a subset of the components may have been altered.
+    # `change_gc` can generate **BadAlloc**, **BadFont**, **BadGC**, **BadMatch**,
+    # **BadPixmap**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadFont** A value for a font argument does not name a defined font (or, in some cases, GContext).
+    # - **BadGC** A value for a GContext argument does not name a defined GContext.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadPixmap** A value for a Pixmap argument does not name a defined `Pixmap`.
+    # - **BadValue** Some numeric value falls outside the range of values
+    #  accepted by the request. Unless a specific range is specified for an argument,
+    # the full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    def change_gc(gc : X11::C::X::GC, valuemask : UInt64, values : GCValues) : Int32
+      X.change_gc @dpy, gc, valuemask. values.to_unsafe
+    end
+
+    # Controls the keyboard characteristics.
+    #
+    # ###Arguments
+    # - **value_mask** Specifies which controls to change.
+    # This mask is the bitwise inclusive OR of the valid control mask bits.
+    # - **values** Specifies one value for each bit set to 1 in the mask.
+    #
+    # ###Description
+    # `change_keyboard_control` function controls the keyboard characteristics
+    # defined by the `KeyboardControl` object. The **value_mask** argument specifies which values are to be changed.
+    #
+    # `change_keyboard_control` can generate **BadMatch** and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    def change_keyboard_control(value_mask : UInt64, values : KeyboardControl) : Int32
+      X.change_keyboard_control @dpy, value_mask, values.to_unsafe
+    end
+
+    def change_keyboard_mapping(first_keycode : Int32, keysyms_per_keycode : Int32, keysyms : Array(X11::C::KeySym)) : Int32
+      X.change_keyboard_mapping @dpy, first_keycode, keysyms_per_keycode, keysyms.to_unsafe, keysyms.size
+    end
+
+    # -------------------
+
+    def display_keycodes : NamedTuple{min_keycodes : Int32, max_keycode : Int32, res : Int32}
+      res = X.display_keycodes @dpy, out min, out max
+      {min_keycodes: min, max_keycodes: max, result: res}
     end
 
     def destroy_window(w : Window) : Int32
