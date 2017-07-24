@@ -35,7 +35,7 @@ module X11
     # A single CPU can have more than one display. Multiple displays are usually numbered starting with zero.
     # - **screen_number** Specifies the screen to be used on that server.
     # Multiple screens can be controlled by a single X server. The screen_number sets an internal
-    # variable that can be accessed by using the #default_screen function.
+    # variable that can be accessed by using the `default_screen` function.
     # For example, the following would specify screen 1 of display 0 on the machine named *dual-headed*:
     # ```text
     # dual-headed:0.1
@@ -1955,16 +1955,137 @@ module X11
       X.clear_window @dpy, w
     end
 
-    # -------------------
+    def configure_window(w : X11::C::Window, value_mask : UInt32, values : WindowChanges) : Int32
+      X.configure_window @dpy, w, value_mask, values.to_unsafe
+    end
+
+    def connection_number : Int32
+      X.connection_number @dpy
+    end
+
+    def convert_selection(selection : Atom | X11::C::Atom, target : Atom | X11::C::Atom, property : Atom | X11::C::Atom, requestor : X11::C::Window, time : X11::C::Time) : Int32
+      X.convert_selection @dpy, selection.to_u64, target.to_u64, property.to_u64, requestor, time
+    end
+
+    def copy_area(src : X11::C::Drawable, dest : X11::C::Drawable, gc : X11::C::GC, src_x : Int32, src_y : Int32, width : UInt32, height : UInt32, dest_x : Int32, dest_y : Int32) : Int32
+      X.copy_area @dpy, src, dest, gc, src_x, src_y, width, height, dest_x, dest_y
+    end
+
+    def copy_gc(src : X11::C::GC, valuemask : UInt64, dest : X11::C::GC) : Int32
+      X.copy_gc @dpy, src, valuemask, dest
+    end
+
+    def copy_plane(src : X11::C::Drawable, dest : X11::C::Drawable, gc : X11::C::GC, src_x : Int32, src_y : Int32, width : UInt32, height : UInt32, dest_x : Int32, dest_y : Int32, plane : UInt64) : Int32
+      X.copy_plane @dpy, src, dest, gc, src_x, src_y, width, height, dest_x, dest_y, plane
+    end
+
+    def default_depth(screen_number : Int32) : Int32
+      X.default_depth @dpy, screen_number
+    end
+
+    def default_screen_number : Int32
+      X.default_screen @dpy
+    end
+
+    def define_cursor(w : X11::C::Window, cursor : X11::C::Cursor) : Int32
+      X.define_cursor @dpy, w, cursor
+    end
+
+    def delete_property(w : X11::C::Window, property : Atom | X11::C::Atom) : Int32
+      X.delete_property @dpy, w, property
+    end
+
+    def destroy_window(w : X11::C::Window) : Int32
+      X.destroy_window @dpy, w
+    end
+
+    def destroy_subwindows(w : X11::C::Window) : Int32
+      X.destroy_subwindows @dpy, w
+    end
+
+    def disable_access_control : Int32
+      X.disable_access_control @dpy
+    end
+
+    def display_cells(screen_number : Int32) : Int32
+      X.display_cells @dpy, screen_number
+    end
+
+    def display_height(screen_number : Int32) : Int32
+      X.display_height @dpy, screen_number
+    end
+
+    def display_height_mm(screen_number : Int32) : Int32
+      X.display_height_mm @dpy, screen_number
+    end
 
     def display_keycodes : NamedTuple{min_keycodes : Int32, max_keycode : Int32, res : Int32}
       res = X.display_keycodes @dpy, out min, out max
       {min_keycodes: min, max_keycodes: max, result: res}
     end
 
-    def destroy_window(w : Window) : Int32
-      X.destroy_window @dpy, w
+    def display_planes(screen_number : Int32) : Int32
+      X.display_planes @dpy, screen_number
     end
+
+    def display_width(screen_number : Int32) : Int32
+      X.display_width @dpy, screen_number
+    end
+
+    def display_width_mm(screen_number : Int32) : Int32
+      X.display_width_mm @dpy, screen_number
+    end
+
+    def draw_arc(d : X11::C::Drawable, gc : X11::C::GC, x : Int32, y : Int32, width : UInt32, height : UInt32, angle1 : Int32, angle2 : Int32) : Int32
+      X.draw_arc @dpy, d, gc, x, y, width, height, angle1, angle2
+    end
+
+    def draw_arcs(d : X11::C::Drawable, gc : X11::C::GC, arcs : Array(Arc)) : Int32
+      X.draw_arcs @dpy, d, gc, arcs.to_unsafe, arcs.size
+    end
+
+    def draw_image_string(d : X11::C::Drawable, gc : X11::C::GC, x : Int32, y : Int32, string : String) : Int32
+      X.draw_image_string @dpy, d, gc, x, y, string.to_unsafe, string.size
+    end
+
+    # TODO: find a better way to handle 16-bit string.
+    def draw_image_string_16(d : X11::C::Drawable, gc : X11::C::GC, x : Int32, y : Int32, string : X11::C::PChar2b, length : Int32) : Int32
+      X.draw_image_string_16 @dpy, d, gc, x, y, string, length
+    end
+
+    def draw_line(d : X11::C::Drawable, gc : X11::C::GC, x1 : Int32, y1 : Int32, x2 : Int32, y2 : Int32) : Int32
+      X.draw_line @dpy, d, gc, x1, y1, x2, y2
+    end
+
+    def draw_lines(d : X11::C::Drawable, gc : X11::C::GC, points : Array(Point), mode : Int32) : Int32
+      X.draw_lines @dpy, d, gc, point.to_unsafe, points.size, mode
+    end
+
+    def draw_point(d : X11::C::Drawable, gc : X11::C::GC, x : Int32, y : Int32) : Int32
+      X.draw_point @dpy, d, gc, x, y
+    end
+
+    def draw_points(d : X11::Drawable, gc : X11::C::GC, points : Array(Point), mode : Int32) : Int32
+      X.draw_points @dpy, d, gc, points.to_unsafe, point.size, mode
+    end
+
+    def draw_rectangle(d : X11::C::Drawable, gc : X11::C::GC, x : Int32, y : Int32, width : UInt32, height : UInt32) : Int32
+      X.draw_rectangle @dpy, d, gc, x, y, width, height
+    end
+
+    def draw_rectangles(d : X11::C::Drawable, gc : X11::C::GC, rectangles : Array(Rectangle)) : Int32
+      X.draw_rectangles @dpy, d, gc, rectangles.to_unsafe, rectangles.size
+    end
+
+    def draw_segments(d : X11::C::Drawable, gc : X11::C::GC, segments : Array(Segment)) : Int32
+      X.draw_segments @dpy, d, gc, segments.to_unsafe, segments.size
+    end
+
+    def draw_string(d : X11::C::Drawable, gc : X11::C::GC, x : Int32, y : Int32, string : String) : Int32
+      X.draw_string @dpy, d, gc, x, y, string.to_unsafe, string.size
+    end
+
+    # -------------------
 
     def select_input(w : Window, event_mask)
       X.select_input @dpy, w, event_mask
@@ -1984,16 +2105,8 @@ module X11
       e
     end
 
-    def draw_string(d, gc, x : Int32, y : Int32, string : String) : Int32
-      X.draw_string @dpy, d, gc, x, y, string.to_unsafe, string.size
-    end
-
     def store_name(w : Window, name : String) : Int32
       X.store_name @dpy, w, name.to_unsafe
-    end
-
-    def default_screen_number : Int32
-      X.default_screen @dpy
     end
 
     # Pointer to the underlieing XDisplay object.

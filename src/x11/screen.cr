@@ -57,6 +57,23 @@ module X11
       X.cells_of_screen @screen
     end
 
+    # Returns the depth of the root window.
+    def default_depth : Int32
+      X.default_depth_of_screen @screen
+    end
+
+    # Returns a value indicating whether the screen supports backing stores.
+    # The value returned can be one of **WhenMapped**, **NotUseful**, or **Always**
+    def does_backing_store : Int32
+      X.does_backing_store @screen
+    end
+
+    # Returns a `Bool` value indicating whether the screen supports save unders.
+    # If `true`, the screen supports save unders. If `false`, the screen does not support save unders
+    def does_save_unders : Bool
+      (X.does_save_unders(@screen)) == 0 ? false : true
+    end
+
     # Returns the underlieing `X11::C::X::PScreen` pointer
     def to_unsafe : X11::C::X::PScreen
       @screen
