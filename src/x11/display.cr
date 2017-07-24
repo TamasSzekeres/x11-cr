@@ -1578,8 +1578,381 @@ module X11
       X.change_keyboard_control @dpy, value_mask, values.to_unsafe
     end
 
+    # Defines the symbols for the specified number of KeyCodes starting with first_keycode.
+    #
+    # ###Arguments
+    # - **first_keycode** Specifies the first KeyCode that is to be changed.
+    # - **keysyms_per_keycode** Specifies the number of KeySyms per KeyCode.
+    # - **keysyms** Specifies an array of KeySyms.
+    #
+    # ###Description
+    # The `change_keyboard_mapping` function defines the symbols for the
+    # specified number of KeyCodes starting with first_keycode. The symbols for
+    # KeyCodes outside this range remain unchanged. The number of elements in keysyms must be:
+    # ```
+    # kysyms.size * keysyms_per_keycode
+    # ```
+    # The specified first_keycode must be greater than or equal to min_keycode
+    # returned by `display_keycodes`, or a **BadValue** error results.
+    # In addition, the following expression must be less than or equal to
+    # max_keycode as returned by `display_keycodes`, or a **BadValue** error results:
+    # ```
+    # first_keycode + keysyms.size - 1
+    # ```
+    # KeySym number N, counting from zero, for KeyCode K has the following index in keysyms, counting from zero:
+    # ```
+    # (K - first_keycode) * keysyms_per_keycode + N
+    # ```
+    # The specified keysyms_per_keycode can be chosen arbitrarily by the client
+    # to be large enough to hold all desired symbols. A special KeySym value
+    # of **NoSymbol** should be used to fill in unused elements for individual
+    # KeyCodes. It is legal for **NoSymbol** to appear in nontrailing positions
+    # of the effective list for a KeyCode. `change_keyboard_mapping` generates a **MappingNotify** event.
+    #
+    # There is no requirement that the X server interpret this mapping. It is merely stored for reading and writing by clients.
+    #
+    # `change_keyboard_mapping` can generate **BadAlloc** and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadValue** Some numeric value falls outside the range of values
+    # accepted by the request. Unless a specific range is specified for an argument,
+    # the full range defined by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
     def change_keyboard_mapping(first_keycode : Int32, keysyms_per_keycode : Int32, keysyms : Array(X11::C::KeySym)) : Int32
       X.change_keyboard_mapping @dpy, first_keycode, keysyms_per_keycode, keysyms.to_unsafe, keysyms.size
+    end
+
+    # Defines how the pointing device moves.
+    #
+    # ###Arguments
+    # - **do_accel** Specifies a Boolean value that controls whether the values for the accel_numerator or accel_denominator are used.
+    # - **do_threshold** Specifies a Boolean value that controls whether the value for the threshold is used.
+    # - **accel_numerator** Specifies the numerator for the acceleration multiplier.
+    # - **accel_denominator** Specifies the denominator for the acceleration multiplier.
+    # - **threshold** Specifies the acceleration threshold.
+    #
+    # ###Description
+    # The `change_pointer_control` function defines how the pointing device moves.
+    # The acceleration, expressed as a fraction, is a multiplier for movement.
+    # For example, specifying 3/1 means the pointer moves three times as fast as normal.
+    # The fraction may be rounded arbitrarily by the X server. Acceleration only
+    # takes effect if the pointer moves more than threshold pixels at once and only
+    # applies to the amount beyond the value in the threshold argument. Setting
+    # a value to \-1 restores the default. The values of the do_accel and do_threshold
+    # arguments must be True for the pointer values to be set, or the parameters are unchanged.
+    # Negative values (other than \-1) generate a BadValue error, as does a zero value for the accel_denominator argument.
+    #
+    # `change_pointer_control` can generate a `BadValue` error.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument,
+    # the full range defined by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
+    def change_pointer_control(do_accel : Bool, do_threshold : Bool, accel_numerator : Int32, accel_denominator : Int32, threshold : Int32) : Int32
+      X.change_pointer_control @dpy, do_accel ? 1 : 0, do_threshold ? 1 : 0, accel_numerator, accel_denominator, threshold
+    end
+
+    # Alters the property for the specified window.
+    #
+    # ###Arguments
+    # - **w** Specifies the window whose property you want to change.
+    # - **property** Specifies the property name.
+    # - **type** Specifies the type of the property. The X server does not
+    # interpret the type but simply passes it back to an application that later calls `window_property`.
+    # - **mode** Specifies the mode of the operation.
+    # You can pass **PropModeReplace**, **PropModePrepend**, or **PropModeAppend**.
+    # - **data** Specifies the property data.
+    #
+    # ###Description
+    # The `change_property` function alters the property for the specified window
+    # and causes the X server to generate a **PropertyNotify** event on that window.
+    # `change_property` performs the following:
+    # - If mode is **PropModeReplace**, `change_property` discards the previous property value and stores the new data.
+    # - If mode is **PropModePrepend** or **PropModeAppend**, `change_property`
+    # inserts the specified data before the beginning of the existing data or
+    # onto the end of the existing data, respectively. The type and format must
+    # match the existing property value, or a **BadMatch** error results.
+    #
+    # The lifetime of a property is not tied to the storing client.
+    # Properties remain until explicitly deleted, until the window is destroyed,
+    # or until the server resets. For a discussion of what happens when the
+    # connection to the X server is closed, see section "X Server Connection Close Operations".
+    # The maximum size of a property is server dependent and can vary dynamically
+    # depending on the amount of memory the server has available.
+    # (If there is insufficient space, a **BadAlloc** error results.)
+    #
+    # `change_property` can generate **BadAlloc**, **BadAtom**, **BadMatch**, **BadValue**, and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadAtom** A value for an Atom argument does not name a defined Atom.
+    # - **BadMatch** An **InputOnly** window is used as a Drawable.
+    # - **BadMatch** Some argument or pair of arguments has the correct type
+    # and range but fails to match in some other way required by the request.
+    # - **BadPixmap** A value for a Pixmap argument does not name a defined Pixmap.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument,
+    # the full range defined by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def change_property(w : X11::C::Window, property : Atom | X11::C::Atom, type : Atom | X11::C::Atom, mode : Int32, data : Bytes | Slice(Int16) | Slice(Int32)) : Int32
+      format = case data
+      when Bytes then 8
+      when Slice(Int16) then 16
+      when Slice(Int32) then 32
+      end
+      X.change_property @dpy, w, property.to_u64, type.to_u64, format, mode, data.to_unsafe, data.size
+    end
+
+    # Inserts or deletes the specified window from the client's save-set.
+    #
+    # ###Arguments
+    # - **w** Specifies the window that you want to add to or delete from the client's save-set.
+    # - **change_mode** Specifies the mode. You can pass **SetModeInsert** or **SetModeDelete**.
+    #
+    # ###Description
+    # Depending on the specified mode, `change_save_set` either inserts or deletes
+    # the specified window from the client's save-set. The specified window must
+    # have been created by some other client, or a **BadMatch** error results.
+    #
+    # `change_save_set` can generate **BadMatch**, **BadValue**, and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadMatch** An **InputOnly** window is used as a Drawable.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument,
+    # the full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def change_save_set(w : X11::C::Window, change_mode : Int32) : Int32
+      X.change_save_set @dpy, w, change_mode
+    end
+
+    # Changes the specified window attributes
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **valuemask** Specifies which window attributes are defined in the
+    # attributes argument. This mask is the bitwise inclusive OR of the valid
+    # attribute mask bits. If valuemask is zero, the attributes are ignored and
+    # are not referenced. The values and restrictions are the same as for `create_window`.
+    # - **attributes** Specifies the structure from which the values
+    # (as specified by the value mask) are to be taken. The value mask should
+    # have the appropriate bits set to indicate which attributes have been set in the structure (see "Window Attributes").
+    #
+    # ###Description
+    # Depending on the valuemask, the `change_window_attributes` function uses
+    # the window attributes in the `set_window_attributes` structure to change
+    # the specified window attributes. Changing the background does not cause
+    # the window contents to be changed. To repaint the window and its background,
+    # use `clear_window`. Setting the border or changing the background such that
+    # the border tile origin changes causes the border to be repainted. Changing
+    # the background of a root window to **None** or **ParentRelative** restores
+    # the default background pixmap. Changing the border of a root window to
+    # **CopyFromParent** restores the default border pixmap. Changing the
+    # win-gravity does not affect the current position of the window. Changing
+    # the backing-store of an obscured window to **WhenMapped** or **Always**, or
+    # changing the backing-planes, backing-pixel, or save-under of a mapped window
+    # may have no immediate effect. Changing the colormap of a window (that is,
+    # defining a new map, not changing the contents of the existing map) generates
+    # a **ColormapNotify** event. Changing the colormap of a visible window may
+    # have no immediate effect on the screen because the map may not be installed
+    # (see `install_colormap`). Changing the cursor of a root window to **None**
+    # restores the default cursor. Whenever possible, you are encouraged to share colormaps.
+    #
+    # Multiple clients can select input on the same window. Their event masks are maintained separately.
+    # When an event is generated, it is reported to all interested clients.
+    # However, only one client at a time can select for **SubstructureRedirectMask**,
+    # **ResizeRedirectMask** and **ButtonPressMask**. If a client attempts to
+    # select any of these event masks and some other client has already selected one,
+    # a **BadAccess** error results. There is only one do-not-propagate-mask for a window, not one per client.
+    #
+    # `change_window_attributes` can generate **BadAccess**, **BadColor**,
+    # **BadCursor**, **BadMatch**, **BadPixmap**, **BadValue**, and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadAccess** A client attempted to free a color map entry that it did not already allocate.
+    # - **BadAccess** A client attempted to store into a read-only color map entry.
+    # - **BadColor** A value for a Colormap argument does not name a defined Colormap.
+    # - **BadCursor** A value for a Cursor argument does not name a defined Cursor.
+    # - **BadMatch** An **InputOnly** window is used as a Drawable.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadPixmap** A value for a Pixmap argument does not name a defined Pixmap.
+    # - **BadValue** Some numeric value falls outside the range of values accepted by the request.
+    # Unless a specific range is specified for an argument, the full range defined
+    # by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def change_window_attributes(w : X11::C::Window, valuemask : UInt64, attributes : SetWindowAttributes) : Int32
+      X.change_window_attributes @dpy, w, value, attributes.to_unsafe
+    end
+
+    # TODO: implement & document & test
+    # fun check_if_event = XCheckIfEvent(
+    #   display : PDisplay,
+    #   event_return : PEvent,
+    #   predicate : PDisplay, PEvent, Pointer -> Bool,
+    #   arg : Pointer
+    # ) : Bool
+    #
+    # fun check_mask_event = XCheckMaskEvent(
+    #   display : PDisplay,
+    #   event_mask : Int64,
+    #   event_return : PEvent
+    # ) : Bool
+    #
+    # fun check_types_event = XCheckTypedEvent(
+    #   display : PDisplay,
+    #   event_type : Int32,
+    #   event_return : PEvent
+    # ) : Bool
+    #
+    # fun check_typed_window_event = XCheckTypedWindowEvent(
+    #   display : PDisplay,
+    #   w : Window,
+    #   event_type : Int32,
+    #   event_return : PEvent
+    # ) : Bool
+    #
+    # fun check_window_event = XCheckWindowEvent(
+    #   display : PDisplay,
+    #   w : Window,
+    #   event_mask : Int64,
+    #   event_return : PEvent
+    # ) : Bool
+
+    # Circulates children of the specified window in the specified direction.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **direction** Specifies the direction (up or down) that you want to
+    # circulate the window. You can pass **RaiseLowest** or **LowerHighest**.
+    #
+    # ###Description
+    # The `circulate_subwindows` function circulates children of the specified
+    # window in the specified direction. If you specify **RaiseLowest**,
+    # `circulate_subwindows` raises the lowest mapped child (if any) that is
+    # occluded by another child to the top of the stack. If you specify
+    # **LowerHighest**, `circulate_subwindows` lowers the highest mapped child
+    # (if any) that occludes another child to the bottom of the stack.
+    # Exposure processing is then performed on formerly obscured windows.
+    # If some other client has selected **SubstructureRedirectMask** on the window,
+    # the X server generates a **CirculateRequest** event, and no further
+    # processing is performed. If a child is actually restacked,
+    # the X server generates a **CirculateNotify** event.
+    #
+    # `circulate_subwindows` can generate **BadValue** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values
+    # accepted by the request. Unless a specific range is specified for an argument,
+    # the full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def circulate_subwindows(w : X11::C::Window, direction : Int32) : Int32
+      X.circulate_subwindows @dpy, w, direction
+    end
+
+    # Lowers the highest mapped child of the specified window that partially or completely occludes another child.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `circulate_subwindows_down` function lowers the highest mapped child
+    # of the specified window that partially or completely occludes another child.
+    # Completely unobscured children are not affected. This is a convenience
+    # function equivalent to `circulate_subwindows` with **LowerHighest** specified.
+    #
+    # `circulate_subwindows_down` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def circulate_subwindows_down(w : X11::C::Window) : Int32
+      X.circulate_subwindows_down @dpy, w
+    end
+
+    # Raises the lowest mapped child of the specified window that is partially or completely occluded by another child.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `circulate_subwindows_up` function raises the lowest mapped child of
+    # the specified window that is partially or completely occluded by another child.
+    # Completely unobscured children are not affected. This is a convenience
+    # function equivalent to `circulate_subwindows` with **RaiseLowest** specified.
+    #
+    # `circulate_subwindows_up` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def circulate_subwindows_up(w : X11::C::Window) : Int32
+      X.circulate_subwindows_up @dpy, w
+    end
+
+    # Paints a rectangular area in the specified window.
+    #
+    # ###Arguments
+    # - **w** Specifies the window. and specify the upper-left corner of the rectangle
+    # - **x**, **y** Specify the x and y coordinates, which are relative to the origin of the window.
+    # - **width**, **height** Specify the width and height, which are the dimensions of the rectangle.
+    # - **exposures** Specifies a Boolean value that indicates if **Expose** events are to be generated.
+    #
+    # ###Description
+    # The `clear_area` function paints a rectangular area in the specified
+    # window according to the specified dimensions with the window's background
+    # pixel or pixmap. The subwindow-mode effectively is **ClipByChildren**.
+    # If width is zero, it is replaced with the current width of the window minus x.
+    # If height is zero, it is replaced with the current height of the window minus y.
+    # If the window has a defined background tile, the rectangle clipped by any children
+    # is filled with this tile. If the window has background **None**,
+    # the contents of the window are not changed. In either case, if exposures
+    # is True, one or more **Expose** events are generated for regions of the
+    # rectangle that are either visible or are being retained in a backing store.
+    # If you specify a window whose class is **InputOnly**, a **BadMatch** error results.
+    #
+    # `clear_area` can generate **BadMatch**, **BadValue**, and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadMatch** An **InputOnly** window is used as a Drawable.
+    # - **BadMatch** Some argument or pair of arguments has the correct type
+    # and range but fails to match in some other way required by the request.
+    # - **BadValue** Some numeric value falls outside the range of values
+    # accepted by the request. Unless a specific range is specified for an argument,
+    # the full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def clear_area(w : X11::C::Window, x : Int32, y : Int32, width : UInt32, height : UInt32, exposures : Bool) : Int32
+      X.clear_area @dpy, w, x, y, width, height, exposures ? 1 : 0
+    end
+
+    # Clears the entire area in the specified window.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `clear_window` function clears the entire area in the specified window
+    # and is equivalent to:
+    # ```
+    # clear_area(w, 0, 0, 0, 0, false)
+    # ```
+    # If the window has a defined background tile, the rectangle is tiled with a
+    # plane-mask of all ones and `copy` function. If the window has background
+    # **None**, the contents of the window are not changed. If you specify a
+    # window whose class is **InputOnly**, a **BadMatch** error results.
+    #
+    # `clear_window` can generate **BadMatch** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadMatch** An **InputOnly** window is used as a Drawable.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    def clear_window(w : X11::C::Window) : Int32
+      X.clear_window @dpy, w
     end
 
     # -------------------

@@ -1995,7 +1995,7 @@ module X11::C
       mode : Int32,
       data : PChar,
       nelements : Int32
-    ) : Int32;
+    ) : Int32
 
     fun change_save_set = XChangeSaveSet(
       display : PDisplay,
