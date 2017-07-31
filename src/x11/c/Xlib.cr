@@ -1470,9 +1470,9 @@ module X11::C
       values : PGCValues
     ) : GC
 
-    fun gc_context_from_gc = XGContextFromGC(
+    fun g_context_from_gc = XGContextFromGC(
       gc : GC
-    ) : GC
+    ) : GContext
 
     fun flush_gc = XFlushGC(
       display : PDisplay,

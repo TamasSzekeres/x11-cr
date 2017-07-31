@@ -58,6 +58,24 @@ module X11
       close
     end
 
+    # Closes the connection to the X server.
+    #
+    # ###Description
+    # `close` function closes the connection to the X server for the display
+    # specified in the Display structure and destroys all windows, resource IDs
+    # (`X11::C::Window`, `X11::C::Font`, `X11::C::Pixmap`, `X11::C::Colormap`,
+    # `X11::C::Cursor`, and `GContext`), or other resources that the client has
+    # created on this display, unless the close-down mode of the resource has
+    # been changed (see `set_close_down_mode`). Therefore, these windows, resource IDs,
+    # and other resources should never be referenced again or an error will be generated.
+    # Before exiting, you should call `close` explicitly so that any pending
+    # errors are reported as `close` performs a final `sync` operation.
+    #
+    # ###Diagnostics
+    # `close` can generate a **BadGC** error.
+    #
+    # ###See also
+    # `flush`, `set_close_down_mode`.
     def close : Int32
       res = 0
       if @initialization == DisplayInitialization::Name
@@ -68,18 +86,45 @@ module X11
       res
     end
 
-    # The `load_query_font` function provides the most common way for accessing a font.
-    # load_query_font both opens (loads) the specified font and returns a `FontStruct` object.
+    # Provides the most common way for accessing a font.
     #
     # ###Arguments
-    # *name* Specifies the name of the font.
+    # - **name** Specifies the name of the font.
+    #
+    # ###Description
+    # `load_query_font` function provides the most common way for accessing a font.
+    # `load_query_font` both opens (loads) the specified font and returns a pointer
+    # to the appropriate `FontStruct` structure. If the font name is not in the
+    # Host Portable Character Encoding, the result is implementation dependent.
+    # If the font does not exist, `load_query_font` returns **nil**.
+    #
+    # `load_query_font` can generate a **BadAlloc** error.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    #
+    # ###See also
+    # `create_gc`, `free_font`, `FontStruct::property`, `list_fonts`, `load_font`,
+    # `query_font`, `set_font_path`, `unload_font`.
     def load_query_font(name : String) : FontStruct
       FontStruct.new(self, X.load_query_font(@dpy, name.to_unsafe))
     end
 
-    # The `query_font` function returns a `FontStruct` object, which contains information associated with the font.
-    # You can query a font or the font stored in a `GC`. The *font_id* stored in the `FontStruct` object will be the `GContext` ID,
+    # Returns a `FontStruct` structure, which contains information associated with the font.
+    #
+    # ###Arguments
+    # - **font_id** Specifies the font ID or the `GContext` ID.
+    #
+    # ###Description
+    # The `query_font` function returns a `FontStruct` structure, which contains
+    # information associated with the font. You can query a font or the font stored in a GC.
+    # The font ID stored in the `FontStruct` structure will be the `GContext` ID,
     # and you need to be careful when using this ID in other functions (see `g_context_from_gc`).
+    # If the font does not exist, `query_font` returns **nil**. To free this data, use `X11::X.free_font_info`.
+    #
+    # ###See also
+    # `create_gc`, `free_font`, `FontStruct::property`, `list_fonts`, `load_font`,
+    # `load_query_font`, `set_font_path`, `unload_font`.
     def query_font(font_id : X11::C::XID) : FontStruct
       FontStruct.new(self, X.query_font(@dpy, font_id))
     end
@@ -89,6 +134,27 @@ module X11
     # If the server does not support motion history, if the start time is later than the stop time,
     # or if the start time is in the future, no events are returned; *motion_events* returns empty array.
     # If the stop time is in the future, it is equivalent to specifying *CurrentTime* .
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **start**, **stop** Specify the time interval in which the events are
+    # returned from the motion history buffer. You can pass a timestamp or **CurrentTime**.
+    # ###Description
+    # The `motion_events` function returns all events in the motion history buffer
+    # that fall between the specified start and stop times, inclusive,
+    # and that have coordinates that lie within the specified window (including its borders)
+    # at its present placement. If the server does not support motion history,
+    # if the start time is later than the stop time, or if the start time is in
+    # the future, no events are returned; `motion_events` returns **nil**.
+    # If the stop time is in the future, it is equivalent to specifying **CurrentTime**.
+    #
+    # `motion_events` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `display_motion_buffer_size`, `if_event`, `next_event`, `put_back_event`, `send_event`.
     def motion_events(w : X11::C::Window, start : X11::C::Time, stop : X11::C::Time) : Array(TimeCoord)
       p_time_coords = X.get_motion_events @dpy, w, start, stop, out num_time_coords
       return [] of TimeCoord if num_time_coords == 0
@@ -98,9 +164,52 @@ module X11
       end
     end
 
-    # Returns a newly created *ModifierKeymap* object that contains the keys being used as modifiers.
+    # Returns a newly created `ModifierKeymap` object that contains the keys being used as modifiers.
+    #
+    # ###See also
+    # `change_keyboard_mapping`, `ModifierKeymap::delete_entry`, `display_keycodes`,
+    # `ModifierKeymap::finalize`, `keyboard_mapping`, `ModifierKeymap::insert_entry`,
+    # `ModifierKeymap::new`, `set_modifier_mapping`, `set_pointer_mapping`.
     def modifier_mapping : ModifierKeymap
       ModifierKeymap.new(X.get_modifier_mapping(@dpy))
+    end
+
+    # Creates an `Image`.
+    #
+    # ###Arguments
+    # - **visual** Specifies the `Visual` structure.
+    # - **depth** Specifies the depth of the image.
+    # - **format** Specifies the format for the image. You can pass **XYBitmap**, **XYPixmap**, or **ZPixmap**.
+    # - **offset** Specifies the number of pixels to ignore at the beginning of the scanline.
+    # - **data** Specifies the image data.
+    # - **width** Specifies the width of the image, in pixels.
+    # - **height** Specifies the height of the image, in pixels.
+    # - **bitmap_pad** Specifies the quantum of a scanline (8, 16, or 32).
+    # In other words, the start of one scanline is separated in client memory
+    # from the start of the next scanline by an integer multiple of this many bits.
+    # - **bytes_per_line** Specifies the number of bytes in the client image between
+    # the start of one scanline and the start of the next.
+    #
+    # ###Description
+    # The `create_image` function allocates the memory needed for an `Image` structure
+    # for the specified display but does not allocate space for the image itself.
+    # Rather, it initializes the structure byte-order, bit-order, and bitmap-unit
+    # values from the display and returns a pointer to the `Image` structure.
+    # The red, green, and blue mask values are defined for Z format images only
+    # and are derived from the `Visual` structure passed in. Other values also
+    # are passed in. The offset permits the rapid displaying of the image without
+    # requiring each scanline to be shifted into position. If you pass a zero
+    # value in bytes_per_line, Xlib assumes that the scanlines are contiguous
+    # in memory and calculates the value of *bytes_per_line* itself.
+    #
+    # Note that when the image is created using `create_image`, `get_image`, or
+    # `Image::sub_image`, the destroy procedure that the `Image::finalize`
+    # function calls frees both the image structure and the data pointed to by the image structure.
+    #
+    # ###See also
+    # `Image::add_pixel`, `Image::finalize`, `Image::pixel`, `Image::put_pixel`, `Image::sub_image`.
+    def create_image(visual : Visual, depth : UInt32, format : Int32, offset : Int32, data : Bytes, width : UInt32, height : UInt32, bitmap_pad : Int32, bytes_per_line : Int32) : Image
+      Image.new(X.create_image(@dpy, visual.to_unsafe, depth, format, offset, data.to_unsafe, width, height, bitmap_pad, bytes_per_line))
     end
 
     # This function specifically supports rudimentary screen dumps.
@@ -142,12 +251,17 @@ module X11
     # - **BadDrawable** A value for a `Drawable` argument does not name a defined `Window` or `Pixmap`.
     # - **BadMatch** An `InputOnly` window is used as a `Drawable`.
     # - **BadMatch** Some argument or pair of arguments has the correct type and range but fails to match in some other way required by the request.
-    # - **BadValue** Some numeric value falls outside the range of values accepted by the request. Unless a specific range is specified for an argument, the full range defined by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
-    def get_image(d : X11::C::Drawable, x : Int32, y : Int32, width : UInt32, height : UInt32, plane_mask : UInt64, format : Int32) : Image
+    # - **BadValue** Some numeric value falls outside the range of values accepted by the request.
+    # Unless a specific range is specified for an argument, the full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `Image::add_pixel`, `create_image`, `Image::finalize`, `Image::pixel`, `Image::init`, `put_image`, `Image::put_pixel`, `sub_image`.
+    def image(d : X11::C::Drawable, x : Int32, y : Int32, width : UInt32, height : UInt32, plane_mask : UInt64, format : Int32) : Image
       Image.new(X.get_image(@dpy, d, x, y, width, height, plane_mask, format))
     end
 
-    # Updates `dest_image` with the specified subimage in the same manner as #get_image.
+    # Updates *dest_image* with the specified subimage in the same manner as #get_image.
     #
     # ###Arguments
     # - **d** Specifies the drawable.
@@ -159,12 +273,12 @@ module X11
     # - **dest_x**, **dest_y** Specify the *x* and *y* coordinates, which are relative to the origin of the destination rectangle, specify its upper-left corner, and determine where the subimage is placed in the destination image.
     #
     # ###Description
-    # The `get_sub_image` function updates `dest_image` with the specified subimage in the same manner as `get_image`.
-    # If the `format` argument is **XYPixmap**, the image contains only the bit planes you passed to the `plane_mask` argument.
-    # If the `format` argument is **ZPixmap** , #get_sub_image returns as zero the bits in all planes not specified in the `plane_mask` argument.
-    # The function performs no range checking on the values in `plane_mask` and ignores extraneous bits.
-    # As a convenience, `get_sub_image` returns an image object specified by `dest_image`.
-    # The depth of the destination Image object must be the same as that of the drawable.
+    # The `sub_image` function updates *dest_image* with the specified subimage in the same manner as `image`.
+    # If the *format* argument is **XYPixmap**, the image contains only the bit planes you passed to the *plane_mask* argument.
+    # If the *format* argument is **ZPixmap** , #get_sub_image returns as zero the bits in all planes not specified in the *plane_mask* argument.
+    # The function performs no range checking on the values in *plane_mask* and ignores extraneous bits.
+    # As a convenience, `sub_image` returns an image object specified by *dest_image*.
+    # The depth of the destination `Image` object must be the same as that of the drawable.
     # If the specified subimage does not fit at the specified location on the destination image,
     # the right and bottom edges are clipped. If the drawable is a *pixmap*,
     # the given rectangle must be wholly contained within the *pixmap*,
@@ -175,17 +289,20 @@ module X11
     # then the backing-store contents are returned for regions of the window that are obscured by noninferior windows.
     # If the window does not have backing-store, the returned contents of such obscured regions are undefined.
     # The returned contents of visible regions of inferiors of a different depth than the specified window's depth are also undefined.
-    # If a problem occurs, `get_sub_image` raises exception.
+    # If a problem occurs, `sub_image` raises exception.
     #
-    # `get_sub_image` can generate **BadDrawable**, **BadGC**, **BadMatch**, and **BadValue** errors.
+    # `sub_image` can generate **BadDrawable**, **BadGC**, **BadMatch**, and **BadValue** errors.
     #
     # ###Diagnostics
     # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
     # - **BadGC** A value for a *GContext* argument does not name a defined *GContext*.
-    # - **BadMatch** An *InputOnly* window is used as a *Drawable*.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
     # - **BadMatch** Some argument or pair of arguments has the correct type and range but fails to match in some other way required by the request.
     # - **BadValue** Some numeric value falls outside the range of values accepted by the request. Unless a specific range is specified for an argument, the full range defined by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
-    def get_sub_image(d : X11::C::Drawable, x : Int32, y : Int32, width : UInt32, height : UInt32, plane_mask : UInt64, format : Int32, dest_image : Image, dest_x : Int32, dest_y : Int32) : Image
+    #
+    # ##See also
+    # `Image::add_pixel`, `create_image`, `Image::finalize`, `Image::pixel`, `Image::init`, `put_image`, `put_pixel`.
+    def sub_image(d : X11::C::Drawable, x : Int32, y : Int32, width : UInt32, height : UInt32, plane_mask : UInt64, format : Int32, dest_image : Image, dest_x : Int32, dest_y : Int32) : Image
       Image.new(X.get_sub_image(@dpy, d, x, y, width, height, plane_mask, format, dest_image.imagem dest_x, dest_y))
     end
 
@@ -193,6 +310,9 @@ module X11
     #
     # ###Description
     # Returns a non empty `String` if the buffer contains data, otherwise returns an empty `String`.
+    #
+    # ###See also
+    # `fetch_buffer`, `rotate_buffers`, `store_buffer`, `store_bytes`.
     def fetch_bytes : String
       pstr = X.fetch_bytes @dpy, out num_bytes
       return "" if num_bytes == 0
@@ -209,6 +329,9 @@ module X11
     # ###Description
     # Returns a non empty `String` if the buffer contains data.
     # Returns an empty `String` if no dta in the buffer or the `buffer` is invalid.
+    #
+    # ###See also
+    # `fetch_bytes`, `rotate_buffers`, `store_buffer`, `store_bytes`.
     def fetch_buffer(buffer : Int32) : String
       pstr = X.fetch_buffer @dpy, out num_bytes, buffer
       return "" if num_bytes == 0
@@ -229,6 +352,9 @@ module X11
     #
     # ###Diagnostics
     # - **BadAtom** A value for an `Atom` argument does not name a defined `Atom`.
+    #
+    # ###See also
+    # `atom_names`, `window_property`, `intern_atom`, `intern_atoms`.
     def atom_name(atom : Atom | X11::C::Atom) : String
       name = X.get_atom_name(@dpy, atom.to_u64)
       str_name = String.new name
@@ -283,6 +409,9 @@ module X11
     # The `display_name` function returns the name of the display that `new` would attempt to use. If a **nil** string is specified,
     # `display_name` looks in the environment for the display and returns the display name that `new` would attempt to use.
     # This makes it easier to report to the user precisely which display the program attempted to open when the initial connection attempt failed.
+    #
+    # ###See also
+    # `error_database_text`, `error_text`, `new`, `synchronize`.
     def self.display_name(string : String?) : String
       if string.is_a? String
         pstr = X.display_name string.to_unsafe
@@ -304,12 +433,46 @@ module X11
     # The returned string is in a static area and must not be modified.
     # The returned string is in the Host Portable Character Encoding.
     # If the specified `KeySym` is not defined, returns an empty `String`.
+    #
+    # ###See also
+    # `keycode_to_keysym`, `KeyEvent::lookup_keysym`.
     def self.keysym_to_string(keysym : X11::C::KeySym) : String
       pstr = X.keysym_to_string keysym
       return "" if pstr.null?
       str = String.new pstr
       X.free pstr
       str
+    end
+
+    # Returns the previous after function.
+    #
+    # ###Arguments
+    # - **onoff** Specifies a Boolean value that indicates whether to enable or disable synchronization.
+    #
+    # ###Description
+    # The `synchronize` function returns the previous after function.
+    # If onoff is **true**, `synchronize` turns on synchronous behavior.
+    # If onoff is **false**, `synchronize` turns off synchronous behavior.
+    #
+    # ###See also
+    # `set_after_function`, `set_error_handler`.
+    def synchronize(onoff : Bool) : X11::C::X::PDisplay -> Int32
+      X.synchronize @dpy, onoff ? 1 : 0
+    end
+
+    # Returns the previous after function.
+    #
+    # ###Arguments
+    # - **procedure** Specifies the procedure to be called.
+    #
+    # ###Description
+    # The specified procedure is called with only a display pointer.
+    # `set_after_function` returns the previous after function.
+    #
+    # ###See also
+    # `set_error_handler`, `synchronize`.
+    def set_after_function(procedure : X11::C::X::PDisplay -> Int32) : X11::C::X::PDisplay -> Int32
+      X.set_after_function @dpy, procedure
     end
 
     # Returns the atom identifier.
@@ -333,6 +496,9 @@ module X11
     # - **BadValue** Some numeric value falls outside the range of values accepted by the request.
     # Unless a specific range is specified for an argument, the full range defined by the argument's type is accepted.
     # Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `atom_name`, `window_property`, `intern_atoms`.
     def intern_atom(atom_name : String, only_if_exists : Bool)
       X.intern_atom @dpy, atom_name.to_unsafe, only_if_exists ? 1 : 0
     end
@@ -363,6 +529,9 @@ module X11
     # ###Diagnostics
     # - **BadAlloc** The server failed to allocate the requested source or server memory.
     # - **BadColor** A value for a `Colormap` argument does not name a defined `Colormap`.
+    #
+    # ###See Also
+    # `alloc_color`, `change_window_attributes`, `create_window`, `query_color`, `store_colors`.
     def copy_colormap_and_free(colormap : X11::C::Colormap) : X11::C::Colormap
       X.copy_colormap_and_free @dpy, colormap
     end
@@ -380,18 +549,18 @@ module X11
     # associated with it. Note that the specified window is only used to determine the screen.
     #
     # The initial values of the colormap entries are undefined for the visual classes
-    # `GrayScale`, `PseudoColor`, and `DirectColor`. For `StaticGray`, `StaticColor`,
+    # *GrayScale*, *PseudoColor*, and *DirectColor*. For *StaticGray*, *StaticColor*,
     # and `TrueColor`, the entries have defined values, but those values are specific
-    # to the visual and are not defined by X. For `StaticGray`, `StaticColor`, and `TrueColor`,
+    # to the visual and are not defined by X. For *StaticGray*, *StaticColor*, and *TrueColor*,
     # alloc must be **AllocNone**, or a **BadMatch** error results. For the other visual classes,
     # if alloc is **AllocNone**, the colormap initially has no allocated entries,
-    # and clients can allocate them. For information about the visual types, see "Visual Types".
+    # and clients can allocate them.
     #
     # If alloc is **AllocAll the entire colormap is allocated writable.
     # The initial values of all allocated entries are undefined.
-    # For `GrayScale` and `PseudoColor`, the effect is as if an `alloc_color_cells` call returned
+    # For *GrayScale* and *PseudoColor*, the effect is as if an `alloc_color_cells` call returned
     # all pixel values from zero to `N - 1`, where `N` is the colormap entries value in the specified visual.
-    # For `DirectColor`, the effect is as if an `alloc_color_planes` call returned a
+    # For *DirectColor*, the effect is as if an `alloc_color_planes` call returned a
     # pixel value of zero and red_mask, green_mask, and blue_mask values containing the same
     # bits as the corresponding masks in the specified visual. However, in all cases,
     # none of these entries can be freed by using `free_colors`.
@@ -400,13 +569,17 @@ module X11
     #
     # ###Diagnostics
     # - **BadAlloc** The server failed to allocate the requested source or server memory.
-    # - **BadMatch** An `InputOnly` window is used as a `Drawable`.
+    # - **BadMatch** An *InputOnly* window is used as a *Drawable*.
     # - **BadMatch** Some argument or pair of arguments has the correct type and range but fails to match in some other way required by the request.
-    # - **BadPixmap** A value for a `Pixmap` argument does not name a defined `Pixmap`.
+    # - **BadPixmap** A value for a *Pixmap* argument does not name a defined *Pixmap*.
     # - **BadValue** Some numeric value falls outside the range of values accepted by the request.
     # Unless a specific range is specified for an argument, the full range defined by the argument's type is accepted.
     # Any argument defined as a set of alternatives can generate this error.
-    # - **BadWindow** A value for a Window argument does not name a defined `Window`.
+    # - **BadWindow** A value for a Window argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `alloc_color`, `change_window_attributes`, `copy_colormap_and_free`,
+    # `create_window`, `free_colormap`, `query_color`, `store_colors`.
     def create_colormap(w : X11::C::Window, visual : Visual, alloc : Int32) : X11::C::Colormap
       X.create_colormap @dpy, w, visual.visual, alloc
     end
@@ -422,8 +595,8 @@ module X11
     #
     # ###Description
     # The `create_pixmap_cursor` function creates a cursor and returns the cursor ID associated with it.
-    # The foreground and background RGB values must be specified using `foreground_color` and `background_color`,
-    # even if the X server only has a `StaticGray` or `GrayScale` screen.
+    # The foreground and background RGB values must be specified using *foreground_color* and *background_color*,
+    # even if the X server only has a *StaticGray* or *GrayScale* screen.
     # The foreground color is used for the pixels set to 1 in the source,
     # and the background color is used for the pixels set to 0. Both source and mask,
     # if specified, must have depth one (or a **BadMatch** error results) but can have any root.
@@ -443,7 +616,10 @@ module X11
     #
     # ###Diagnostics
     # - **BadAlloc** The server failed to allocate the requested source or server memory.
-    # - **BadPixmap** A value for a `Pixmap` argument does not name a defined `Pixmap`.
+    # - **BadPixmap** A value for a *Pixmap* argument does not name a defined *Pixmap*.
+    #
+    # ###See also
+    # `create_font_cursor`, `create_glyph_cursor`, `define_cursor`, `load_font`, `recolor_cursor`.
     def create_pixmap_cursor(source : X11::C::Pixmap, mask : X11::C::Pixmap, foreground_color : Color, background_color : Color, x : UInt32, y : UInt32) : X11::C::Cursor
       X.create_pixmap_cursor @dpy, source, mask, foreground_color, background_color, x, y
     end
@@ -461,14 +637,14 @@ module X11
     # ###Description
     # The `create_glyph_cursor` function is similar to `create_pixmap_cursor`
     # except that the source and mask bitmaps are obtained from the specified font glyphs.
-    # The source_char must be a defined glyph in `source_font`, or a **BadValue** error results.
-    # If mask_font is given, mask_char must be a defined glyph in `mask_font`, or a **BadValue** error results.
-    # The `mask_font` and character are optional. The origins of the `source_char` and `mask_char`
+    # The source_char must be a defined glyph in *source_font*, or a **BadValue** error results.
+    # If *mask_font* is given, mask_char must be a defined glyph in *mask_font*, or a **BadValue** error results.
+    # The *mask_font* and character are optional. The origins of the *source_char* and *mask_char*
     # (if defined) glyphs are positioned coincidently and define the hotspot.
     # The source_char and mask_char need not have the same bounding box metrics,
     # and there is no restriction on the placement of the hotspot relative to the bounding boxes.
     # If no mask_char is given, all pixels of the source are displayed. You can
-    # free the fonts immediately by calling `X.free_font` if no further explicit references to them are to be made.
+    # free the fonts immediately by calling `free_font` if no further explicit references to them are to be made.
     #
     # For 2-byte matrix fonts, the 16-bit value should be formed with the byte1
     # member in the most-significant byte and the byte2 member in the least-significant byte.
@@ -481,6 +657,9 @@ module X11
     # - **BadValue** Some numeric value falls outside the range of values accepted by the request.
     # Unless a specific range is specified for an argument, the full range defined by the argument's
     # type is accepted. Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `create_font_cursor`, `create_pixmap_cursor`, `define_cursor`, `load_font`, `recolor_cursor`.
     def create_glyph_cursor(source_font : X11::C::Font, mask_font : X11::C::Font, source_char : UInt32, mask_char : UInt32, foreground_color : Color, background_color : Color) : X11::C::Cursor
       X.create_glyph_cursor @dpy, source_font, mask_font, source_char, mask_char, foreground_color, background_color
     end
@@ -507,6 +686,9 @@ module X11
     # - **BadValue** Some numeric value falls outside the range of values accepted by the request.
     # Unless a specific range is specified for an argument, the full range defined by the argument's
     # type is accepted. Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `create_glyph_cursor`, `create_pixmap_cursor`, `define_cursor`, `load_font`, `recolor_cursor`.
     def create_font_cursor(shape : UInt32) : X11::C::Cursor
       X.create_font_cursor @dpy, shape
     end
@@ -520,13 +702,13 @@ module X11
     # The `load_font` function loads the specified font and returns its
     # associated font ID. If the font name is not in the Host Portable Character Encoding,
     # the result is implementation dependent. Use of uppercase or lowercase does not matter.
-    # When the characters ``?'' and ``*'' are used in a font name, a pattern match
-    # is performed and any matching font is used. In the pattern, the ``?'' character
-    # will match any single character, and the ``*'' character will match any number of characters.
+    # When the characters "?" and "*" are used in a font name, a pattern match
+    # is performed and any matching font is used. In the pattern, the "?" character
+    # will match any single character, and the "*" character will match any number of characters.
     # A structured format for font names is specified in the X Consortium standard
     # **X Logical Font Description Conventions**. If `load_font` was unsuccessful at loading the specified font,
     # a **BadName** error results. Fonts are not associated with a particular
-    # screen and can be stored as a component of any `GC`.
+    # screen and can be stored as a component of any `X11::C::X::GC`.
     # When the font is no longer needed, call `unload_font`.
     #
     # `load_font` can generate **BadAlloc** and **BadName** errors.
@@ -534,6 +716,10 @@ module X11
     # ###Diagnostics
     # - **BadAlloc** The server failed to allocate the requested source or server memory.
     # - **BadName** A font or color of the specified name does not exist.
+    #
+    # ###See also
+    # `create_gc`, `free_font`, `FontStruct::property`, `list_fonts`,
+    # `load_query_font`, `query_font`, `set_font_path`, `unload_font`.
     def load_font(name : String) : X11::X::Font
       X.load_font @dpy, name.to_unsafe
     end
@@ -556,24 +742,34 @@ module X11
     #
     # ###Diagnostics
     # - **BadAlloc** The server failed to allocate the requested source or server memory.
-    # - **BadDrawable** A value for a `Drawable` argument does not name a defined `Window` or `Pixmap`.
-    # - **BadFont** A value for a font argument does not name a defined font (or, in some cases, `GContext`).
-    # - **BadMatch** An **InputOnly** window is used as a `Drawable`.
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadFont** A value for a font argument does not name a defined font (or, in some cases, *GContext*).
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
     # - **BadMatch** Some argument or pair of arguments has the correct type and range but fails to match in some other way required by the request.
-    # - **BadPixmap** A value for a `Pixmap` argument does not name a defined `Pixmap`.
+    # - **BadPixmap** A value for a *Pixmap* argument does not name a defined *Pixmap*.
     # - **BadValue** Some numeric value falls outside the range of values accepted by the request.
     # Unless a specific range is specified for an argument, the full range defined
     # by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
-    def create_gc(d : Drawable, valuemask : UInt64, values : GCValues) : X11::X::GC
-      X.create_gc @dpy, d, valuemask, values.values
+    #
+    # ###See also
+    # `all_planes`, `change_gc`, `copy_area`, `copy_gc`, `draw_arc`, `draw_line`,
+    # `draw_rectangle`, `draw_text`, `fill_rectangle`, `free_gc`, `g_context_from_gc`,
+    # `gc_values`, `query_best_size`, `set_arc_mode`, `set_clip_origin`.
+    def create_gc(d : X11::C::Drawable, valuemask : UInt64, values : GCValues) : X11::C::X::GC
+      X.create_gc @dpy, d, valuemask, values.to_unsafe
     end
 
     # Returns GC-context from GC.
     #
     # ###Arguments
     # - **gc** Specifies the GC for which you want the resource ID.
-    def self.gc_context_from_gc(gc : X11::C::GC) : X11::C::GC
-      X.gc_context_from_gc gc
+    #
+    # ###See also
+    # `all_planes`, `change_gc`, `copy_area`, `copy_gc`, `create_gc`, `draw_arc`,
+    # `draw line`, `draw_rectangle`, `draw_text`, `fill_rectangle`, `free_gc`,
+    # `gc_values`, `query_best_size`, `set_arc_mode`, `set_clip_origin`.
+    def self.g_context_from_gc(gc : X11::C::X::GC) : X11::C::GContext
+      X.g_context_from_gc gc
     end
 
     # Forces GC component change.
@@ -584,7 +780,7 @@ module X11
     #
     # ###Description
     # Force sending GC component changes.
-    def flush_gc(gc : X11::C::GC)
+    def flush_gc(gc : X11::C::X::GC)
       X.flush_gc @dpy, fc
       self
     end
@@ -611,11 +807,14 @@ module X11
     #
     # ###Diagnostics
     # - **BadAlloc** The server failed to allocate the requested source or server memory.
-    # - **BadDrawable** A value for a `Drawable` argument does not name a defined `Window` or `Pixmap`.
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
     # - **BadValue** Some numeric value falls outside the range of values accepted by the request.
     # Unless a specific range is specified for an argument, the full range defined
     # by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
-    def create_pixmap(d : Drawable, width : UInt32, height : UInt32, depth : UInt32) : Pixmap
+    #
+    # ###See also
+    # `copy_area`, `free_pixmap`.
+    def create_pixmap(d : X11::C::Drawable, width : UInt32, height : UInt32, depth : UInt32) : X11::C::Pixmap
       X.create_pixmap @dpy, d, width, height, depth
     end
 
@@ -643,8 +842,11 @@ module X11
     #
     # ###Diagnostics
     # - **BadAlloc** The server failed to allocate the requested source or server memory.
-    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
-    def create_bitmap_from_data(d : Drawable, data : Bytes, width : UInt32, height : UInt32) : Pixmap
+    # - **BadGC** A value for a `X11::C::GContext` argument does not name a defined `X11::C::GContext`.
+    #
+    # ###See also
+    # `create_pixmap`, `create_pixmap_from_bitmap_data`, `put_image`, `read_bitmap_file`, `write_bitmap_file`.
+    def create_bitmap_from_data(d : X11::C::Drawable, data : Bytes, width : UInt32, height : UInt32) : X11::C::Pixmap
       X.create_bitmap_from_data @dpy, d, data.to_unsafe, width, height
     end
 
@@ -666,11 +868,14 @@ module X11
     #
     # ###Diagnostics
     # - **BadAlloc** The server failed to allocate the requested source or server memory.
-    # - **BadDrawable** A value for a `Drawable` argument does not name a defined `Window` or `Pixmap`.
-    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
-    # - **BadMatch** An **InputOnly** window is used as a `Drawable`.
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `X11::C::GContext` argument does not name a defined `X11::C::GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
     # - **BadMatch** Some argument or pair of arguments has the correct type and range but fails to match in some other way required by the request.
-    def create_pixmap_from_bitmap_data(d : Drawable, data : Bytes, width : UInt32, height : UInt32, fg : UInt64, bg : UInt64, depth : UInt64) : Pixmap
+    #
+    # ###See also
+    # `create_bitmap_from_data`, `create_pixmap`, `put_image`, `read_bitmap_file`, `write_bitmap_file`.
+    def create_pixmap_from_bitmap_data(d : X11::C::Drawable, data : Bytes, width : UInt32, height : UInt32, fg : UInt64, bg : UInt64, depth : UInt64) : X11::C::Pixmap
       X.create_pixmap_from_bitmap_data @dpy, d, data.to_unsafe, width, height, fg, bg, depth
     end
 
@@ -689,7 +894,7 @@ module X11
     # `create_simple_window` can generate **BadAlloc**, **BadMatch**, **BadValue**, and **BadWindow** errors.
     #
     # For more information see: `create_window`.
-    def create_simple_window(parent : Window, x : Int32, y : Int32, width : UInt32, height : UInt32, border_width : UInt32, border : UInt64, background : UInt64) : Window
+    def create_simple_window(parent : X11::C::Window, x : Int32, y : Int32, width : UInt32, height : UInt32, border_width : UInt32, border : UInt64, background : UInt64) : X11::C::Window
       X.create_simple_window @dpy, parent, x, y, width, height, border_width, border, background
     end
 
@@ -708,7 +913,10 @@ module X11
     #
     # ###Diagnostics
     # - **BadAtom** A value for an `Atom` argument does not name a defined `Atom`.
-    def selection_owner(selection : Atom | X11::C::Atom) : Window
+    #
+    # ###See also
+    # `convert_selection`, `set_selection_owner`.
+    def selection_owner(selection : Atom | X11::C::Atom) : X11::C::Window
       X.get_selection_owner @dpy, selection.to_u64
     end
 
@@ -765,37 +973,131 @@ module X11
     # Unless a specific range is specified for an argument, the full range defined by the argument's type is accepted.
     # Any argument defined as a set of alternatives can generate this error.
     # - **BadWindow** A value for a `Window` argument does not name a defined `Window`.
-    def create_window(parent : Window, x : Int32, y : Int32, width : UInt32, height : UInt32, border_width : UInt32, depth : Int32, c_class : UInt32, visual : Visual, valuemask : UInt64, attributes : SetWindowAttributes) : Window
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `define_cursor`,
+    # `destroy_window`, `map_window`, `raise_window`, `unmap_window`.
+    def create_window(parent : X11::C::Window, x : Int32, y : Int32, width : UInt32, height : UInt32, border_width : UInt32, depth : Int32, c_class : UInt32, visual : Visual, valuemask : UInt64, attributes : SetWindowAttributes) : X11::C::Window
       X.create_window @dpy, parent, x, y, width, height, border_width, depth, c_class, visual.to_unsafe, valuemask, attributes.to_unsafe
     end
 
-    # TODO: test & document
-    def installed_colormaps(w : Window) : Array(Colormap)
+    # Returns a list of the currently installed colormaps.
+    #
+    # ###Arguments
+    # - **w** Specifies the window that determines the screen.
+    #
+    # ###Description
+    # The `installed_colormaps` function returns a list of the currently installed
+    # colormaps for the screen of the specified window. The order of the colormaps
+    # in the list is not significant and is no explicit indication of the required list.
+    # When the allocated list is no longer needed.
+    #
+    # `installed_colormaps` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `change_window_attributes`, `create_colormap`, `create_window`,
+    # `install_colormap`, `uninstall_colormap`.
+    def installed_colormaps(w : X11::C::Window) : Array(X11::C::Colormap)
       pcolormaps = X.list_installed_colormaps @dpy, w, out num
-      return [] of Colormap if pcolormaps.null? || num <= 0
-      colormaps = Array(Colormap).new num
+      return [] of X11::C::Colormap if pcolormaps.null? || num <= 0
+      colormaps = Array(X11::C::Colormap).new
       (0...num).each do |i|
-        colormaps[i] = pcolormaps[0].value
+        colormaps << (pcolormaps + i).value
       end
+      X.free pcolormaps.as(PChar)
       colormaps
     end
 
-    # TODO: test & document
-    def fonts(pattern : String, maxnames : Int32) : Array(String)
-      pstrings = X.list_fonts @dpy, pattern.to_unsafe, out count
+    # Returns an array of available font names.
+    #
+    # ###Arguments
+    # - **pattern** Specifies the null-terminated pattern string that can contain wildcard characters.
+    # - **max_names** Specifies the maximum number of names to be returned.
+    #
+    # ###Description
+    # The `fonts` function returns an array of available font names
+    # (as controlled by the font search path; see `set_font_path`) that match
+    # the string you passed to the pattern argument. The pattern string can
+    # contain any characters, but each asterisk (*) is a wildcard for any number
+    # of characters, and each question mark (?) is a wildcard for a single character.
+    # If the pattern string is not in the Host Portable Character Encoding, the
+    # result is implementation dependent. Use of uppercase or lowercase does
+    # not matter. If the data returned
+    # by the server is in the Latin Portable Character Encoding, then the
+    # returned strings are in the Host Portable Character Encoding. Otherwise,
+    # the result is implementation dependent. If there are no matching font names,
+    # `fonts` returns empty array.
+    #
+    # ###See also
+    # `fonts_with_info`, `load_font`, `set_font_path`.
+    def fonts(pattern : String, max_names : Int32) : Array(String)
+      pstrings = X.list_fonts @dpy, pattern.to_unsafe, max_names, out count
       return [] of String if pstrings.null? || count <= 0
-      font_names = Array(String).new count
+      font_names = Array(String).new
       (0...count).each do |i|
-        font_names[i] = String.new pstrings[i]
+        font_names << String.new pstrings[i]
       end
+      X.free_font_names pstrings
+      font_names
     end
 
-    # TODO: implement this
-    def fonts_with_info(pattern : String, maxnames : Int32) : Array(String)
+    # Returns a list of font names and infos.
+    #
+    # ###Arguments
+    # - **pattern** Specifies the null-terminated pattern string that can contain wildcard characters.
+    # - **max_names** Specifies the maximum number of names to be returned.
+    #
+    # ###Description
+    # The `fonts_with_info` function returns a list of font names and infos that
+    # match the specified pattern and their associated font information.
+    # The list of names is limited to size specified by maxnames. The information
+    # returned for each font is identical to what `load_query_font` would return
+    # except that the per-character metrics are not returned. The pattern string
+    # can contain any characters, but each asterisk (*) is a wildcard for any
+    # number of characters, and each question mark (?) is a wildcard for a single character.
+    # If the pattern string is not in the Host Portable Character Encoding,
+    # the result is implementation dependent. Use of uppercase or lowercase does not matter.
+    # If the data returned by the server is in the Latin Portable Character Encoding,
+    # then the returned strings are in the Host Portable Character Encoding.
+    # Otherwise, the result is implementation dependent.
+    # If there are no matching font names, `fonts_with_info` returns empty array.
+    #
+    # ###See also
+    # `list_fonts`, `load_font`, `set_font_path`.
+    def fonts_with_info(pattern : String, max_names : Int32) : Array(NamedTuple(name: String, info: FontStruct))
+      pstrings = X.list_fonts_with_info @dpy, pattern.to_unsafe, max_names, out count, out infos
+      return [] of NamedTuple(name: String, info: FontStruct) if pstrings.null? || count <= 0
+      font_names_with_info = Array(NamedTuple(name: String, info: FontStruct)).new
+      (0...count).each do |i|
+        name = String.new (pstrings + i).value
+        info = FontStruct.new self, (infos + 1)
+        font_names_with_info << {name: name, info: info}
+      end
+      X.free_font_info pstrings, infos, count
+      font_names_with_info
     end
 
-    # TODO: implement this
+    # Returns an array of strings containing the search path.
+    #
+    # ###Description
+    # The `font_path` function allocates and returns an array of strings containing
+    # the search path. The contents of these strings are implementation dependent
+    # and are not intended to be interpreted by client applications.
+    #
+    # ###See also
+    # `set_font_path`, `fonts`, `load_font`.
     def font_path : Array(String)
+      pstrings = X.get_font_path @dpy, out count
+      return [] of String if pstrings.null? || count <= 0
+      pathes = Array(String).new
+      (0...count).each do |i|
+        pathes << String.new (pstrings + i).value
+      end
+      X.free_font_path pstrings
+      pathes
     end
 
     # Lists supported extensions.
@@ -806,39 +1108,44 @@ module X11
     # If the data returned by the server is in the Latin Portable Character Encoding,
     # then the returned strings are in the Host Portable Character Encoding.
     # Otherwise, the result is implementation dependent.
+    #
+    # ###See also
+    # `query_extension`.
     def extensions : Array(String)
       pstrings = X.list_extensions @dpy, out num_extensions
-      return [] of String if num_extensions == 0
+      return [] of String if pstrings.null? || num_extensions <= 0
       strings = Array(String).new
       (0...num_extensions).each do |i|
-        strings << String.new((pstrings + i).value)
+        strings << String.new (pstrings + i).value
       end
+      X.free_extension_list pstrings
       strings
     end
 
     # Return property-atoms.
     #
     # ###Arguments
-    #
     # - **w** Specifies the window whose property list you want to obtain.
     #
     # ###Description
-    #
     # The `properties` function returns an array of atom properties
     # that are defined for the specified window or returns empty array if no properties were found.
     #
     # `properties` can generate a **BadWindow** error.
     #
     # ###Diagnostics
-    #
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `change_property`, `delete_property`, `window_property`, `rotate_window_properties`.
     def properties(w : X11::C::Window) : Array(X11::C::Atom)
       patoms = X.list_properties @dpy, w, out num_properties
-      return [] of X11::C::Atom if num_properties == 0
+      return [] of X11::C::Atom if patoms.null? || num_properties <= 0
       atoms = Array(X11::C::Atom).new
       (0...num_properties).each do |i|
         atoms << patoms[i]
       end
+      X.free patoms.as(PChar)
       atoms
     end
 
@@ -1967,15 +2274,15 @@ module X11
       X.convert_selection @dpy, selection.to_u64, target.to_u64, property.to_u64, requestor, time
     end
 
-    def copy_area(src : X11::C::Drawable, dest : X11::C::Drawable, gc : X11::C::GC, src_x : Int32, src_y : Int32, width : UInt32, height : UInt32, dest_x : Int32, dest_y : Int32) : Int32
+    def copy_area(src : X11::C::Drawable, dest : X11::C::Drawable, gc : X11::C::C::GC, src_x : Int32, src_y : Int32, width : UInt32, height : UInt32, dest_x : Int32, dest_y : Int32) : Int32
       X.copy_area @dpy, src, dest, gc, src_x, src_y, width, height, dest_x, dest_y
     end
 
-    def copy_gc(src : X11::C::GC, valuemask : UInt64, dest : X11::C::GC) : Int32
+    def copy_gc(src : X11::C::X::GC, valuemask : UInt64, dest : X11::C::X::GC) : Int32
       X.copy_gc @dpy, src, valuemask, dest
     end
 
-    def copy_plane(src : X11::C::Drawable, dest : X11::C::Drawable, gc : X11::C::GC, src_x : Int32, src_y : Int32, width : UInt32, height : UInt32, dest_x : Int32, dest_y : Int32, plane : UInt64) : Int32
+    def copy_plane(src : X11::C::Drawable, dest : X11::C::Drawable, gc : X11::C::X::GC, src_x : Int32, src_y : Int32, width : UInt32, height : UInt32, dest_x : Int32, dest_y : Int32, plane : UInt64) : Int32
       X.copy_plane @dpy, src, dest, gc, src_x, src_y, width, height, dest_x, dest_y, plane
     end
 
@@ -2036,54 +2343,1138 @@ module X11
       X.display_width_mm @dpy, screen_number
     end
 
-    def draw_arc(d : X11::C::Drawable, gc : X11::C::GC, x : Int32, y : Int32, width : UInt32, height : UInt32, angle1 : Int32, angle2 : Int32) : Int32
+    def draw_arc(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, width : UInt32, height : UInt32, angle1 : Int32, angle2 : Int32) : Int32
       X.draw_arc @dpy, d, gc, x, y, width, height, angle1, angle2
     end
 
-    def draw_arcs(d : X11::C::Drawable, gc : X11::C::GC, arcs : Array(Arc)) : Int32
+    def draw_arcs(d : X11::C::Drawable, gc : X11::C::X::GC, arcs : Array(Arc)) : Int32
       X.draw_arcs @dpy, d, gc, arcs.to_unsafe, arcs.size
     end
 
-    def draw_image_string(d : X11::C::Drawable, gc : X11::C::GC, x : Int32, y : Int32, string : String) : Int32
+    def draw_image_string(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, string : String) : Int32
       X.draw_image_string @dpy, d, gc, x, y, string.to_unsafe, string.size
     end
 
     # TODO: find a better way to handle 16-bit string.
-    def draw_image_string_16(d : X11::C::Drawable, gc : X11::C::GC, x : Int32, y : Int32, string : X11::C::PChar2b, length : Int32) : Int32
+    def draw_image_string_16(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, string : X11::C::PChar2b, length : Int32) : Int32
       X.draw_image_string_16 @dpy, d, gc, x, y, string, length
     end
 
-    def draw_line(d : X11::C::Drawable, gc : X11::C::GC, x1 : Int32, y1 : Int32, x2 : Int32, y2 : Int32) : Int32
+    def draw_line(d : X11::C::Drawable, gc : X11::C::X::GC, x1 : Int32, y1 : Int32, x2 : Int32, y2 : Int32) : Int32
       X.draw_line @dpy, d, gc, x1, y1, x2, y2
     end
 
-    def draw_lines(d : X11::C::Drawable, gc : X11::C::GC, points : Array(Point), mode : Int32) : Int32
+    def draw_lines(d : X11::C::Drawable, gc : X11::C::X::GC, points : Array(Point), mode : Int32) : Int32
       X.draw_lines @dpy, d, gc, point.to_unsafe, points.size, mode
     end
 
-    def draw_point(d : X11::C::Drawable, gc : X11::C::GC, x : Int32, y : Int32) : Int32
+    def draw_point(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32) : Int32
       X.draw_point @dpy, d, gc, x, y
     end
 
-    def draw_points(d : X11::Drawable, gc : X11::C::GC, points : Array(Point), mode : Int32) : Int32
+    def draw_points(d : X11::Drawable, gc : X11::C::X::GC, points : Array(Point), mode : Int32) : Int32
       X.draw_points @dpy, d, gc, points.to_unsafe, point.size, mode
     end
 
-    def draw_rectangle(d : X11::C::Drawable, gc : X11::C::GC, x : Int32, y : Int32, width : UInt32, height : UInt32) : Int32
+    def draw_rectangle(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, width : UInt32, height : UInt32) : Int32
       X.draw_rectangle @dpy, d, gc, x, y, width, height
     end
 
-    def draw_rectangles(d : X11::C::Drawable, gc : X11::C::GC, rectangles : Array(Rectangle)) : Int32
+    def draw_rectangles(d : X11::C::Drawable, gc : X11::C::X::GC, rectangles : Array(Rectangle)) : Int32
       X.draw_rectangles @dpy, d, gc, rectangles.to_unsafe, rectangles.size
     end
 
-    def draw_segments(d : X11::C::Drawable, gc : X11::C::GC, segments : Array(Segment)) : Int32
+    def draw_segments(d : X11::C::Drawable, gc : X11::C::X::GC, segments : Array(Segment)) : Int32
       X.draw_segments @dpy, d, gc, segments.to_unsafe, segments.size
     end
 
-    def draw_string(d : X11::C::Drawable, gc : X11::C::GC, x : Int32, y : Int32, string : String) : Int32
+    def draw_string(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, string : String) : Int32
       X.draw_string @dpy, d, gc, x, y, string.to_unsafe, string.size
     end
+
+    def draw_string_16(d : Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, string : X11::C::PChar2b, length : Int32) : Int32
+      X.draw_string_16 @dpy, d, gc, x, y, string, length
+    end
+
+    def draw_text(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, items : Array(TextItem)) : Int32
+      X.draw_text @dpy, d, gc, x, y, items.to_unsafe, items.size
+    end
+
+    def draw_text_16(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, items : Array(TextItem16)) : Int32
+      X.draw_text_16 @dpy, d, gc, x, y, items.to_unsafe, items.size
+    end
+
+    def enable_access_control : Int32
+      X.enable_access_control @dpy
+    end
+
+    def events_queued(mode : Int32) : Int32
+      X.events_queued @dpy, mode
+    end
+
+    # TODO: user String array instead
+    def fetch_name(w : X11::C::Window, window_name_return : PPChar) : Status
+      X.fetch_name @dpy, w, window_name_return
+    end
+
+    def fill_arc(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, width : UInt32, height : UInt32, angle1 : Int32, angle2 : Int32) : Int32
+      X.fill_arc @dpy, d, gc, x, y, width, height, angle1, angle2
+    end
+
+    def fill_arcs(d : X11::C::Drawable, gc : X11::C::X::GC, arcs : Array(Arc)) : Int32
+      X.fill_arcs @dpy, d, gc, arcs.to_unsafe, arcs.size
+    end
+
+    def fill_polygon(d : X11::C::Drawable, gc : X11::C::X::GC, points : Array(Point), npoints :  Int32, shape : Int32, mode : Int32) : Int32
+      X.fill_polygon @dpy, d, gc, points.to_unsafe, points.size, shape, mode
+    end
+
+    def fill_rectangle(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, width : UInt32, height : UInt32) : Int32
+      X.fill_rectangle @dpy, gc, x, y, width, height
+    end
+
+    def fill_rectangles(d : X11::C::Drawable, gc : X11::C::X::GC, rectangles : Array(Rectangle)) : Int32
+      X.fill_rectangles @dpy, d, gc, rectangles.to_unsafe, rectangles.size
+    end
+
+    def flush : Int32
+      X.flush @dpy
+    end
+
+    def force_screen_saver(mode : Int32) : Int32
+      X.force_screen_saver @dpy
+    end
+
+    def free_colormap(colormap : X11::C::Colormap) : Int32
+      X.free_colormap @dpy, colormap
+    end
+
+    def free_colors(colormap : X11::C::Colormap, pixels : Array(UInt64), planes : UInt64) : Int32
+      X.free_colors @dpy, colormap, pixels.to_unsafe, pixels.size, planes
+    end
+
+    def free_cursor(cursor : X11::C::Cursor) : Int32
+      X.free_cursor @dpy, cursor
+    end
+
+    def free_gc(gc : X12::C::GC) : Int32
+      X.free_gc @dpy, gc
+    end
+
+    def free_pixmap(pixmap : X11::C::Pixmap) : Int32
+      X.free_pixmap @dpy, pixmap
+    end
+
+    # TODO: implement & document & test
+    def geometry(screen : Int32, position : String, default_position : String,
+      bwidth : UInt32, fwidth : UInt32, fheight : UInt32, xadder : Int32, yadder : Int32,
+      height_return : PInt32) : NamedTuple(x_return: Arrray(Int32), y_return: Array(Int32), width_return: Array(Int32), height_return: Array(Int32), res: Int32)
+
+    end
+
+    def get_error_database_text(
+      name : String,
+      message : String,
+      default_string : String,
+      buffer_return : String,
+      length : Int32) : Int32
+    end
+
+    def get_error_text(
+      code : Int32,
+      buffer_return : String,
+      length : Int32) : Int32
+    end
+
+    def get_gc_values(gc : X11::C::X::GC, valuemask : UInt64) : GCValues
+      X.get_gc_values @dpy, gc, valuemask, out pgcvalues
+      GCValues.new pgcvalues
+    end
+
+    # def get_geometry(
+    #   d : X11::C::Drawable,
+    #   root_return : PWindow,
+    #   x_return : PInt32,
+    #   y_return : PInt32,
+    #   width_return : PUInt32,
+    #   height_return : PInt32,
+    #   border_width_return : PInt32,
+    #   depth_return : PInt32
+    # ) : Status
+    #
+    # fun get_icon_name = XGetIconName(
+    #   display : PDisplay,
+    #   w : Window,
+    #   icon_name_return : PPChar
+    # ) : Status
+    #
+    # fun get_input_focus = XGetInputFocus(
+    #   display : PDisplay,
+    #   focus_return : PWindow,
+    #   revert_to_return : PInt32
+    # ) : Int32
+    #
+    # fun get_keyboard_control = XGetKeyboardControl(
+    #   display : PDisplay,
+    #   values_return : PKeyboardState
+    # ) : Int32
+    #
+    # fun get_pointer_control = XGetPointerControl(
+    #   display : PDisplay,
+    #   accel_numerator_return : PInt32,
+    #   accel_denominator_return : PInt32,
+    #   threshold_return : PInt32
+    # ) : Int32
+    #
+    # fun get_pointer_mapping = XGetPointerMapping(
+    #   display : PDisplay,
+    #   map_return : PChar,
+    #   nmap : Int32
+    # ) : Int32
+    #
+    # fun get_screen_saver = XGetScreenSaver(
+    #   display : PDisplay,
+    #   timeout_return : PInt32,
+    #   interval_return : PInt32,
+    #   prefer_blanking_return : PInt32,
+    #   allow_exposures_return : PInt32,
+    # ) : Int32
+    #
+    # fun get_transient_for_hint = XGetTransientForHint(
+    #   display : PDisplay,
+    #   w : Window,
+    #   prop_window_return : PWindow
+    # ) : Status
+    #
+    # fun get_window_property = XGetWindowProperty(
+    #   display : PDisplay,
+    #   w : Window,
+    #   property : Atom,
+    #   long_offset : Int64,
+    #   long_length : Int64,
+    #   delete : Bool,
+    #   req_type : Atom,
+    #   actual_type_return : PAtom,
+    #   actual_format_return : PInt32,
+    #   nitems_return : PUInt64,
+    #   bytes_after_return : PUInt64,
+    #   prop_return : PPChar
+    # ) : Int32
+
+    def get_window_attributes(w : X11::C::Window) : WindowAttributes
+      X.get_window_property @dpy, w, out pattributes
+      WindowAttributes.new pattributes
+    end
+
+    def grab_button(button : UInt32, modifiers : UInt32, grab_window : X11::C::Window, owner_events : Bool, event_mask : UInt32, pointer_mode : Int32, keyboard_mode : Int32, confine_to : X11::C::Window, cursor : X11::C::Cursor) : Int32
+      X.grab_button @dpy, buton, modifiers, grab_window, owner_events ? 1 : 0, event_mask, pointer_mode, keyboard_mode, confine_to, cursor
+    end
+
+    def grab_key(keycode : Int32, modifiers : UInt32, grab_window : X11::C::Window, owner_events : Bool, pointer_mode : Int32, keyboard_mode : Int32) : Int32
+      X.grab_key @dpy, keycode, modifiers, grab_window, owner_events, pointer_mode, keyboard_mode
+    end
+
+    def grab_keyboard(grab_window : X11::C::Window, owner_events : Bool, pointer_mode : Int32, keyboard_mode : Int32, time : X11::C::Time) : Int32
+      X.grab_keyboard @dpy, grab_window, owner_events ? 1 : 0, pointer_mode, keyboard_mode, time
+    end
+
+    def grab_pointer(grab_window : X11::C::Window, owner_events : Bool, event_mask : UInt32, pointer_mode : Int32, keyboard_mode : Int32, confine_to : X11::C::Window, cursor : X11::C::Cursor, time : X11::C::Time) : Int32
+      X.grab_pointer @dpy, owner_events ? 1 : 0, event_mask, pointer_mode, keyboard_mode, confine_to, cursor, time
+    end
+
+    def grab_server : Int32
+      X.grab_server @dpy
+    end
+
+    # fun if_event = XIfEvent(
+    #   display : PDisplay,
+    #   event_return : PEvent,
+    #   predicate : PDisplay, PEvent, Pointer -> Bool,
+    #   arg : Pointer
+    # );
+    #
+    # fun image_byte_order = XImageByteOrder(
+    #   display : PDisplay
+    # ) : Int32
+    #
+    # fun install_colormap = XInstallColormap(
+    #   display : PDisplay,
+    #   colormap : Colormap
+    # ) : Int32
+    #
+    # fun keysym_to_keycode = XKeysymToKeycode(
+    #   display : PDisplay,
+    #   keysym : KeySym
+    # ) : KeyCode
+    #
+    # fun kill_client = XKillClient(
+    #   display : PDisplay,
+    #   resource : XID
+    # ) : Int32
+    #
+    # fun lookup_color = XLookupColor(
+    #   display : PDisplay,
+    #   colormap : Colormap,
+    #   color_name : PChar,
+    #   exact_def_return : PColor,
+    #   screen_def_return : PColor
+    # ) : Status
+    #
+    # fun lower_window = XLowerWindow(
+    #   display : PDisplay,
+    #   w : Window
+    # ) : Int32
+    #
+    # fun map_raised = XMapRaised(
+    #   display : PDisplay,
+    #   w : Window
+    # ) : Int32
+    #
+    # fun map_subwindows = XMapSubwindows(
+    #   display : PDisplay,
+    #   w : Window
+    # ) : Int32
+    #
+    # fun map_window = XMapWindow(
+    #   display : PDisplay,
+    #   w : Window
+    # ) : Int32
+    #
+    # fun mask_event = XMaskEvent(
+    #   display : PDisplay,
+    #   event_mask : Int64,
+    #   event_return : PEvent
+    # ) : Int32
+
+    # fun move_resize_window = XMoveResizeWindow(
+    #   display : PDisplay,
+    #   w : Window,
+    #   x : Int32,
+    #   y : Int32,
+    #   width : UInt32,
+    #   height : UInt32
+    # ) : Int32
+    #
+    # fun move_window = XMoveWindow(
+    #   display : PDisplay,
+    #   w : Window,
+    #   x : Int32,
+    #   y : Int32
+    # ) : Int32
+    #
+    # fun next_event = XNextEvent(
+    #   display : PDisplay,
+    #   event_return : PEvent
+    # ) : Int32
+    #
+    # fun no_op = XNoOp(
+    #   display : PDisplay
+    # ) : Int32
+    #
+    # fun parse_color = XParseColor(
+    #   display : PDisplay,
+    #   colormap : Colormap,
+    #   spec : PChar,
+    #   exact_def_return : PColor
+    # ) : Status
+
+    # fun peek_event = XPeekEvent(
+    #   display : PDisplay,
+    #   event_return : PEvent
+    # ) : Int32
+    #
+    # fun peek_if_event = XPeekIfEvent(
+    #   display : PDisplay,
+    #   event_return : PEvent,
+    #   predicate : PDisplay, PEvent, Pointer -> Bool,
+    #   arg : Pointer
+    # ) : Int32
+    #
+    # fun pending = XPending(
+    #   display : PDisplay
+    # ) : Int32
+
+    # fun protocol_revision = XProtocolRevision(
+    #   display : PDisplay
+    # ) : Int32
+    #
+    # fun protocol_version = XProtocolVersion(
+    #   display : PDisplay
+    # ) : Int32
+    #
+    # fun put_back_event = XPutBackEvent(
+    #   display : PDisplay,
+    #   event : PEvent
+    # ) : Int32
+    #
+    # fun put_image = XPutImage(
+    #   display : PDisplay,
+    #   d : Drawable,
+    #   gc : GC,
+    #   image : PImage,
+    #   src_x : Int32,
+    #   src_y : Int32,
+    #   dest_x : Int32,
+    #   dest_y : Int32,
+    #   width : UInt32,
+    #   height : UInt32
+    # ) : Int32
+    #
+    # fun q_length = XQLength(
+    #   display : PDisplay
+    # ) : Int32
+    #
+    # fun query_best_cursor = XQueryBestCursor(
+    #   display : PDisplay,
+    #   d : Drawable,
+    #   width : UInt32,
+    #   height : UInt32,
+    #   width_return : PUInt32,
+    #   height_return : PUInt32
+    # ) : Status
+    #
+    # fun query_best_size = XQueryBestSize(
+    #   display : PDisplay,
+    #   c_class : Int32,
+    #   which_screen : Drawable,
+    #   width : UInt32,
+    #   height : UInt32,
+    #   width_return : PUInt32,
+    #   height_return : PUInt32
+    # ) : Status
+    #
+    # fun query_best_stipple = XQueryBestStipple(
+    #   display : PDisplay,
+    #   which_screen : Drawable,
+    #   width : UInt32,
+    #   height : UInt32,
+    #   width_return : PUInt32,
+    #   height_return : PUInt32
+    # ) : Status
+    #
+    # fun query_best_tile = XQueryBestTile(
+    #   display : PDisplay,
+    #   which_screen : Drawable,
+    #   width : UInt32,
+    #   height : UInt32,
+    #   width_return : PUInt32,
+    #   height_return : PUInt32
+    # ) : Status
+    #
+    # fun query_color = XQueryColor(
+    #   display : PDisplay,
+    #   colormap : Colormap,
+    #   def_in_out : PColor
+    # ) : Int32
+    #
+    # fun query_colors = XQueryColors(
+    #   display : PDisplay,
+    #   colormap : Colormap,
+    #   defs_in_out : PColor,
+    #   ncolors : Int32
+    # ) : Int32
+    #
+    # fun query_extension = XQueryExtension(
+    #   display : PDisplay,
+    #   name : PChar,
+    #   major_opcode_return : PInt32,
+    #   first_event_return : PInt32,
+    #   first_error_return : PInt32
+    # ) : Bool
+    #
+    # fun query_keymap = XQueryKeymap(
+    #   display : PDisplay,
+    #   keys_return : Char[32]
+    # ) : Int32
+    #
+    # fun query_pointer = XQueryPointer(
+    #   display : PDisplay,
+    #   w : Window,
+    #   root_return : PWindow,
+    #   child_return : PWindow,
+    #   root_x_return : PInt32,
+    #   root_y_return : PInt32,
+    #   win_x_return : PInt32,
+    #   win_y_return : PInt32,
+    #   mask_return : PUInt32
+    # ) : Bool
+    #
+    # fun query_text_extents = XQueryTextExtents(
+    #   display : PDisplay,
+    #   font_ID : XID,
+    #   string : PChar,
+    #   nchars : Int32,
+    #   direction_return : PInt32,
+    #   font_ascent_return : PInt32,
+    #   font_descent_return : PInt32,
+    #   overall_return : PCharStruct
+    # ) : Int32
+    #
+    # fun query_text_extents_16 = XQueryTextExtents16(
+    #   display : PDisplay,
+    #   font_ID : XID,
+    #   string : PChar2b,
+    #   nchars : Int32,
+    #   direction_return : PInt32,
+    #   font_ascent_return : PInt32,
+    #   font_descent_return : PInt32,
+    #   overall_return : PCharStruct
+    # ) : Int32
+    #
+    # fun query_tree = XQueryTree(
+    #   display : PDisplay,
+    #   w : Window,
+    #   root_return : PWindow,
+    #   parent_return : PWindow,
+    #   children_return : PWindow*,
+    #   nchildren_return : UInt32
+    # ) : Status
+    #
+    # fun raise_window = XRaiseWindow(
+    #   display : PDisplay,
+    #   w : Window
+    # ) : Int32
+    #
+    # fun read_bitmap_file = XReadBitmapFile(
+    #   display : PDisplay,
+    #   d : Drawable,
+    #   filename : PChar,
+    #   width_return : PUInt32,
+    #   height_return : PUInt32,
+    #   bitmap_return : PPixmap,
+    #   x_hot_return : PInt32,
+    #   y_hot_return : PInt32
+    # ) : Int32
+
+    # fun rebind_keysym = XRebindKeysym(
+    #   display : PDisplay,
+    #   keysym : KeySym,
+    #   list : PKeySym,
+    #   mod_count : Int32,
+    #   string : PChar,
+    #   bytes_string : Int32
+    # ) : Int32
+    #
+    # fun recolor_cursor = XRecolorCursor(
+    #   display : PDisplay,
+    #   cursor : Cursor,
+    #   foreground_color : PColor,
+    #   background_color : PColor
+    # ) : Int32
+
+    # fun remove_from_save_set = XRemoveFromSaveSet(
+    #   display : PDisplay,
+    #   w : Window
+    # ) : Int32
+    #
+    # fun remove_host = XRemoveHost(
+    #   display : PDisplay,
+    #   host : PHostAddress
+    # ) : Int32
+    #
+    # fun remove_hosts = XRemoveHosts(
+    #   display : PDisplay,
+    #   hosts : PHostAddress,
+    #   num_hosts : Int32
+    # ) : Int32
+    #
+    # fun reparent_window = XReparentWindow(
+    #   display : PDisplay,
+    #   w : Window,
+    #   parent : Window,
+    #   x : Int32,
+    #   y : Int32
+    # ) : Int32
+    #
+    # fun reset_screen_saver = XResetScreenSaver(
+    #   display : PDisplay
+    # ) : Int32
+    #
+    # fun resize_window = XResizeWindow(
+    #   display : PDisplay,
+    #   w : Window,
+    #   width : UInt32,
+    #   height : UInt32
+    # ) : Int32
+    #
+    # fun restack_windows = XRestackWindows(
+    #   display : PDisplay,
+    #   windows : PWindow,
+    #   nwindows : Int32
+    # ) : Int32
+    #
+    # fun rotate_buffers = XRotateBuffers(
+    #   display : PDisplay,
+    #   rotate : Int32
+    # ) : Int32
+    #
+    # fun rotate_window_properties = XRotateWindowProperties(
+    #   display : PDisplay,
+    #   w : Window,
+    #   properties : PAtom,
+    #   num_prop : Int32,
+    #   npositions : Int32
+    # ) : Int32
+    #
+    # fun screen_count = XScreenCount(
+    #   display : PDisplay
+    # ) : Int32
+    #
+    # fun select_input = XSelectInput(
+    #   display : PDisplay,
+    #   w : Window,
+    #   event_mask : Int64
+    # ) : Int32
+    #
+    # fun send_event = XSendEvent(
+    #   display : PDisplay,
+    #   w : Window,
+    #   propagate : Bool,
+    #   event_mask : Int64,
+    #   event_send : PEvent
+    # ) : Status
+    #
+    # fun set_access_control = XSetAccessControl(
+    #   display : PDisplay,
+    #   mode : Int32
+    # ) : Int32
+    #
+    # fun set_arc_mode = XSetArcMode(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   arc_mode : Int32
+    # ) : Int32
+    #
+    # fun set_background = XSetBackground(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   background : UInt64
+    # ) : Int32
+    #
+    # fun set_clip_mask = XSetClipMask(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   pixmap : Pixmap
+    # ) : Int32
+    #
+    # fun set_clip_origin = XSetClipOrigin(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   clip_x_origin : Int32,
+    #   clip_y_origin : Int32
+    # ) : Int32
+    #
+    # fun set_clip_rectangles = XSetClipRectangles(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   clip_x_origin : Int32,
+    #   clip_y_origin : Int32,
+    #   rectangles : PRectangle,
+    #   n : Int32,
+    #   ordering : Int32
+    # ) : Int32
+    #
+    # fun set_close_down_mode = XSetCloseDownMode(
+    #   display : PDisplay,
+    #   close_mode : Int32
+    # ) : Int32
+    #
+    # fun set_command = XSetCommand(
+    #   display : PDisplay,
+    #   w : Window,
+    #   argv : PPChar,
+    #   argc : Int32
+    # ) : Int32
+    #
+    # fun set_dashes = XSetDashes(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   dash_offset : Int32,
+    #   dash_list : PChar,
+    #   n : Int32
+    # ) : Int32
+    #
+    # fun set_fill_rule = XSetFillRule(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   fill_rule : Int32
+    # ) : Int32
+    #
+    # fun set_fill_style = XSetFillStyle(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   fill_style : Int32
+    # ) : Int32
+    #
+    # fun set_font = XSetFont(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   font : Font
+    # ) : Int32
+    #
+    # fun set_font_path = XSetFontPath(
+    #   display : PDisplay,
+    #   directories : PPChar,
+    #   ndirs : Int32
+    # ) : Int32
+    #
+    # fun set_foreground = XSetForeground(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   foreground : UInt64
+    # ) : Int32
+    #
+    # fun set_function = XSetFunction(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   function : Int32
+    # ) : Int32
+    #
+    # fun set_graphics_exposures = XSetGraphicsExposures(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   graphics_exposures : Bool
+    # ) : Int32
+    #
+    # fun set_icon_name = XSetIconName(
+    #   display : PDisplay,
+    #   w : Window,
+    #   icon_name : PChar
+    # ) : Int32
+    #
+    # fun set_input_focus = XSetInputFocus(
+    #   display : PDisplay,
+    #   focus : Window,
+    #   revert_to : Int32,
+    #   time : Time
+    # ) : Int32
+    #
+    # fun set_line_attributes = XSetLineAttributes(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   line_width : UInt32,
+    #   line_style : Int32,
+    #   cap_style : Int32,
+    #   join_style : Int32
+    # ) : Int32
+    #
+    # fun set_modifier_mapping = XSetModifierMapping(
+    #   display : PDisplay,
+    #   modmap : PModifierKeymap
+    # ) : Int32
+    #
+    # fun set_plane_mask = XSetPlaneMask(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   plane_mask : UInt64
+    # ) : Int32
+    #
+    # fun set_pointer_mapping = XSetPointerMapping(
+    #   display : PDisplay,
+    #   map : PChar,
+    #   nmap : Int32
+    # ) : Int32
+    #
+    # fun set_screen_saver = XSetScreenSaver(
+    #   display : PDisplay,
+    #   timeout : Int32,
+    #   interval : Int32,
+    #   prefer_blanking : Int32,
+    #   allow_exposures : Int32
+    # ) : Int32
+    #
+    # fun set_selection_owner = XSetSelectionOwner(
+    #   display : PDisplay,
+    #   selection : Atom,
+    #   owner : Window,
+    #   time : Time
+    # ) : Int32
+    #
+    # fun set_state = XSetState(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   foreground : UInt64,
+    #   background : UInt64,
+    #   function : Int32,
+    #   plane_mask : UInt64
+    # ) : Int32
+    #
+    # fun set_stipple = XSetStipple(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   stipple : Pixmap
+    # ) : Int32
+    #
+    # fun set_subwindow_mode = XSetSubwindowMode(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   subwindow_mode : Int32
+    # ) : Int32
+    #
+    # fun set_ts_origin = XSetTSOrigin(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   ts_x_origin : Int32,
+    #   ts_y_origin : Int32
+    # ) : Int32
+    #
+    # fun set_title = XSetTile(
+    #   display : PDisplay,
+    #   gc : GC,
+    #   tile : Pixmap
+    # ) : Int32
+    #
+    # fun set_window_background = XSetWindowBackground(
+    #   display : PDisplay,
+    #   w : Window,
+    #   background_pixel : UInt64
+    # ) : Int32
+    #
+    # fun set_window_background_pixmap = XSetWindowBackgroundPixmap(
+    #   display : PDisplay,
+    #   w : Window,
+    #   background_pixmap : Pixmap
+    # ) : Int32
+    #
+    # fun set_window_border = XSetWindowBorder(
+    #   display : PDisplay,
+    #   w : Window,
+    #   border_pixel : UInt64
+    # ) : Int32
+    #
+    # fun set_window_border_pixmap = XSetWindowBorderPixmap(
+    #   display : PDisplay,
+    #   w : Window,
+    #   border_pixmap : Pixmap
+    # ) : Int32
+    #
+    # fun set_window_border_width = XSetWindowBorderWidth(
+    #   display : PDisplay,
+    #   w : Window,
+    #   width : UInt32
+    # ) : Int32
+    #
+    # fun set_window_colormap = XSetWindowColormap(
+    #   display : PDisplay,
+    #   w : Window,
+    #   colormap : Colormap
+    # ) : Int32
+    #
+    # fun store_buffer = XStoreBuffer(
+    #   display : PDisplay,
+    #   bytes  : PChar,
+    #   nbytes : Int32,
+    #   buffer : Int32
+    # ) : Int32
+    #
+    # fun store_bytes = XStoreBytes(
+    #   display : PDisplay,
+    #   bytes : PChar,
+    #   nbytes : Int32
+    # ) : Int32
+    #
+    # fun store_color = XStoreColor(
+    #   display : PDisplay,
+    #   colormap : Colormap,
+    #   color : PColor
+    # ) : Int32
+    #
+    # fun store_colors = XStoreColors(
+    #   display : PDisplay,
+    #   colormap : Colormap,
+    #   color : PColor,
+    #   ncolors : Int32
+    # ) : Int32
+    #
+    # fun store_name = XStoreName(
+    #   display : PDisplay,
+    #   w : Window,
+    #   window_name : PChar
+    # ) : Int32
+    #
+    # fun store_named_color = XStoreNamedColor(
+    #   display : PDisplay,
+    #   colormap : Colormap,
+    #   color : PColor,
+    #   pixel : UInt64,
+    #   flags : Int32
+    # ) : Int32
+    #
+    # fun sync = XSync(
+    #   display : PDisplay,
+    #   discard : Bool
+    # ) : Int32
+
+    # fun translate_coordinates = XTranslateCoordinates(
+    #   display : PDisplay,
+    #   src_w : Window,
+    #   dest_w : Window,
+    #   src_x : Int32,
+    #   src_y : Int32,
+    #   dest_x_return : PInt32,
+    #   dest_y_return : PInt32,
+    #   child_return : PWindow
+    # ) : Bool
+    #
+    # fun undefine_cursor = XUndefineCursor(
+    #   display : PDisplay,
+    #   w : Window
+    # ) : Int32
+    #
+    # fun ungrab_button = XUngrabButton(
+    #   display : PDisplay,
+    #   button : UInt32,
+    #   modifiers : UInt32,
+    #   grab_window : Window
+    # ) : Int32
+    #
+    # fun ungrab_key = XUngrabKey(
+    #   display : PDisplay,
+    #   keycode : Int32,
+    #   modifiers : UInt32,
+    #   grab_window : Window
+    # ) : Int32
+    #
+    # fun ungrab_keyboard = XUngrabKeyboard(
+    #   display : PDisplay,
+    #   time : Time
+    # ) : Int32
+    #
+    # fun ungrab_pointer = XUngrabPointer(
+    #   display : PDisplay,
+    #   time : Time
+    # ) : Int32
+    #
+    # fun ungrab_server = XUngrabServer(
+    #   display : PDisplay
+    # ) : Int32
+    #
+    # fun uninstall_colormap = XUninstallColormap(
+    #   display : PDisplay,
+    #   colormap : Colormap
+    # ) : Int32
+    #
+    # fun unload_font = XUnloadFont(
+    #   display : PDisplay,
+    #   font : Font
+    # ) : Int32
+    #
+    # fun unmap_subwindows = XUnmapSubwindows(
+    #   display : PDisplay,
+    #   w : Window
+    # ) : Int32
+    #
+    # fun unmap_window = XUnmapWindow(
+    #   display : PDisplay,
+    #   w : Window
+    # ) : Int32
+    #
+    # fun vendor_release = XVendorRelease(
+    #   display : PDisplay
+    # ) : Int32
+    #
+    # fun warp_pointer = XWarpPointer(
+    #   display : PDisplay,
+    #   src_w : Window,
+    #   dest_w : Window,
+    #   src_x : Int32,
+    #   src_y : Int32,
+    #   src_width : UInt32,
+    #   src_height : UInt32,
+    #   dest_x : Int32,
+    #   dest_y : Int32
+    # ) : Int32
+
+    # fun window_event = XWindowEvent(
+    #   display : PDisplay,
+    #   w : Window,
+    #   event_mask : Int64,
+    #   event_return : PEvent
+    # ) : Int32
+    #
+    # fun write_bitmap_file = XWriteBitmapFile(
+    #   display : PDisplay,
+    #   filename : PChar,
+    #   bitmap : Pixmap,
+    #   width : UInt32,
+    #   height : UInt32,
+    #   x_hot : Int32,
+    #   y_hot : Int32
+    # ) : Int32
+
+    # fun open_om = XOpenOM(
+    #   display : PDisplay,
+    #   rdb : PrmHashBucketRec,
+    #   res_name : PChar,
+    #   res_class : PChar
+    # ) : XOM
+
+    # fun create_font_set = XCreateFontSet(
+    #   display : PDisplay,
+    #   base_font_name_list : PChar,
+    #   missing_charset_list : PPChar*,
+    #   missing_charset_count : PInt32,
+    #   def_string : PPChar
+    # ) : FontSet
+    #
+    # fun free_font_set = XFreeFontSet(
+    #   display : PDisplay,
+    #   font_set : FontSet
+    # ) : NoReturn
+
+    # fun mb_draw_text = XmbDrawText(
+    #   display : PDisplay,
+    #   d : Drawable,
+    #   gc : GC,
+    #   x : Int32,
+    #   y : Int32,
+    #   text_items : PmbTextItem,
+    #   nitems : Int32
+    # ) : NoReturn
+    #
+    # fun wc_draw_text = XwcDrawText(
+    #   display : PDisplay,
+    #   d : Drawable,
+    #   gc : GC,
+    #   x : Int32,
+    #   y : Int32,
+    #   text_items : PwcTextItem,
+    #   nitems : Int32
+    # ) : NoReturn
+    #
+    # fun utf8_draw_text = Xutf8DrawText(
+    #   display : PDisplay,
+    #   d : Drawable,
+    #   gc : GC,
+    #   x : Int32,
+    #   y : Int32,
+    #   text_items : PmbTextItem,
+    #   nitems : Int32
+    # ) : NoReturn
+    #
+    # fun mb_draw_string = XmbDrawString(
+    #   display : PDisplay,
+    #   d : Drawable,
+    #   font_set : FontSet,
+    #   gc : GC,
+    #   x : Int32,
+    #   y : Int32,
+    #   text : PChar,
+    #   bytes_text : Int32
+    # ) : NoReturn
+    #
+    # fun wc_draw_string = XwcDrawString(
+    #   display : PDisplay,
+    #   d : Drawable,
+    #   font_set : FontSet,
+    #   gc : GC,
+    #   x : Int32,
+    #   y : Int32,
+    #   text : PWChar_t,
+    #   num_wchars : Int32
+    # ) : NoReturn
+    #
+    # fun utf8_draw_string = Xutf8DrawString(
+    #   display : PDisplay,
+    #   d : Drawable,
+    #   font_set : FontSet,
+    #   gc : GC,
+    #   x : Int32,
+    #   y : Int32,
+    #   text : PChar,
+    #   bytes_text : Int32
+    # ) : NoReturn
+    #
+    # fun mb_draw_image_string = XmbDrawImageString(
+    #   display : PDisplay,
+    #   d : Drawable,
+    #   font_set : FontSet,
+    #   gc : GC,
+    #   x : Int32,
+    #   y : Int32,
+    #   text : PChar,
+    #   bytes_text : Int32
+    # ) : NoReturn
+    #
+    # fun wc_draw_image_string = XwcDrawImageString(
+    #   display : PDisplay,
+    #   d : Drawable,
+    #   font_set : FontSet,
+    #   gc : GC,
+    #   x : Int32,
+    #   y : Int32,
+    #   text : PWChar_t,
+    #   num_wchars : Int32
+    # ) : NoReturn
+    #
+    # fun utf8_draw_image_string = Xutf8DrawImageString(
+    #   display : PDisplay,
+    #   d : Drawable,
+    #   font_set : FontSet,
+    #   gc : GC,
+    #   x : Int32,
+    #   y : Int32,
+    #   text : PChar,
+    #   bytes_text : Int32
+    # ) : NoReturn
+    #
+    # fun open_im = XOpenIM(
+    #   dpy : PDisplay,
+    #   rdb : PrmHashBucketRec,
+    #   res_name : PChar,
+    #   res_class : PChar
+    # ) : XIM
+
+    # fun register_im_instantiate_callback = XRegisterIMInstantiateCallback(
+    #   dpy : PDisplay,
+    #   rdb : PrmHashBucketRec,
+    #   res_name : PChar,
+    #   res_class : PChar,
+    #   callback : IDProc,
+    #   client_data : Pointer
+    # ) : Bool
+    #
+    # fun unregister_im_instantiate_callback = XUnregisterIMInstantiateCallback(
+    #   dpy : PDisplay,
+    #   rdb : PrmHashBucketRec,
+    #   res_name : PChar,
+    #   res_class : PChar,
+    #   callback : IDProc,
+    #   client_data : Pointer
+    # ) : Bool
+    #
+    # fun internal_connection_numbers = XInternalConnectionNumbers(
+    #   dpy : PDisplay,
+    #   fd_return : PInt32*,
+    #   count_return : PInt32
+    # ) : Status
+    #
+    # fun process_internal_connection = XProcessInternalConnection(
+    #   dpy : PDisplay,
+    #   fd : Int32
+    # ) : NoReturn
+    #
+    # fun add_connectioin_watch = XAddConnectionWatch(
+    #   dpy : PDisplay,
+    #   callback : ConnectionWatchProc,
+    #   client_data : Pointer
+    # ) : Status
+    #
+    # fun remove_connection_watch = XRemoveConnectionWatch(
+    #   dpy : PDisplay,
+    #   callback : ConnectionWatchProc,
+    #   client_data : Pointer
+    # ) : NoReturn
+
+    # fun get_event_data = XGetEventData(
+    #   dpy : PDisplay,
+    #   cookie : PGenericEventCookie
+    # ) : Bool
+    #
+    # fun free_event_data = XFreeEventData(
+    #   dpy : PDisplay,
+    #   cookie : PGenericEventCookie
+    # ) : NoReturn
 
     # -------------------
 

@@ -8,8 +8,9 @@ module X11
       raise BadAllocException.new if @image.null?
     end
 
-    # Initializes the internal image manipulation routines of the underlieing image structure,
+    # Initializes the internal image manipulation routines of the underlieing image structure.,
     # based on the values of the various structure members.
+    #
     # All fields other than the manipulation routines must already be initialized.
     # If the `bytes_per_line` member is zero,
     # `init` will assume the image data is contiguous in memory and set the `bytes_per_line` member
@@ -23,6 +24,10 @@ module X11
     #
     # This function returns a nonzero status if initialization of the structure is successful.
     # It returns zero if it detected some error or inconsistency in the structure, in which case the image is not changed.
+    #
+    # ###See also
+    # `add_pixel`, `Display::create_image`, `finalize`, `pixel`, `Display::put_image`,
+    # `put_pixel`, `Display::sub_image`.
     def init : Int32
       X.init_image @image
     end
