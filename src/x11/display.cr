@@ -1149,7 +1149,7 @@ module X11
       atoms
     end
 
-    # Return current access control list.
+    # Returns current access control list.
     #
     # ###Description
     #
@@ -1157,12 +1157,36 @@ module X11
     # the use of the list at connection setup was enabled or disabled. `hosts` allows a
     # program to find out what machines can make connections. It also returns an array of host objects
     # that were allocated by the function.
-    # TODO: implement
+    #
+    # ###See also
+    # `add_host`, `add_hosts`, `disable_access_control`, `enable_access_control`
+    # `remove_host`, `remove_hosts`, `set_access_control`.
     def hosts : Array(HostAddress)
+      phosts = X.list_hosts @dpy, out count, out state
+      return [] of HostAddress if phosts.null? || count <= 0
+      addresses = Array(HostAddress).new
+      (0...count).each do |i|
+        addresses << HostAddress.new (phosts + i)
+      end
+      X.free phosts.as(PChar)
+      addresses
     end
 
-    # TODO: implement & document
+    #
+    #
+    # ###Arguments
+    # - **keycode** Specifies the KeyCode.
+    # - **index** Specifies the element of KeyCode vector.
+    #
+    # ###Description
+    # The `keycode_to_keysym` function uses internal Xlib tables and returns the
+    # KeySym defined for the specified KeyCode and the element of the KeyCode vector.
+    # If no symbol is defined, `keycode_to_keysym` returns `NoSymbol`.
+    #
+    # ###See also
+    # `keysym_to_keycode`.
     def keycode_to_keysym(keycode : X11::C::KeyCode, index : Int32) : X11::C::KeySym
+      X.keycode_to_keysym @dpy, keycode, index
     end
 
     # TODO: implement & document
