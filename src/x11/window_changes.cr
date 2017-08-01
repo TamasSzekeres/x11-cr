@@ -1,6 +1,7 @@
 require "./c/Xlib"
 
 module X11
+  # Wrapper for `X11::C::X::WindowChanges` structure.
   class WindowChanges
     def initialize(@changes : X11::C::X::WindowChanges)
     end

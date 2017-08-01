@@ -424,26 +424,6 @@ module X11
       str
     end
 
-    # Return ther string representation of a given *keysym*.
-    #
-    # ###Arguments
-    # - **keysym** Specifies the `X::C::KeySym` that is to be converted.
-    #
-    # ###Description
-    # The returned string is in a static area and must not be modified.
-    # The returned string is in the Host Portable Character Encoding.
-    # If the specified `KeySym` is not defined, returns an empty `String`.
-    #
-    # ###See also
-    # `keycode_to_keysym`, `KeyEvent::lookup_keysym`.
-    def self.keysym_to_string(keysym : X11::C::KeySym) : String
-      pstr = X.keysym_to_string keysym
-      return "" if pstr.null?
-      str = String.new pstr
-      X.free pstr
-      str
-    end
-
     # Returns the previous after function.
     #
     # ###Arguments
@@ -757,19 +737,6 @@ module X11
     # `gc_values`, `query_best_size`, `set_arc_mode`, `set_clip_origin`.
     def create_gc(d : X11::C::Drawable, valuemask : UInt64, values : GCValues) : X11::C::X::GC
       X.create_gc @dpy, d, valuemask, values.to_unsafe
-    end
-
-    # Returns GC-context from GC.
-    #
-    # ###Arguments
-    # - **gc** Specifies the GC for which you want the resource ID.
-    #
-    # ###See also
-    # `all_planes`, `change_gc`, `copy_area`, `copy_gc`, `create_gc`, `draw_arc`,
-    # `draw line`, `draw_rectangle`, `draw_text`, `fill_rectangle`, `free_gc`,
-    # `gc_values`, `query_best_size`, `set_arc_mode`, `set_clip_origin`.
-    def self.g_context_from_gc(gc : X11::C::X::GC) : X11::C::GContext
-      X.g_context_from_gc gc
     end
 
     # Forces GC component change.
@@ -1172,7 +1139,7 @@ module X11
       addresses
     end
 
-    #
+    # Returns the KeySym defined for the specified KeyCode.
     #
     # ###Arguments
     # - **keycode** Specifies the KeyCode.
@@ -1187,10 +1154,6 @@ module X11
     # `keysym_to_keycode`.
     def keycode_to_keysym(keycode : X11::C::KeyCode, index : Int32) : X11::C::KeySym
       X.keycode_to_keysym @dpy, keycode, index
-    end
-
-    # TODO: implement & document
-    def lookup_keysym(key_event : KeyEvent, index : Int32) : X11::C::KeySym
     end
 
     # Returns the symbols for the specified number of KeyCodes starting with first_keycode.
@@ -1227,6 +1190,11 @@ module X11
     # accepted by the request. Unless a specific range is specified for an
     # argument, the full range defined by the argument's type is accepted.
     # Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `change_keyboard_mapping`, `ModifierKeymap::delete_entry`, `display_keycodes`,
+    # `ModifierKeymap::finalize`, `modifier_mapping`, `ModifierKeymap::insert_entry`,
+    # `ModifierKeymap::new`, `set_modifier_mapping`, `set_pointer_mapping`.
     def keyboard_mapping(first_keycode : X11::C::KeyCode, keycode_count : Int32) : Array(X11::C::KeySym)
       pkeysyms = X.get_keyboard_mapping @dpy, first_keycode, keycode_count, out keysyms_per_keycode
       return [] of X11::C::KeySym if keysyms_per_keycode == 0 || pkeysyms.null?
@@ -1238,22 +1206,53 @@ module X11
       keysyms
     end
 
-    # TODO: document
-    def self.string_to_keysym(string : String) : X11::C::KeySym
-      X.string_to_keysym string.to_unsafe
-    end
-
-    # TODO: document
+    # Returns the maximum request size.
+    #
+    # ###Description
+    # The `max_request_size` function returns the maximum request size (in 4-byte units)
+    # supported by the server without using an extended-length protocol encoding.
+    # Single protocol requests to the server can be no larger than this size unless
+    # an extended-length protocol encoding is supported by the server. The protocol
+    # guarantees the size to be no smaller than 4096 units (16384 bytes). Xlib
+    # automatically breaks data up into multiple protocol requests as necessary
+    # for the following functions: `draw_points`, `draw_rectangles`,
+    # `draw_segments`, `fill_arcs`, `fill_rectangles`, and `put_image`.
     def max_request_size : Int64
       X.max_request_size @dpy
     end
 
-    # TODO: document
-    def extended_map_request_size : Int64
-      X.extended_map_request_size @dpy
+    # Returns the maximum request size.
+    #
+    # ###Description
+    # The `extended_max_request_size` function returns zero if the specified
+    # display does not support an extended-length protocol encoding; otherwise,
+    # it returns the maximum request size (in 4-byte units) supported by the
+    # server using the extended-length encoding. The Xlib functions
+    # `draw_lines`, `draw_arcs`, `fill_polygon`, `change_property`,
+    # `set_clip_rectangles`, and `set_region` will use the extended-length
+    # encoding as necessary, if supported by the server. Use of the
+    # extended-length encoding in other Xlib functions (for example,
+    # `draw_points`, `draw_rectangles`, `draw_degments`, `fill_arcs`,
+    # `fill_rectangles`, `put_image`) is permitted but not required; an Xlib
+    # implementation may choose to split the data across multiple smaller requests instead.
+    def extended_max_request_size : Int64
+      X.extended_max_request_size @dpy
     end
 
-    # TODO: document
+    # Returns the RESOURCE_MANAGER property from the server's root window of screen zero.
+    #
+    # ###Description
+    # The `resource_manager_string` function returns the RESOURCE_MANAGER property
+    # from the server's root window of screen zero, which was returned when the
+    # connection was opened using `Display::new`. The property is converted from
+    # type STRING to the current locale. The conversion is identical to that produced
+    # by `mb_text_property_to_text_list` for a single element STRING property.
+    # The returned string is owned by Xlib and should not be freed by the client.
+    # The property value must be in a format that is acceptable to `X11::rm_get_string_database`.
+    # If no property exists, empty string is returned.
+    #
+    # ###See also
+    # `Screen::resource_string`.
     def resource_manager_string : String
       pstr = X.resource_manager_string @dpy
       return "" if pstr.null?
@@ -1262,30 +1261,94 @@ module X11
       str
     end
 
-    # TODO: implement this, make Screen class?
-    # def self.screen_resource_string(screen : PScreen) : String
-    # end
-
-    # TODO: document
+    # Returns the motion-buffer size.
+    #
+    # ###Description
+    # The server may retain the recent history of the pointer motion and do so
+    # to a finer granularity than is reported by `MotionNotify` events.
+    # The `motion_events` function makes this history available.
+    #
+    # ###See also
+    # `motion_events`, `if_event`, `next_event`, `put_back_event`, `send_event`.
     def motion_buffer_size : UInt64
       X.display_motion_buffer_size @dpy
     end
 
-    # TODO: document
-    def self.init_threads : X11::C::Status
-      X.init_threads
-    end
-
-    # TODO: document
+    # Locks out all other threads from using the actual display.
+    #
+    # ###Description
+    # The `lock` function locks out all other threads from using the actual display.
+    # Other threads attempting to use the display will block until the display is
+    # unlocked by this thread. Nested calls to `lock` work correctly; the display
+    # will not actually be unlocked until `unlock` has been called the same number
+    # of times as `lock_display`. This function has no effect unless Xlib was
+    # successfully initialized for threads using `X11::init_threads`.
+    #
+    # ###See also
+    # `X11::init_threads`, `unlock_display`.
     def lock
       X.lock_display
       self
     end
 
-    # TODO: document
+    # Allows other threads to use the specified display again.
+    #
+    # ###Description
+    # The `unlock` function allows other threads to use the specified display again.
+    # Any threads that have blocked on the display are allowed to continue.
+    # Nested locking works correctly; if `lock` has been called multiple times by a thread,
+    # then `unlock` must be called an equal number of times before the display
+    # is actually unlocked. This function has no effect unless Xlib was successfully
+    # initialized for threads using `X11::init_threads`.
+    #
+    # ###See also
+    # `X11::init_threads`, `lock`.
     def unlock
       X.unlock_display @dpy
       self
+    end
+
+    # Determines if the named extension exists.
+    #
+    # ###Arguments
+    # - **name** Specifies the extension name.
+    #
+    # ###Description
+    # The `init_extension` function determines if the named extension exists.
+    # Then, it allocates storage for maintaining the information about the
+    # extension on the connection, chains this onto the extension list for the
+    # connection, and returns the information the stub implementor will need to
+    # access the extension. If the extension does not exist, `init_extension` returns **nil**.
+    #
+    # If the extension name is not in the Host Portable Character Encoding, the
+    # result is implementation dependent. Uppercase and lowercase matter; the
+    # strings "thing", "Thing", and "thinG" are all considered different names.
+    #
+    # The extension number in the `ExtCodes` structure is needed in the other
+    # calls that follow. This extension number is unique only to a single connection.
+    #
+    # ###See also
+    # `add_extension`.
+    def init_extension(name : String) : ExtCodes?
+      pcodes = X.init_extension @dpy, name.to_unsafe
+      return nil if pcodes.null?
+      ExtCodes.new pcodes
+    end
+
+    # Allocates the `ExtCodes` structure.
+    #
+    # ###Description
+    # For local Xlib extensions, the `add_extension` function allocates the
+    # `ExtCodes` structure, bumps the extension number count, and chains the
+    # extension onto the extension list. (This permits extensions to Xlib without
+    # requiring server extensions.)
+    #
+    # ###See also
+    # `init_extension`.
+    def add_extension : ExtCodes?
+      pcodes = X.add_extension @dpy
+      return nil if pcodes.null?
+      ExtCodes.new pcodes
     end
 
     # Returns the root window of the specified screen.
@@ -1294,7 +1357,7 @@ module X11
     # - **screen_number** Specifies the appropriate screen number on the host server.
     #
     # ###See Also
-    # - `default_root_window`
+    # `default_root_window`.
     def root_window(screen_number : Int32) : X11::C::Window
       X.root_window @dpy, screen_number
     end
@@ -1304,7 +1367,7 @@ module X11
       X.default_root_window @dpy
     end
 
-    #Returns the default visual type for the specified screen.
+    # Returns the default visual type for the specified screen.
     #
     # ###Arguments
     # - **screen_number** Specifies the appropriate screen number on the host server.
@@ -1338,11 +1401,6 @@ module X11
     # - **screen_number** Specifies the appropriate screen number on the host server.
     def white_pixel(screen_number : Int32) : UInt64
       X.white_pixel @dpy, screen_number
-    end
-
-    # Returns a value with all bits set to 1 suitable for use in a plane argument to a procedure.
-    def self.all_planes : UInt64
-      X.all_planes
     end
 
     # Returns the full serial number that is to be used for the next request.
@@ -1440,8 +1498,35 @@ module X11
       values
     end
 
-    # TODO: implement & document
-    def reconfigure_wm_window
+    #
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    # - **value_mask** Specifies which values are to be set using information in
+    # the values structure. This mask is the bitwise inclusive OR of the valid configure window values bits.
+    # - **values** Specifies the `WindowChanges` structure.
+    #
+    # ###Description
+    # The `reconfigure_wm_window` function issues a **ConfigureWindow** request
+    # on the specified top-level window. If the stacking mode is changed and the
+    # request fails with a **BadMatch** error, the error is trapped by Xlib and
+    # a synthetic **ConfigureRequestEvent** containing the same configuration
+    # parameters is sent to the root of the specified window. Window managers
+    # may elect to receive this event and treat it as a request to reconfigure
+    # the indicated window. It returns a nonzero status if the request or event
+    # is successfully sent; otherwise, it returns a zero status.
+    #
+    # `reconfigure_wm_window` can generate **BadValue** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`, `destroy_window`,
+    # `iconify_window`, `map_window`, `raise_window`, `unmap_window`, `withdraw_window`.
+    def reconfigure_wm_window(w : X11::C::Window, screen_number : Int32, mask : UInt32, changes : WindowChanges) : X11::C::Status
+      X.reconfigure_wm_window @dpy, w, screen_number, mask, changes.to_unsafe
     end
 
     # Returns the list of atoms stored in the WM_PROTOCOLS propertystored in the WM_PROTOCOLS property.

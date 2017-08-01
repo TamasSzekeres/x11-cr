@@ -15,6 +15,24 @@ module X11
     def initialize(@key_event : X11::C::X::KeyEvent)
     end
 
+    # Returns the KeySym from the list that corresponds to the `keycode` member
+    #
+    # ###Arguments
+    # - **index** Specifies the index into the KeySyms list for the event's KeyCode.
+    #
+    # ###Description
+    # The `lookup_keysym` function uses a given keyboard event and the index you
+    # specified to return the KeySym from the list that corresponds to the KeyCode
+    # member in the `KeyPressedEvent` or `KeyReleasedEvent` structure.
+    # If no KeySym is defined for the KeyCode of the event, `lookup_leysym` returns `NoSymbol`.
+    #
+    # ###See also
+    # `lookup_string`, `Display::rebind_keysym`, `MappingEvent::refresh_keyboard_mapping`,
+    # `ButtonEvent`, `MapEvent`.
+    def lookup_keysym(index : Int32) : X11::C::KeySym
+      X.lookup_keysym to_unsafe, index
+    end
+
     def to_unsafe : X11::C::X::PKeyEvent
       return pointerof(@key_event)
     end

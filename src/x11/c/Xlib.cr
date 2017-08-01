@@ -1607,7 +1607,7 @@ module X11::C
       display : PDisplay
     ) : Int64
 
-    fun extended_map_request_size = XExtendedMaxRequestSize(
+    fun extended_max_request_size = XExtendedMaxRequestSize(
       display : PDisplay
     ) : Int64
 

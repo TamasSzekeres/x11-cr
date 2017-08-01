@@ -7,6 +7,26 @@ module X11
       raise BadAllocException.new if @screen.null?
     end
 
+    # Returns the SCREEN_RESOURCES property from the root window.
+    #
+    # ###Description
+    # The `resource_string` function returns the SCREEN_RESOURCES property from
+    # the root window of the actual screen. The property is converted from
+    # type STRING to the current locale. The conversion is identical to that
+    # produced by `Display::mb_text_property_to_text_list` for a single element STRING
+    # property. The property value must be in a format that is acceptable to
+    # `X11::rm_get_string_database`. If no property exists, empty string is returned.
+    #
+    # ###See also
+    # `Display::resource_manager_string`.
+    def resource_string : String
+      pstr = X.screen_resource_string @screen
+      return "" if pstr.null?
+      str = String.new pstr
+      X.free pstr
+      str
+    end
+
     # Returns root window
     def root_window : X11::C::Window
       X.root_window_of_screen @screen
