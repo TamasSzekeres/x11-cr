@@ -143,4 +143,26 @@ module X11
   def self.set_io_error_handler(handler : X11::C::X::IOErrorHandler) : X11::C::X::IOErrorHandler
     X.set_io_error_handler handler
   end
+
+  # Releases memory.
+  #
+  # ###Arguments
+  # - **list** Specifies the list of strings to be freed.
+  #
+  # ###Description
+  # The `free_string_list` function releases memory allocated by
+  # `Display::mb_text_property_to_text_list` and `TextProperty::to_string_list`
+  # and the missing charset list allocated by `Display::create_font_set`.
+  #
+  # ###See also
+  # `X11::alloc_class_hint`, `X11::alloc_icon_size`, `X11::alloc_size_hints`,
+  # `X11::alloc_wm_hints`, `X11::free`, `Display::set_command`,
+  # `Display::set_transient_for_hint`, `Display::set_text_property`,
+  # `Display::set_wm_client_machine`, `Display::set_wm_colormap_windows`,
+  # `Display::set_wm_icon_name`, `Display::set_wm_name`, `Display::set_wm_properties`,
+  # `Display::set_wm_protocols`, `string_list_to_text_property`, `TextProperty::to_string_list`.
+  @[AlwaysInline]
+  def self.free_string_list(list : PPChar)
+    X.free_string_list list
+  end
 end

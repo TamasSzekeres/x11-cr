@@ -24,6 +24,10 @@ module X11
     def initialize(@pixel : UInt64, @red : UInt16, @green : UInt16, @blue : UInt16, @flags : UInt8, @pad : UInt8)
     end
 
+    def to_unsafe : X11::C::X::PColor
+      pointerof(@pixel).as(X11::C::X::PColor)
+    end
+
     def to_x : X11::C::X::Color
       color = X11::C::X::Color.new
       color.pixel = @pixel

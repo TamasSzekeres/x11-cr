@@ -1,6 +1,7 @@
 require "./c/Xlib"
 
 module X11
+  # Wraper for `X11::C::X::KeyboardControl` structure.
   class KeyboardControl
     def initialize(keyboard_control : X11::C::X::PKeyboardControl)
       raise BadAllocException.new if keyboard_control.null?

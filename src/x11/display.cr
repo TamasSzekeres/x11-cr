@@ -1498,7 +1498,7 @@ module X11
       values
     end
 
-    #
+    # Issues a **ConfigureWindow** request on the specified top-level window.
     #
     # ###Arguments
     # - **w** Specifies the window.
@@ -1544,6 +1544,12 @@ module X11
     #
     # ###Diagnostics
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `X11::alloc_class_hint`, `X11::alloc_icon_size`, `X11::alloc_size_hints`,
+    # `X11::alloc_wm_hints`, `set_command`, `set_text_property`, `set_transient_for_hint`,
+    # `set_wm_client_machine`, `set_wm_colormap_windows`, `set_wm_icon_name`,
+    # `set_wm_name`, `set_wm_properties`, `set_wm_protocols`, `X11::string_list_to_text_property`.
     def wm_protocols(w : X11::C::Window) : Array(X11::C::Atom)
       status = X.get_wm_protocols @dpy, w, out patoms, out count
       return [] of X11::C::Atom if status == 0 || count <= 0
@@ -1575,6 +1581,12 @@ module X11
     # ###Diagnostics
     # - **BadAlloc** The server failed to allocate the requested source or server memory.
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `X11::alloc_class_hint`, `X11::alloc_icon_size`, `X11::alloc_size_hints`,
+    # `X11::alloc_wm_hints`, `wm_protocols`, `set_command`, `set_text_property`, `set_transient_for_hint`,
+    # `set_wm_client_machine`, `set_wm_colormap_windows`, `set_wm_icon_name`,
+    # `set_wm_name`, `set_wm_properties`, `X11::string_list_to_text_property`.
     def set_wm_protocols(w : X11::C::Window, protocols : Array(Atom | X11::C::Atom)) : X11::C::X::Status
       X.set_wm_protocols @dpy, w, protocols.to_unsafe.as(X11::C::PAtom), protocols.size
     end
@@ -1595,6 +1607,10 @@ module X11
     # from normal to iconic. If the WM_CHANGE_STATE property cannot be interned,
     # `iconify_window` does not send a message and returns a zero status.
     # It returns a nonzero status if the client message is sent successfully; otherwise, it returns a zero status.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`, `destroy_window`,
+    # `map_window`, `raise_window`, `reconfigure_wm_window`, `unmap_window`, `withdraw_window`.
     def iconify_window(w : X11::C::Window, screen_number : Int32) : X11::C::X::Status
       X.iconify_window @dpy, w, screen_number
     end
@@ -1616,25 +1632,33 @@ module X11
     # `withdraw_window` can generate a **BadWindow** error.
     # ###Diagnostics
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`, `destroy_window`,
+    # `map_window`, `raise_window`, `reconfigure_wm_window`, `unmap_window`, `withdraw_window`.
     def withdraw_window(w : X11::C::Window, screen_number : Int32) : X11::C::X::Status
       X.withdraw_window @dpy, w, screen_number
     end
 
-    # Reads the WM_COMMAND property from the
-    # specified windowreads the WM_COMMAND property from the
-    # specified window.
+    # Reads the WM_COMMAND property from the specified window.
     #
     # ###Arguments
     # - **w** Specifies the window.
     #
     # ###Description
-    # The `get_command` function reads the WM_COMMAND property from the
+    # The `command` function reads the WM_COMMAND property from the
     # specified window and returns a string list. If the WM_COMMAND property exists,
     # it is of type STRING and format 8. If sufficient memory can be allocated
     # to contain the string list, `get_command` returns an array of strings.
     # Otherwise, it returns an empty array. If the data returned by the server is in the Latin Portable Character Encoding,
     # then the returned strings are in the Host Portable Character Encoding.
     # Otherwise, the result is implementation dependent.
+    #
+    # See also
+    # `X11::alloc_class_hint`, `X11::alloc_icon_size`, `X11::alloc_size_hints`,
+    # `X11::alloc_wm_hints`, `set_command`, `set_text_property`, `set_transient_for_hint`,
+    # `set_wm_client_machine`, `set_wm_colormap_windows`, `set_wm_icon_name`,
+    # `set_wm_name`, `set_wm_properties`, `set_wm_protocols`, `X11::string_list_to_text_property`.
     def command(w : X11::C::Window) : Array(String)
       status = X.get_command @dpy, w, out argv, out argc
       return [] of String if status == 0 || argc <= 0
@@ -1661,10 +1685,14 @@ module X11
     #
     # ###Diagnostics
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `X11::alloc_class_hint`, `X11::alloc_icon_size`, `X11::alloc_size_hints`,
+    # `X11::alloc_wm_hints`, `set_command`, `set_text_property`, `set_transient_for_hint`,
+    # `set_wm_client_machine`, `set_wm_colormap_windows`, `set_wm_icon_name`,
+    # `set_wm_name`, `set_wm_properties`, `set_wm_protocols`, `X11::string_list_to_text_property`.
     def wm_colormap_windows(w : X11::C::Window) : Array(X11::C::Window)
       status = X.get_wm_colormap_windows @dpy, w, out pwindows, out count
-      puts "win count = #{count}"
-      p pwindows
       return [] of X11::C::Window if status == 0 | count <= 0
       windows = Array(X11::C::Window).new
       (0...count).each do |i|
@@ -1694,6 +1722,13 @@ module X11
     # ###Diagnostics
     # - **BadAlloc** The server failed to allocate the requested source or server memory.
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `X11::alloc_class_hint`, `X11::alloc_icon_size`, `X11::alloc_size_hints`,
+    # `X11::alloc_wm_hints`, `wm_colormap_windows`, `set_command`, `set_text_property`,
+    # `set_transient_for_hint`,`set_transient_for_hint`, `set_wm_client_machine`,
+    # `set_wm_colormap_windows`, `set_wm_icon_name`, `set_wm_name`,
+    # `set_wm_properties`, `set_wm_protocols`, `X11::string_list_to_text_property`.
     def set_wm_colormap_windows(w : X11::C::Window, colormap_windows : Array(X11::C::Window)) : X11::C::X::Status
       X.set_wm_colormap_windows @dpy, w, colormap_windows.to_unsafe, colormap_windows.size
     end
@@ -1710,22 +1745,80 @@ module X11
     # ###Diagnostics
     # - **BadAlloc** The server failed to allocate the requested source or server memory.
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # See also
+    # `X11::alloc_class_hint`, `X11::alloc_icon_size`, `X11::alloc_size_hints`,
+    # `X11::alloc_wm_hints`, `transient_for_hint`, `set_command`, `set_text_property`,
+    # `set_wm_client_machine`, `set_wm_colormap_windows`, `set_wm_icon_name`,
+    # `set_wm_name`, `set_wm_properties`, `set_wm_protocols`, `X11::string_list_to_text_property`.
     def set_transient_for_hint(w : X11::C::Window, prop_window : X11::C::Window) : Int32
       X.set_transient_for_hint @dpy, w, prop_window
     end
 
     # Activates the screen saver.
+    #
+    # ###See also
+    # `set_screen_saver`, `force_screen_saver`, `reset_screen_saver`, `screen_saver`.
     def activate_screen_saver : Int32
       X.activate_screen_saver @dpy
     end
 
-    # TODO: implement & document
-    # def add_host(host : PHostAddress) : Int32
-    # end
+    #
+    #
+    # ###Arguments
+    # - **host** Specifies the host that is to be added.
+    #
+    # ###Description
+    # The `add_host` function adds the specified host to the access control list
+    # for the display. The server must be on the same host as the client issuing
+    # the command, or a **BadAccess** error results.
+    #
+    # `add_host` can generate **BadAccess** and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAccess** A client attempted to free a color map entry that it did not already allocate.
+    # - **BadAccess** A client attempted to store into a read-only color map entry.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the full
+    # range defined by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `add_hosts`, `disable_access_control`, `enable_access_control`, `X11::free`,
+    # `list_hosts`, `remove_host`, `remove_hosts`, `set_access_control`.
+    def add_host(host : HostAddress | ServerInterpretedAddress) : Int32
+      case host
+      when HostAddress
+        X.add_host @dpy, host.to_unsafe
+      when ServerInterpretedAddress
+        host_address = HostAddress.new host
+        X.add_host @dpy, host_address.to_unsafe
+      end
+    end
 
-    # TODO: implement & document
-    # def add_hosts(hosts : PHostAddress, num_hosts : Int32) : Int32
-    # end
+    # Adds each specified host to the access control list.
+    #
+    # ###Arguments
+    # - **hosts** Specifies each host that is to be added.
+    #
+    # ###Description
+    # The `add_hosts` function adds each specified host to the access control list
+    # for the display. The server must be on the same host as the client issuing the command, or a **BadAccess** error results.
+    #
+    # `add_hosts` can generate **BadAccess** and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAccess** A client attempted to free a color map entry that it did not already allocate.
+    # - **BadAccess** A client attempted to store into a read-only color map entry.
+    # - **BadValue** Some numeric value falls outside the range of values accepted by the request.
+    # Unless a specific range is specified for an argument, the full range defined
+    # by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `add_host`, `disable_access_control`, `enable_access_control`, `X11::free`,
+    # `list_hosts`, `remove_host`, `remove_hosts`, `set_access_control`.
+    def add_hosts(hosts : Array(HostAddress)) : Int32
+      X.add_hosts @dpy, hosts.to_unsafe, hosts.size
+    end
 
     # Adds the specified window to the client's save-set.
     #
@@ -1741,25 +1834,159 @@ module X11
     # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
     # - **BadMatch** Some argument or pair of arguments has the correct type and range but fails to match in some other way required by the request.
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `change_save_set`, `remove_from_save_set`, `reparent_window`.
     def add_to_save_set(w : X11::C::Window) : Int32
       X.add_to_save_set @dpy, w
     end
 
-    # TODO: implement & document
-    # def alloc_color(colormap : Colormap, screen_in_out : PColor) : X11::C::X::Status
-    # end
+    # Allocates a read-only colormap entry.
+    #
+    # ###Arguments
+    # - **colormap** Specifies the colormap.
+    # - **screen_in** Specifies and returns the values actually used in the colormap.
+    #
+    # ###Description
+    # The `alloc_color` function allocates a read-only colormap entry corresponding
+    # to the closest RGB value supported by the hardware. `alloc_color` returns
+    # the pixel value of the color closest to the specified RGB elements supported
+    # by the hardware and returns the RGB value actually used. The corresponding
+    # colormap cell is read-only. Multiple clients that request the same effective
+    # RGB value can be assigned the same read-only entry, thus allowing entries
+    # to be shared. When the last client deallocates a shared cell, it is deallocated.
+    # `alloc_color` does not use or affect the flags in the `Color` structure.
+    #
+    # `alloc_color` can generate a **BadColor** error.
+    #
+    # ###Diagnostics
+    # - **BadColor** A value for a `Colormap` argument does not name a defined `Colormap`.
+    #
+    # ###See also
+    # `alloc_color_cells`, `alloc_color_planes`, `alloc_named_color`,
+    # `create_colormap`, `free_colors`, `query_color`, `store_colors`.
+    def alloc_color(colormap : X11::C::Colormap, screen_in : Color) : Color
+      screen_in_out = screen_in.to_x
+      X.alloc_color @dpy, colormap, pointerof(screen_in_out)
+      Color.new screen_in_out
+    end
 
-    # TODO: implement & document
-    # def alloc_color_cells(colormap : Colormap, contig : Bool, plane_masks_return : PUInt64, nplanes : UInt32, pixels_return : PUInt64, npixels : UInt32) : Status
-    # end
+    # Allocates read/write color cells.
+    #
+    # ###Arguments
+    # - **colormap** Specifies the colormap.
+    # - **contig** Specifies a Boolean value that indicates whether the planes must be contiguous.
+    # - **nplanes** Specifies the number of plane masks that are to be returned in the plane masks array.
+    # - **npixels** Specifies the number of pixel values that are to be returned in the pixels_return array.
+    #
+    # ###Description
+    # The `alloc_color_cells` function allocates read/write color cells.
+    # The number of colors must be positive and the number of planes nonnegative,
+    # or a **BadValue** error results. No mask will have any bits set to 1 in
+    # common with any other mask or with any of the pixels. All of these are
+    # allocated writable by the request. For **GrayScale** or **PseudoColor**,
+    # each mask has exactly one bit set to 1. For **DirectColor**, each has exactly
+    # three bits set to 1. If contig is **true** and if all masks are **ORed** together,
+    # a single contiguous set of bits set to 1 will be formed for **GrayScale** or
+    # **PseudoColor** and three contiguous sets of bits set to 1 (one within
+    # each pixel subfield) for **DirectColor**. The RGB values of the allocated
+    # entries are undefined.
+    #
+    # `alloc_color_cells` can generate **BadColor** and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadColor** A value for a Colormap argument does not name a defined Colormap.
+    # - **BadValue** Some numeric value falls outside the range of values accepted by the request.
+    # Unless a specific range is specified for an argument, the full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `alloc_color`, `alloc_color_planes`, `alloc_named_color`, `create_colormap`,
+    # `free_colors`, `query_color`, `store_colors`.
+    def alloc_color_cells(colormap : X11::C::Colormap, contig : Bool, nplanes : UInt32, npixels : UInt32) : NamedTuple(status: X11::C::X::Status, plane_masks: Array(UInt64), pixels: Array(UInt64))
+      status = X.alloc_color_cells @dpy, colormap, contig ? 1 : 0, out plane_masks_return, nplanes, out pixels_return, npixels
+      plane_masks = Array(UInt64).new(nplanes) { |i| plane_masks_return[i] }
+      pixels = Array(UInt64).new(npixels) { |i| pixels_return[i] }
+      {status: status, plane_masks: plane_masks, pixels: pixels}
+    end
 
-    # TODO: implement & document
-    # def alloc_color_planes(display : PDisplay, colormap : Colormap, contig : Bool, pixels_return : PUInt64, ncolors : Int32, nreds : Int32, ngreens : Int32, nblues : Int32, rmask_return : PUInt64, gmask_return : PUInt64,   bmask_return : PUInt64) : Status
-    # end
+    # Allocates color planes.
+    #
+    # ###Arguments
+    # - **colormap** Specifies the colormap.
+    # - **contig** Specifies a Boolean value that indicates whether the planes must be contiguous.
+    # - **ncolors** Specifies the number of pixel values that are to be returned in the pixels_return array.
+    # - **nreds**, **ngreens**, **nblues** Specify the number of red, green, and blue planes. The value you pass must be nonnegative.
+    #
+    # ###Description
+    # The specified ncolors must be positive; and nreds, ngreens, and nblues must be nonnegative,
+    # or a **BadValue** error results. If ncolors colors, nreds reds, ngreens greens,
+    # and nblues blues are requested, ncolors pixels are returned; and the masks have
+    # nreds, ngreens, and nblues bits set to 1, respectively. If contig is **true**,
+    # each mask will have a contiguous set of bits set to 1. No mask will have
+    # any bits set to 1 in common with any other mask or with any of the pixels.
+    # For **DirectColor**, each mask will lie within the corresponding pixel subfield.
+    # By **ORing** together subsets of masks with each pixel value, `ncolors * 2^(nreds+ngreens+nblues)`
+    # distinct pixel values can be produced. All of these are allocated by the request.
+    # However, in the colormap, there are only `ncolors * 2^nreds` independent red entries,
+    # `ncolors * 2^ngreens` independent green entries, and `ncolors * 2^nblues`
+    # independent blue entries. This is true even for **PseudoColor**. When the
+    # colormap entry of a pixel value is changed (using `store_colors`, `store_color`,
+    # or `store_named_color`), the pixel is decomposed according to the masks,
+    # and the corresponding independent entries are updated. `alloc_color_planes` returns
+    # nonzero if it succeeded or zero if it failed.
+    #
+    # `alloc_color_planes` can generate **BadColor** and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadColor** A value for a Colormap argument does not name a defined Colormap.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `alloc_color`, `alloc_color_cells`, `alloc_named_color`, `create_colormap`,
+    # `free_colors`, `query_color`, `store_colors`.
+    def alloc_color_planes(colormap : X11::C::Colormap, contig : Bool, ncolors : Int32, nreds : Int32, ngreens : Int32, nblues : Int32) : NamedTuple(status: X11::C::X::Status, pixels: Array(UInt64), rmask: UInt64, gmask: UInt64, bmask: UInt64)
+      status = X.alloc_color_planes @dpy, colormap, contig ? 1 : 0, out pixels_return, ncolors, nreds, nblues, out rmask, out gmask, out bmask
+      pixels = Array(UInt64).new(ncolors) { |i| pixels_return[i] }
+      {status: status, pixels: pixels, rmask: rmask, gmask: gmask, bmask: bmask}
+    end
 
-    # TODO: implement & document
-    # def alloc_named_color(colormap : Colormap, color_name : PChar, screen_def_return : PColor, exact_def_return : PColor ) : Status
-    # end
+    # Looks up the named color with respect to the screen that is associated with the specified colormap.
+    #
+    # ###Arguments
+    # - **colormap** Specifies the colormap.
+    # - **color_name** Specifies the color name string (for example, red) whose color definition structure you want returned.
+    #
+    # ###Return
+    # - **screen_def** The closest RGB values provided by the hardware.
+    # - **exact_def** The exact RGB values.
+    # - **status** Nonzero if a cell is allocated; otherwise, it is zero.
+    #
+    # ###Description
+    # The `alloc_named_color` function looks up the named color with respect to
+    # the screen that is associated with the specified colormap. It returns both
+    # the exact database definition and the closest color supported by the screen.
+    # The allocated color cell is read-only. The pixel value is returned in
+    # screen_def. If the color name is not in the Host Portable Character Encoding,
+    # the result is implementation dependent. Use of uppercase or lowercase does not matter.
+    # If screen_def and exact_def point to the same structure, the pixel field will
+    # be set correctly but the color values are undefined. `alloc_named_color` returns
+    # nonzero status if a cell is allocated; otherwise, it returns zero.
+    #
+    # `alloc_named_color` can generate a **BadColor** error.
+    #
+    # ###Diagnostics
+    # - **BadColor** A value for a Colormap argument does not name a defined Colormap.
+    #
+    # ###See also
+    # `alloc_color`, `alloc_color_cells`, `alloc_color_planes`, `create_colormap`,
+    # `free_colors`, `query_color`, `store_colors`.
+    def alloc_named_color(colormap : X11::C::Colormap, color_name : String) : NamedTuple(status: X11::C::X::Status, screen_def: Color, exact_def: Color)
+      status = X.alloc_named_color @dpy, colormap, color_name.to_unsafe, out screen_def, out exact_def
+      {status: status, screen_def: Color.new(screen_def), exact_def: Color.new(exact_def)}
+    end
 
     # Releases some queued events if the client has caused a device to freeze.
     #
@@ -1932,6 +2159,9 @@ module X11
     # Unless a specific range is specified for an argument, the full range
     # defined by the argument's type is accepted. Any argument defined as a set
     # of alternatives can generate this error.
+    #
+    # ###See also
+    # `allow_events`, `grab_button`, `grab_key`, `grab_keyboard`, `grab_pointer`, `ungrab_pointer`.
     def change_active_pointer_grab(event_mask : UInt32, cursor : X11::C::Cursor, time : X11::C::Time) : Int32
       X.change_active_pointer_grab @dpy, event_mask, cursor, time
     end
@@ -1968,6 +2198,12 @@ module X11
     #  accepted by the request. Unless a specific range is specified for an argument,
     # the full range defined by the argument's type is accepted.
     # Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `X11::all_planes` `copy_area`, `copy_gc`, `create_gc`, `X11::create_region`,
+    # `draw_arc`, `draw_line`, `draw_rectangle`, `draw_text`, `fill_rectangle`,
+    # `free_gc`, `g_context_from_gc`, `get_gc_values`, `query_best_size`,
+    # `set_arc_mode`, `set_clip_origin`.
     def change_gc(gc : X11::C::X::GC, valuemask : UInt64, values : GCValues) : Int32
       X.change_gc @dpy, gc, valuemask. values.to_unsafe
     end

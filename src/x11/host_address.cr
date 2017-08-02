@@ -1,18 +1,13 @@
 require "./c/Xlib"
 
 module X11
+  # Wrapper for `X11::C::X::HostAddress` structure.
   struct HostAddress
-    def initialize(family : Int32, data : Bytes | ServerInterpretedAddress)
+    def initialize(family : Int32, data : Bytes)
       @host_address = X11::C::X::HostAddress.new
       @host_address.family = family
-      case data
-      when Bytes
-        @host_address.length = data.size
-        @host_address.address = data.to_unsafe.as(PChar)
-      when ServerInterpretedAddress
-        @host_address.size = sizeof(ServerInterpretedAddress)
-        @host_address.address = data.to_unsafe.as(PChar)
-      end
+      @host_address.length = data.size
+      @host_address.address = data.to_unsafe.as(PChar)
     end
 
     def initialize(host_address : X11::C::X::PHostAddress)
@@ -21,6 +16,13 @@ module X11
     end
 
     def initialize(@host_address : X11::C::X::HostAddress)
+    end
+
+    def initialize(host : ServerInterpretedAddress)
+      @host_address = X11::C::X::HostAddress.new
+      @host_address.family = FamilyServerInterpreted
+      @host_address.size = sizeof(ServerInterpretedAddress)
+      @host_address.address = host.to_unsafe.as(PChar)
     end
 
     def to_unsafe : X11::C::X::PHostAddress
