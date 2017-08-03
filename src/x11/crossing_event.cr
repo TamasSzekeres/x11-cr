@@ -2,34 +2,34 @@ require "./c/Xlib"
 require "./event"
 
 module X11
-  # Wrapper for `X11::C::X::ButtonEvent` structure.
-  class ButtonEvent < Event
+  # Wrapper from `X11::C::X::CrossingEvent` structure.
+  class CrossingEvent < Event
     def initialize
-      @event = X11::C::X::ButtonEvent.new
+      @event = X11::C::X::CrossingEvent.new
     end
 
-    def initialize(event : X11::C::X::PButtonEvent)
+    def initialize(event : X11::C::X::PCrossingEvent)
       raise BadAllocException.new if event.null?
       @event = event.value
     end
 
-    def initialize(@event : X11::C::X::ButtonEvent)
+    def initialize(@event : X11::C::X::CrossingEvent)
     end
 
-    def to_unsafe : X11::C::X::PButtonEvent
-      pointerof(@event)
+    def to_unsafe : X11::C::X::PCrossingEvent
+      return pointerof(@event)
     end
 
-    def to_x : X11::C::X::ButtonEvent
+    def to_x : X11::C::X::CrossingEvent
       @event
     end
 
-    def press? : Bool
-      @event.type == ButtonPress
+    def enter? : Bool
+      @event.type == EnterNotify
     end
 
-    def release? : Bool
-      @event.type == ButtonRelease
+    def leave? : Bool
+      @event.type == LeaveNotify
     end
 
     def type : Int32
@@ -128,20 +128,20 @@ module X11
       @event.y_root = y_root
     end
 
-    def state : UInt32
-      @event.state
+    def mode : Int32
+      @event.mode
     end
 
-    def state=(state : UInt32)
-      @event.state = state
+    def mode=(mode : Int32)
+      @event.mode = mode
     end
 
-    def button : UInt32
-      @event.button
+    def detail : Int32
+      @event.detail
     end
 
-    def button=(button : UInt32)
-      @event.button = button
+    def detail=(detail : Int32)
+      @event.detail = detail
     end
 
     def same_screen : Bool
@@ -150,6 +150,22 @@ module X11
 
     def same_screen=(same_screen : Bool)
       @event.same_screen = same_screen ? 1 : 0
+    end
+
+    def focus : Bool
+      @event.focus ? true : false
+    end
+
+    def focus=(focus : Bool)
+      @event.focus = focus ? 1 : 0
+    end
+
+    def state : UInt32
+      @event.state
+    end
+
+    def state=(state : UInt32)
+      @event.state = state
     end
   end
 end

@@ -2,34 +2,26 @@ require "./c/Xlib"
 require "./event"
 
 module X11
-  # Wrapper for `X11::C::X::ButtonEvent` structure.
-  class ButtonEvent < Event
+  # Wrapper for `X11::C::X::MotionEvent` structure.
+  class MotionEvent < Event
     def initialize
-      @event = X11::C::X::ButtonEvent.new
+      @event = X11::C::X::MotionEvent.new
     end
 
-    def initialize(event : X11::C::X::PButtonEvent)
+    def initialize(event : X11::C::X::PMotionEvent)
       raise BadAllocException.new if event.null?
       @event = event.value
     end
 
-    def initialize(@event : X11::C::X::ButtonEvent)
+    def initialize(@event : X11::C::X::MotionEvent)
     end
 
-    def to_unsafe : X11::C::X::PButtonEvent
-      pointerof(@event)
+    def to_unsafe : X11::C::X::PMotionEvent
+      return pointerof(@event)
     end
 
-    def to_x : X11::C::X::ButtonEvent
+    def to_x : X11::C::X::MotionEvent
       @event
-    end
-
-    def press? : Bool
-      @event.type == ButtonPress
-    end
-
-    def release? : Bool
-      @event.type == ButtonRelease
     end
 
     def type : Int32
@@ -136,12 +128,12 @@ module X11
       @event.state = state
     end
 
-    def button : UInt32
-      @event.button
+    def is_hist : UInt8
+      @event.is_hint
     end
 
-    def button=(button : UInt32)
-      @event.button = button
+    def is_hint=(is_hint : UInt8)
+      @event.is_hint = is_hint
     end
 
     def same_screen : Bool
