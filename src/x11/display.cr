@@ -2226,6 +2226,10 @@ module X11
     # by the request. Unless a specific range is specified for an argument, the
     # full range defined by the argument's type is accepted.
     # Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `auto_repeat_off`, `auto_repeat_on`, `bell`, `change_keyboard_mapping`,
+    # `keyboard_control`, `query_keymap`, `set_pointer_mapping`.
     def change_keyboard_control(value_mask : UInt64, values : KeyboardControl) : Int32
       X.change_keyboard_control @dpy, value_mask, values.to_unsafe
     end
@@ -2270,6 +2274,11 @@ module X11
     # - **BadValue** Some numeric value falls outside the range of values
     # accepted by the request. Unless a specific range is specified for an argument,
     # the full range defined by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `ModifierKeymap::delete_entry`, `keycodes`, `X11::free`, `ModifierKeymap::finalize`,
+    # `keyboard_mapping`, `modifier_mapping`, `ModifierKeymap::insert_entry`,
+    # `ModifierKeymap::new`, `set_modifier_mapping`, `set_pointer_mapping`.
     def change_keyboard_mapping(first_keycode : Int32, keysyms_per_keycode : Int32, keysyms : Array(X11::C::KeySym)) : Int32
       X.change_keyboard_mapping @dpy, first_keycode, keysyms_per_keycode, keysyms.to_unsafe, keysyms.size
     end
@@ -2300,6 +2309,9 @@ module X11
     # - **BadValue** Some numeric value falls outside the range of values accepted
     # by the request. Unless a specific range is specified for an argument,
     # the full range defined by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `pointer_control`.
     def change_pointer_control(do_accel : Bool, do_threshold : Bool, accel_numerator : Int32, accel_denominator : Int32, threshold : Int32) : Int32
       X.change_pointer_control @dpy, do_accel ? 1 : 0, do_threshold ? 1 : 0, accel_numerator, accel_denominator, threshold
     end
@@ -2346,6 +2358,9 @@ module X11
     # by the request. Unless a specific range is specified for an argument,
     # the full range defined by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `delete_property`, `window_property`, `properties`, `rotate_window_properties`.
     def change_property(w : X11::C::Window, property : Atom | X11::C::Atom, type : Atom | X11::C::Atom, mode : Int32, data : Bytes | Slice(Int16) | Slice(Int32)) : Int32
       format = case data
       when Bytes then 8
@@ -2377,6 +2392,9 @@ module X11
     # the full range defined by the argument's type is accepted.
     # Any argument defined as a set of alternatives can generate this error.
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `add_to_save_set`, `remove_from_save_set`, `reparent_window`.
     def change_save_set(w : X11::C::Window, change_mode : Int32) : Int32
       X.change_save_set @dpy, w, change_mode
     end
@@ -2436,18 +2454,20 @@ module X11
     # Unless a specific range is specified for an argument, the full range defined
     # by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `configure_window`, `create_window`, `destroy_window`, `install_colormap`,
+    # `map_window`, `raise_window`, `set_window_background`, `set_window_background_pixmap`,
+    # `set_window_border`, `set_window_border_pixmap`, `set_window_colormap`, `unmap_window`.
     def change_window_attributes(w : X11::C::Window, valuemask : UInt64, attributes : SetWindowAttributes) : Int32
       X.change_window_attributes @dpy, w, value, attributes.to_unsafe
     end
 
     # TODO: implement & document & test
-    # fun check_if_event = XCheckIfEvent(
-    #   display : PDisplay,
-    #   event_return : PEvent,
-    #   predicate : PDisplay, PEvent, Pointer -> Bool,
-    #   arg : Pointer
-    # ) : Bool
-    #
+    def check_if_event(predicate : X11::C::X::PDisplay, X11::C::X::PEvent, X11::C::X::Pointer -> X11::C::Bool, arg : X11::C::X::Pointer) : Event?
+      res = X.check_if_event @dpy, out event_return, predicate, arg
+    end
+
     # fun check_mask_event = XCheckMaskEvent(
     #   display : PDisplay,
     #   event_mask : Int64,

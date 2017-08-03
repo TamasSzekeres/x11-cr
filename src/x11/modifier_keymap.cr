@@ -1,4 +1,5 @@
 require "./c/Xlib"
+require "./event"
 
 module X11
   class ModifierKeymap

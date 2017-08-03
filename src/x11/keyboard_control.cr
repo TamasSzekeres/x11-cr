@@ -1,4 +1,5 @@
 require "./c/Xlib"
+require "./event"
 
 module X11
   # Wraper for `X11::C::X::KeyboardControl` structure.
