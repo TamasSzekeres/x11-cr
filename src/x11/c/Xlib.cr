@@ -2023,7 +2023,7 @@ module X11::C
       event_return : PEvent
     ) : Bool
 
-    fun check_types_event = XCheckTypedEvent(
+    fun check_typed_event = XCheckTypedEvent(
       display : PDisplay,
       event_type : Int32,
       event_return : PEvent

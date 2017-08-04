@@ -2463,36 +2463,125 @@ module X11
       X.change_window_attributes @dpy, w, value, attributes.to_unsafe
     end
 
-    # TODO: implement & document & test
+    # When the predicate procedure finds a match, returns the matched event.
+    #
+    # ###Arguments
+    # - **predicate** Specifies the procedure that is to be called to determine if the next event in the queue matches what you want.
+    # - **arg** Specifies the user-supplied argument that will be passed to the predicate procedure.
+    #
+    # ###Description
+    # When the predicate procedure finds a match, `check_if_event` returns the matched event.
+    # (This event is removed from the queue.) If the predicate procedure finds no match,
+    # `check_if_event` returns **nil**, and the output buffer will have been flushed.
+    # All earlier events stored in the queue are not discarded.
+    #
+    # ###See also
+    # `if_event`, `next_event`, `peek_if_event`, `put_back_event`, `send_event`.
     def check_if_event(predicate : X11::C::X::PDisplay, X11::C::X::PEvent, X11::C::X::Pointer -> X11::C::Bool, arg : X11::C::X::Pointer) : Event?
-      res = X.check_if_event @dpy, out event_return, predicate, arg
+      if X.check_if_event @dpy, out event_return, predicate, arg
+        Event.from_xevent event_return
+      else
+        nil
+      end
     end
 
-    # fun check_mask_event = XCheckMaskEvent(
-    #   display : PDisplay,
-    #   event_mask : Int64,
-    #   event_return : PEvent
-    # ) : Bool
+    # Removes and returns the first event that matches the specified mask.
     #
-    # fun check_types_event = XCheckTypedEvent(
-    #   display : PDisplay,
-    #   event_type : Int32,
-    #   event_return : PEvent
-    # ) : Bool
+    # ###Arguments
+    # - **event_mask** Specifies the event mask.
     #
-    # fun check_typed_window_event = XCheckTypedWindowEvent(
-    #   display : PDisplay,
-    #   w : Window,
-    #   event_type : Int32,
-    #   event_return : PEvent
-    # ) : Bool
+    # ###Description
+    # The `check_mask_event` function searches the event queue and then any events
+    # available on the server connection for the first event that matches the specified mask.
+    # If it finds a match, `check_mask_event` removes that event, and returns it.
+    # The other events stored in the queue are not discarded. If the event you
+    # requested is not available, `check_mask_event` returns **nil**, and the output buffer will have been flushed.
     #
-    # fun check_window_event = XCheckWindowEvent(
-    #   display : PDisplay,
-    #   w : Window,
-    #   event_mask : Int64,
-    #   event_return : PEvent
-    # ) : Bool
+    # ###See also
+    # `check_typed_event`, `check_typed_window_event`, `check_window_event`,
+    # `if_event`, `mask_event`, `next_event`, `peek_event`, `put_back_event`,
+    # `send_event`, `window_event`.
+    def check_mask_event(event_mask : Int64) : Event?
+      if X.check_mask_event @dpy, event_mask, out event_return
+        Event.from_xevent event_return
+      else
+        nil
+      end
+    end
+
+    # Removes and returns the first event that matches the specified type.
+    #
+    # ###Arguments
+    # - **event_type** Specifies the event type to be compared.
+    #
+    # ###Description
+    # The `check_typed_event` function searches the event queue and then any events
+    #available on the server connection for the first event that matches the specified type.
+    # If it finds a match, `check_typed_event` removes that event, and returns it.
+    # The other events in the queue are not discarded. If the event is not available,
+    # `check_typed_event` returns **nil**, and the output buffer will have been flushed.
+    #
+    # ###See also
+    # `check_mask_event`, `check_typed_window_event`, `check_window_event`,
+    # `if_event`, `mask_event`, `next_event`, `peek_event`, `put_back_event`,
+    # `send_event`, `window_event`.
+    def check_typed_event(event_type : Int32) : Event?
+      if X.check_typed_event @dpy, event_type, out event_return
+        Event.from_xevent event_return
+      else
+        nil
+      end
+    end
+
+    # Removes and returns the first event that matches the specified window and type.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **event_type** Specifies the event type to be compared.
+    #
+    # ###Description
+    # The `check_typed_window_event` function searches the event queue and then
+    # any events available on the server connection for the first event that matches
+    # the specified type and window. If it finds a match, `check_typed_window_event`
+    # removes the event from the queue, and returns it. The other events in the
+    # queue are not discarded. If the event is not available, `check_typed_window_event`
+    # returns **nil**, and the output buffer will have been flushed.
+    #
+    # ###See also
+    # `check_mask_event`, `check_window_event`, `if_event`, `mask_event`,
+    # `next_event`, `peek_event`, `put_back_event`, `send_event`, `window_event`.
+    def check_typed_window_event(w : X11::C::Window, event_type : Int32) : Event?
+      if X.check_typed_window_event @dpy, w, event_type, out event_return
+        Event.from_xevent event_return
+      else
+        nil
+      end
+    end
+
+    # Removes and returns the first event that matches the specified window and event mask.
+    #
+    # ###Arguments
+    # - **w** Specifies the window whose events you are interested in.
+    # - **event_mask** Specifies the event mask.
+    #
+    # ###Description
+    # The `check_window_event` function searches the event queue and then the events
+    # available on the server connection for the first event that matches the specified window and event mask.
+    # If it finds a match, `check_window_event` removes that event, and returns it.
+    # The other events stored in the queue are not discarded. If the event you
+    # requested is not available, `check_window_event` returns **nil**,
+    # and the output buffer will have been flushed.
+    #
+    # ###See also
+    # `check_mask_event`, `check_typed_event`, `check_typed_window_event`,
+    # `if_event`, `mask_event`, `next_event`, `peek_event`, `put_back_event`, `send_event`, `window_event`.
+    def check_window_event(w : X11::C::Window, event_mask : Int64) : Event?
+      if X.check_window_event @dpy, w, event_mask, out event_return
+        Event.from_xevent event_return
+      else
+        nil
+      end
+    end
 
     # Circulates children of the specified window in the specified direction.
     #
@@ -2522,6 +2611,11 @@ module X11
     # the full range defined by the argument's type is accepted.
     # Any argument defined as a set of alternatives can generate this error.
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `change_window_attributes`, `circulate_subwindows_down`, `circulate_subwindows_up`,
+    # `configure_window`, `create_window`, `destroy_window`, `lower_window`,
+    # `map_window`, `raise_window`, `restack_windows`.
     def circulate_subwindows(w : X11::C::Window, direction : Int32) : Int32
       X.circulate_subwindows @dpy, w, direction
     end
@@ -2541,6 +2635,11 @@ module X11
     #
     # ###Diagnostics
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `change_window_attributes`, `circulate_subwindows`, `circulate_subwindows_up`,
+    # `configure_window`, `create_window`, `destroy_window`, `lower_window`,
+    # `map_window`, `raise_window`, `restack_windows`.
     def circulate_subwindows_down(w : X11::C::Window) : Int32
       X.circulate_subwindows_down @dpy, w
     end
@@ -2560,6 +2659,11 @@ module X11
     #
     # ###Diagnostics
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `change_window_attributes`, `circulate_subwindows`, `circulate_subwindows_down`,
+    # `configure_window`, `create_window`, `destroy_window`, `lower_window`,
+    # `map_window`, `raise_window`, `restack_windows`.
     def circulate_subwindows_up(w : X11::C::Window) : Int32
       X.circulate_subwindows_up @dpy, w
     end
@@ -2596,6 +2700,9 @@ module X11
     # the full range defined by the argument's type is accepted.
     # Any argument defined as a set of alternatives can generate this error.
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `clear_area`, `copy_area`.
     def clear_area(w : X11::C::Window, x : Int32, y : Int32, width : UInt32, height : UInt32, exposures : Bool) : Int32
       X.clear_area @dpy, w, x, y, width, height, exposures ? 1 : 0
     end
@@ -2623,156 +2730,1140 @@ module X11
     # - **BadMatch** Some argument or pair of arguments has the correct type and
     # range but fails to match in some other way required by the request.
     # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `clear_area`, `copy_area`.
     def clear_window(w : X11::C::Window) : Int32
       X.clear_window @dpy, w
     end
 
+    # Reconfigures a window's size, position, border, and stacking order.
+    #
+    # ###Arguments
+    # - **w** Specifies the window to be reconfigured.
+    # - **value_mask** Specifies which values are to be set using information in
+    # the values structure. This mask is the bitwise inclusive OR of the valid configure window values bits.
+    # - **values** Specifies the `WindowChanges` structure.
+    #
+    # ###Description
+    # The `configure_window` function uses the values specified in the `WindowChanges`
+    # structure to reconfigure a window's size, position, border, and stacking order.
+    # Values not specified are taken from the existing geometry of the window.
+    #
+    # If a sibling is specified without a stack_mode or if the window is not actually
+    # a sibling, a **BadMatch** error results. Note that the computations for
+    # **BottomIf**, **TopIf**, and **Opposite** are performed with respect to the
+    # window's final geometry (as controlled by the other arguments passed to
+    # `configure_window`), not its initial geometry. Any backing store contents
+    # of the window, its inferiors, and other newly visible windows are either
+    # discarded or changed to reflect the current screen contents (depending on the implementation).
+    #
+    # `configure_window` can generate **BadMatch**, **BadValue**, and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument defined
+    # as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `change_window_attributes`, `create_window`, `destroy_window`, `map_window`,
+    # `move_window`, `move_resize_window`, `raise_window`, `resize_window`,
+    # `set_window_border_width`, `unmap_window`.
     def configure_window(w : X11::C::Window, value_mask : UInt32, values : WindowChanges) : Int32
       X.configure_window @dpy, w, value_mask, values.to_unsafe
     end
 
+    # Returns a connection number for the specified display.
+    # On a POSIX-conformant system, this is the file descriptor of the connection.
     def connection_number : Int32
       X.connection_number @dpy
     end
 
+    # Requests that the specified selection be converted to the specified target type.
+    #
+    # ###Arguments
+    # - **selection** Specifies the selection atom.
+    # - **target** Specifies the target atom.
+    # - **property** Specifies the property name. You also can pass **None**.
+    # - **requestor** Specifies the requestor.
+    # - **time** Specifies the time. You can pass either a timestamp or **CurrentTime**.
+    #
+    # ###Description
+    # `convert_selection` requests that the specified selection be converted to the specified target type:
+    # - If the specified selection has an owner, the X server sends a `SelectionRequest` event to that owner.
+    # - If no owner for the specified selection exists, the X server generates a
+    # `SelectionNotify` event to the requestor with property **None**.
+    #
+    # The arguments are passed on unchanged in either of the events.
+    # There are two predefined selection atoms: PRIMARY and SECONDARY.
+    #
+    # convert_selection can generate **BadAtom** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadAtom** A value for an Atom argument does not name a defined Atom.
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `selection_owner`, set_selection_owner`.
     def convert_selection(selection : Atom | X11::C::Atom, target : Atom | X11::C::Atom, property : Atom | X11::C::Atom, requestor : X11::C::Window, time : X11::C::Time) : Int32
       X.convert_selection @dpy, selection.to_u64, target.to_u64, property.to_u64, requestor, time
     end
 
+    # Combines the specified rectangle of src with the specified rectangle of dest.
+    #
+    # ###Arguments
+    # - **src**, **dest** Specify the source and destination rectangles to be combined.
+    # - **gc** Specifies the GC.
+    # - **src_x**, **src_y** Specify the x and y coordinates, which are relative
+    # to the origin of the source rectangle and specify its upper-left corner.
+    # - **width**, **height** Specify the width and height, which are the dimensions
+    # of both the source and destination rectangles.
+    # - **dest_x**, **dest_y** Specify the x and y coordinates, which are relative
+    # to the origin of the destination rectangle and specify its upper-left corner
+    #
+    # ###Description
+    # The `copy_area` function combines the specified rectangle of src with the
+    # specified rectangle of dest. The drawables must have the same root and depth, or a **BadMatch** error results.
+    #
+    # If regions of the source rectangle are obscured and have not been retained
+    # in backing store or if regions outside the boundaries of the source drawable
+    # are specified, those regions are not copied. Instead, the following occurs
+    # on all corresponding destination regions that are either visible or are retained
+    # in backing store. If the destination is a window with a background other
+    # than **None**, corresponding regions of the destination are tiled with that
+    # background. Regardless of tiling or whether the destination is a window or a pixmap,
+    # if graphics-exposures is **true**, then `GraphicsExpose` events for all
+    # corresponding destination regions are generated. If graphics-exposures is
+    # **true** but no `GraphicsExpose` events are generated, a **NoExpose** event
+    # is generated. Note that by default graphics-exposures is **true** in new GCs.
+    #
+    # This function uses these GC components: function, plane-mask, subwindow-mode,
+    # graphics-exposure, clip-x-origin, clip-y-origin, and clip-mask.
+    #
+    # `copy_area` can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `clear_area`, `copy_plane`.
     def copy_area(src : X11::C::Drawable, dest : X11::C::Drawable, gc : X11::C::C::GC, src_x : Int32, src_y : Int32, width : UInt32, height : UInt32, dest_x : Int32, dest_y : Int32) : Int32
       X.copy_area @dpy, src, dest, gc, src_x, src_y, width, height, dest_x, dest_y
     end
 
+    # Copies the specified components from the source GC to the destination GC
+    #
+    # ###Arguments
+    # - **src** Specifies the components of the source GC.
+    # - **valuemask** Specifies which components in the GC are to be copied to
+    # the destination GC. This argument is the bitwise inclusive OR of zero or more of the valid GC component mask bits.
+    # - **dest** Specifies the destination GC.
+    #
+    # ###Description
+    # The `copy_gc` function copies the specified components from the source GC
+    # to the destination GC. The source and destination GCs must have the same
+    # root and depth, or a **BadMatch** error results. The valuemask
+    # specifies which component to copy, as for `create_gc`.
+    #
+    # `copy_gc` can generate **BadAlloc**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `X11::all_planes`, `change_gc`, `copy_area`, `create_gc`, `X11::create_region`,
+    # `draw_arc`, `draw_line`, `draw_rectangle`, `draw_text`, `fill_rectangle`,
+    # `free_gc`, `X11::g_context_from_gc`, `gc_values`, `query_best_size`, `set_arc_mode`, `set_clip_origin`.
     def copy_gc(src : X11::C::X::GC, valuemask : UInt64, dest : X11::C::X::GC) : Int32
       X.copy_gc @dpy, src, valuemask, dest
     end
 
+    # Uses a single bit plane of the specified source rectangle combined with the specified GC to modify the specified rectangle of dest.
+    #
+    # ###Arguments
+    # - **src**, **dest** Specify the source and destination rectangles to be combined.
+    # - **gc** Specifies the GC.
+    # - **src_x**, **src_y** Specify the x and y coordinates, which are relative
+    # to the origin of the source rectangle and specify its upper-left corner.
+    # - **width**, **height** Specify the width and height, which are the dimensions
+    # of both the source and destination rectangles.
+    # - **dest_x**, **dest_y** Specify the x and y coordinates, which are relative
+    # to the origin of the destination rectangle and specify its upper-left corner.
+    # - **plane** Specifies the bit plane. You must set exactly one bit to 1.
+    #
+    # ###Description
+    # The `copy_plane` function uses a single bit plane of the specified source
+    # rectangle combined with the specified GC to modify the specified rectangle of dest.
+    # The drawables must have the same root but need not have the same depth.
+    # If the drawables do not have the same root, a BadMatch error results.
+    # If plane does not have exactly one bit set to 1 and the value of plane is
+    # not less than 2<sup>**n**</sup>, where **n** is the depth of src, a **BadValue** error results.
+    #
+    # Effectively, `copy_plane` forms a pixmap of the same depth as the rectangle
+    # of dest and with a size specified by the source region. It uses the
+    # foreground/background pixels in the GC (foreground everywhere the bit plane
+    # in src contains a bit set to 1, background everywhere the bit plane in src
+    # contains a bit set to 0) and the equivalent of a **CopyArea** protocol request
+    # is performed with all the same exposure semantics. This can also be thought
+    # of as using the specified region of the source bit plane as a stipple with a
+    # fill-style of **FillOpaqueStippled** for filling a rectangular area of the destination.
+    #
+    # This function uses these GC components: function, plane-mask, foreground,
+    # background, subwindow-mode, graphics-exposures, clip-x-origin, clip-y-origin, and clip-mask.
+    #
+    # `copy_plane` can generate **BadDrawable**, **BadGC**, **BadMatch**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument defined
+    # as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `copy_area`, `clear_area`.
     def copy_plane(src : X11::C::Drawable, dest : X11::C::Drawable, gc : X11::C::X::GC, src_x : Int32, src_y : Int32, width : UInt32, height : UInt32, dest_x : Int32, dest_y : Int32, plane : UInt64) : Int32
       X.copy_plane @dpy, src, dest, gc, src_x, src_y, width, height, dest_x, dest_y, plane
     end
 
+    # Returns the depth (number of planes) of the default root window for the specified screen. Other depths may also be supported on this screen.
+    #
+    # ###Arguments
+    # - **screen_number** Specifies the appropriate screen number on the host server.
     def default_depth(screen_number : Int32) : Int32
       X.default_depth @dpy, screen_number
     end
 
+    # Returns the default screen number.
     def default_screen_number : Int32
       X.default_screen @dpy
     end
 
+    # Defines a cursor.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **cursor** Specifies the cursor that is to be displayed or **None**.
+    #
+    # ###Description
+    # If a cursor is set, it will be used when the pointer is in the window.
+    # If the cursor is **None**, it is equivalent to `undefine_cursor`.
+    #
+    # `define_cursor` can generate **BadCursor** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadCursor** A value for a *Cursor* argument does not name a defined *Cursor*.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `create_font_cursor`, `recolor_cursor`, `undefine_cursor`.
     def define_cursor(w : X11::C::Window, cursor : X11::C::Cursor) : Int32
       X.define_cursor @dpy, w, cursor
     end
 
+    # Deletes the specified property.
+    #
+    # ###Arguments
+    # - **w** Specifies the window whose property you want to delete.
+    # - **property** Specifies the property name.
+    #
+    # ###Description
+    # The `delete_property` function deletes the specified property only if the
+    # property was defined on the specified window and causes the X server to
+    # generate a `PropertyNotify` event on the window unless the property does not exist.
+    #
+    # `delete_property` can generate **BadAtom** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadAtom** A value for an Atom argument does not name a defined Atom.
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `change_property`, `window_property`, `properties`, `rotate_window_properties`.
     def delete_property(w : X11::C::Window, property : Atom | X11::C::Atom) : Int32
-      X.delete_property @dpy, w, property
+      X.delete_property @dpy, w, property.to_u64
     end
 
+    # Destroys the specified window as well as all of its subwindows.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `destroy_window` function destroys the specified window as well as all
+    # of its subwindows and causes the X server to generate a `DestroyNotify` event
+    # for each window. The window should never be referenced again. If the window
+    # specified by the w argument is mapped, it is unmapped automatically. The
+    # ordering of the `DestroyNotify` events is such that for any given window
+    # being destroyed, `DestroyNotify` is generated on any inferiors of the window
+    # before being generated on the window itself. The ordering among siblings
+    # and across subhierarchies is not otherwise constrained. If the window you
+    # specified is a root window, no windows are destroyed. Destroying a mapped
+    # window will generate `Expose` events on other windows that were obscured by the window being destroyed.
+    #
+    # `destroy_window` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`, `destroy_subwindows`,
+    # `map_window`, `raise_window`, `unmap_window`.
     def destroy_window(w : X11::C::Window) : Int32
       X.destroy_window @dpy, w
     end
 
+    # Destroys all inferior windows of the specified window, in bottom-to-top stacking order.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `destroy_subwindows` function destroys all inferior windows of the
+    # specified window, in bottom-to-top stacking order. It causes the X server
+    # to generate a `DestroyNotify` event for each window. If any mapped subwindows
+    # were actually destroyed, `destroy_subwindows` causes the X server to generate
+    # `Expose` events on the specified window. This is much more efficient than
+    # deleting many windows one at a time because much of the work need be
+    # performed only once for all of the windows, rather than for each window.
+    # The subwindows should never be referenced again.
+    #
+    # `destroy_subwindows` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`,
+    # `destroy_window`, `map_window`,  `raise_window`, `unmap_window`.
     def destroy_subwindows(w : X11::C::Window) : Int32
       X.destroy_subwindows @dpy, w
     end
 
+    # Disables the use of the access control list at each connection setup.
+    #
+    # ###Description
+    # The `disable_access_control` function disables the use of the access control list at each connection setup.
+    #
+    # `disable_access_control` can generate a **BadAccess** error.
+    #
+    # ###Diagnostics
+    # - **BadAccess** A client attempted to free a color map entry that it did not already allocate.
+    # - **BadAccess** A client attempted to store into a read-only color map entry.
+    #
+    # ###See also
+    # `add_host`, `add_hosts`, `enable_access_control`, `X11::free`, `hosts`,
+    # `remove_host`, `remove_hosts`, `set_access_control`.
     def disable_access_control : Int32
       X.disable_access_control @dpy
     end
 
-    def display_cells(screen_number : Int32) : Int32
+    # Returns the number of entries in the default colormap.
+    #
+    # ###Arguments
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    def cells(screen_number : Int32) : Int32
       X.display_cells @dpy, screen_number
     end
 
-    def display_height(screen_number : Int32) : Int32
+    # Returns an integer that describes the height of the screen in pixels.
+    #
+    # ###Arguments
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    def height(screen_number : Int32) : Int32
       X.display_height @dpy, screen_number
     end
 
-    def display_height_mm(screen_number : Int32) : Int32
+    # Returns the height of the specified screen in millimeters.
+    #
+    # ###Arguments
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    def height_mm(screen_number : Int32) : Int32
       X.display_height_mm @dpy, screen_number
     end
 
-    def display_keycodes : NamedTuple{min_keycodes : Int32, max_keycode : Int32, res : Int32}
+    # Returns the min-keycodes and max-keycodes supported by the specified display.
+    #
+    # ###Return
+    # - **min_keycodes** Returns the minimum number of KeyCodes.
+    # - **max_keycodes** Returns the maximum number of KeyCodes.
+    #
+    # ###Description
+    # Then `keycodes` function returns the min-keycodes and max-keycodes supported
+    # by the specified display. The minimum number of KeyCodes returned is never
+    # less than 8, and the maximum number of KeyCodes returned is never greater
+    # than 255. Not all KeyCodes in this range are required to have corresponding keys.
+    #
+    # ###See also
+    # `change_keyboard_mapping`, `ModifierKeymap::delete_entry`, `X11::free`,
+    # `ModifierKeymap::finalize`, `keyboard_mapping`, `modifier_mapping`,
+    # `ModifierKeymap::insert_entry`, `ModifierKeymap::new`,
+    # `set_modifier_mapping`, `set_pointer_mapping`.
+    def keycodes : NamedTuple{min_keycodes : Int32, max_keycode : Int32, res : Int32}
       res = X.display_keycodes @dpy, out min, out max
       {min_keycodes: min, max_keycodes: max, result: res}
     end
 
-    def display_planes(screen_number : Int32) : Int32
+    # Returns the depth of the root window of the specified screen.
+    #
+    # ###Arguments
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    def planes(screen_number : Int32) : Int32
       X.display_planes @dpy, screen_number
     end
 
-    def display_width(screen_number : Int32) : Int32
+    # Returns the width of the screen in pixels.
+    #
+    # ###Arguments
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    def width(screen_number : Int32) : Int32
       X.display_width @dpy, screen_number
     end
 
-    def display_width_mm(screen_number : Int32) : Int32
+    # Returns the width of the specified screen in millimeters.
+    #
+    # ###Arguments
+    # - **screen_number** Specifies the appropriate screen number on the host server.
+    def width_mm(screen_number : Int32) : Int32
       X.display_width_mm @dpy, screen_number
     end
 
+    # Draws a single circular or elliptical arc.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **x**, **y** Specify the x and y coordinates, which are relative to the
+    # origin of the drawable and specify the upper-left corner of the bounding rectangle.
+    # - **width**, **height** Specify the width and height, which are the major and minor axes of the arc.
+    # - **angle1** Specifies the start of the arc relative to the three-o'clock position from the center, in units of degrees * 64.
+    # - **angle2** Specifies the path and extent of the arc relative to the start of the arc, in units of degrees * 64.
+    #
+    # ###Description
+    # `draw_arc` draws a single circular or elliptical arc. The arc is specified
+    # by a rectangle and two angles. The center of the circle or ellipse is the
+    # center of the rectangle, and the major and minor axes are specified by the
+    # width and height. Positive angles indicate counterclockwise motion, and negative
+    # angles indicate clockwise motion. If the magnitude of angle2 is greater
+    # than 360 degrees, `draw_arc` truncates it to 360 degrees.
+    #
+    # For an arc specified as *[ x, y, width, height, angle1, angle2 ]*, the origin
+    # of the major and minor axes is at *[ x + width / 2 , y + height / 2 ]*,
+    # and the infinitely thin path describing the entire circle or ellipse intersects
+    # the horizontal axis at *[ x, y + height / 2 ]* and *[ x + width , y + height / 2 ]*
+    # and intersects the vertical axis at *[ x + width / 2, y ]* and *[ x + width / 2, y + height ]*.
+    # These coordinates can be fractional and so are not truncated to discrete coordinates.
+    # The path should be defined by the ideal mathematical path. For a wide line
+    # with line-width lw, the bounding outlines for filling are given by the two
+    # infinitely thin paths consisting of all points whose perpendicular distance
+    # from the path of the circle/ellipse is equal to lw/2 (which may be a fractional value).
+    # The cap-style and join-style are applied the same as for a line corresponding to the tangent of the circle/ellipse at the endpoint.
+    #
+    # For an arc specified as *[ x, y, width, height, angle1, angle2 ]*, the
+    # angles must be specified in the effectively skewed coordinate system of the
+    # ellipse (for a circle, the angles and coordinate systems are identical).
+    # The relationship between these angles and angles expressed in the normal
+    # coordinate system of the screen (as measured with a protractor) is as follows:
+    # ```
+    # skewed-angle = atan ( tan ( normal-angle ) * width / height ) + adjust
+    # ```
+    # The skewed-angle and normal-angle are expressed in radians (rather than
+    # in degrees scaled by 64) in the range *[ 0, 2 pi ]* and where atan returns
+    # a value in the range *[ -pi / 2 , pi / 2 ]* and adjust is:
+    # -  0 for normal-angle in the range *[ 0, pi / 2 ]*
+    # - pi for normal-angle in the range *[ pi / 2 , 3 pi / 2 ]*
+    # - 2 pi for normal-angle in the range *[ 3 pi / 2 , 2 pi ]*
+    # For any given arc, `draw_arc` does not draw a pixel more than once. If
+    # two arcs join correctly and if the line-width is greater than zero and the
+    # arcs intersect, `draw_arc` does not draw a pixel more than once. Otherwise,
+    # the intersecting pixels of intersecting arcs are drawn multiple times.
+    # Specifying an arc with one endpoint and a clockwise extent draws the same
+    # pixels as specifying the other endpoint and an equivalent counterclockwise extent, except as it affects joins.
+    #
+    # If the last point in one arc coincides with the first point in the following arc,
+    # the two arcs will join correctly. If the first point in the first arc coincides
+    # with the last point in the last arc, the two arcs will join correctly. By specifying
+    # one axis to be zero, a horizontal or vertical line can be drawn. Angles are computed
+    # based solely on the coordinate system and ignore the aspect ratio.
+    #
+    # This function uses these GC components: function, plane-mask, line-width,
+    # line-style, cap-style, join-style, fill-style, subwindow-mode, clip-x-origin,
+    # clip-y-origin, and clip-mask. It also uses these GC mode-dependent components:
+    # foreground, background, tile, stipple, tile-stipple-x-origin, tile-stipple-y-origin, dash-offset, and dash-list.
+    #
+    # `draw_arc` can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_arc`, `draw_rectangle`, `draw_point`.
     def draw_arc(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, width : UInt32, height : UInt32, angle1 : Int32, angle2 : Int32) : Int32
       X.draw_arc @dpy, d, gc, x, y, width, height, angle1, angle2
     end
 
+    # Draws multiple circular or elliptical arcs.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **arcs** Specifies an array of arcs.
+    # - **narcs** Specifies the number of arcs in the array.
+    #
+    # ###Description
+    # `draw_arcs` draws multiple circular or elliptical arcs. Each arc is specified
+    # by a rectangle and two angles. The center of the circle or ellipse is the
+    # center of the rectangle, and the major and minor axes are specified by the
+    # width and height. Positive angles indicate counterclockwise motion, and negative
+    # angles indicate clockwise motion. If the magnitude of angle2 is greater than 360 degrees,
+    # `draw_arcs` truncates it to 360 degrees.
+    #
+    # For an arc specified as *[ x, y, width, height, angle1, angle2 ]*, the origin
+    # of the major and minor axes is at *[ x + width / 2 , y + height / 2 ]*,
+    # and the infinitely thin path describing the entire circle or ellipse intersects
+    # the horizontal axis at *[ x, y + height / 2 ]* and *[ x + width , y + height / 2 ]*
+    # and intersects the vertical axis at *[ x + width / 2, y ]* and *[ x + width / 2, y + height ]*.
+    # These coordinates can be fractional and so are not truncated to discrete coordinates.
+    # The path should be defined by the ideal mathematical path. For a wide line
+    # with line-width lw, the bounding outlines for filling are given by the two
+    # infinitely thin paths consisting of all points whose perpendicular distance
+    # from the path of the circle/ellipse is equal to lw/2 (which may be a fractional value).
+    # The cap-style and join-style are applied the same as for a line
+    # corresponding to the tangent of the circle/ellipse at the endpoint.
+    #
+    # For an arc specified as *[ x, y, width, height, angle1, angle2 ]*, the
+    # angles must be specified in the effectively skewed coordinate system of the
+    # ellipse (for a circle, the angles and coordinate systems are identical).
+    # The relationship between these angles and angles expressed in the normal
+    # coordinate system of the screen (as measured with a protractor) is as follows:
+    # ```
+    # skewed-angle = atan ( tan ( normal-angle ) * width / height ) + adjust
+    # ```
+    # The skewed-angle and normal-angle are expressed in radians (rather than in
+    # degrees scaled by 64) in the range *[ 0, 2 pi ]* and where atan returns a
+    # value in the range *[ -pi / 2 , pi / 2 ]* and adjust is:
+    # - 0 for normal-angle in the range *[ 0, pi / 2 ]*
+    # - pi for normal-angle in the range *[ pi / 2 , 3 pi / 2 ]*
+    # - 2 pi for normal-angle in the range *[ 3 pi / 2 , 2 pi ]*
+    #
+    # For any given arc, `draw_arcs` does not draw a pixel more than once.
+    # If two arcs join correctly and if the line-width is greater than zero and
+    # the arcs intersect, `draw_arc` does not draw a pixel more than once.
+    # Otherwise, the intersecting pixels of intersecting arcs are drawn multiple
+    # times. Specifying an arc with one endpoint and a clockwise extent draws the
+    # same pixels as specifying the other endpoint and an equivalent
+    # counterclockwise extent, except as it affects joins.
+    #
+    # If the last point in one arc coincides with the first point in the
+    # following arc, the two arcs will join correctly. If the first point in the
+    # first arc coincides with the last point in the last arc, the two arcs will
+    # join correctly. By specifying one axis to be zero, a horizontal or vertical
+    # line can be drawn. Angles are computed based solely on
+    # the coordinate system and ignore the aspect ratio.
+    #
+    # This function uses these GC components: function, plane-mask, line-width,
+    # line-style, cap-style, join-style, fill-style, subwindow-mode, clip-x-origin,
+    # clip-y-origin, and clip-mask. It also uses these GC mode-dependent components:
+    # foreground, background, tile, stipple, tile-stipple-x-origin,
+    # tile-stipple-y-origin, dash-offset, and dash-list.
+    #
+    # `draw_arcs` can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_arc`, `draw_rectangle`, `draw_point`.
     def draw_arcs(d : X11::C::Drawable, gc : X11::C::X::GC, arcs : Array(Arc)) : Int32
       X.draw_arcs @dpy, d, gc, arcs.to_unsafe, arcs.size
     end
 
+    # Paints text with the foreground pixel.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **x**, **y** Specify the x and y coordinates, which are relative to the
+    # origin of the specified drawable and define the origin of the first character.
+    # - **string** Specifies the character string.
+    # - **length** Specifies the number of characters in the string argument.
+    #
+    # ###Description
+    # This function uses both the foreground and background pixels of the GC in the destination.
+    # The effect is first to fill a destination rectangle with the background pixel
+    # defined in the GC and then to paint the text with the foreground pixel.
+    # The upper-left corner of the filled rectangle is at:
+    # ```
+    # [x, y - font-ascent]
+    # ```
+    # The width is:
+    # ```
+    # overall-width
+    # ```
+    # The height is:
+    # ```
+    # font-ascent + font-descent
+    # ```
+    # The overall-width, font-ascent, and font-descent are as would be returned
+    # by `query_text_extents` using gc and string. The function and fill-style
+    # defined in the GC are ignored for these functions. The effective function
+    # is **GXcopy**, and the effective fill-style is **FillSolid**.
+    #
+    # For fonts defined with 2-byte matrix indexing and used with `draw_image_string`,
+    # each byte is used as a byte2 with a byte1 of zero.
+    #
+    # The function uses these GC components: plane-mask, foreground, background,
+    # font, subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask.
+    #
+    # `draw_image_string` can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_image_string_16`, `draw_string`, `draw_text`, `load_font`, `text_extents`.
     def draw_image_string(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, string : String) : Int32
       X.draw_image_string @dpy, d, gc, x, y, string.to_unsafe, string.size
     end
 
-    # TODO: find a better way to handle 16-bit string.
-    def draw_image_string_16(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, string : X11::C::PChar2b, length : Int32) : Int32
-      X.draw_image_string_16 @dpy, d, gc, x, y, string, length
+    # Similar to `draw_image_string` except that it uses 2-byte or 16-bit characters.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **x**, **y** Specify the x and y coordinates, which are relative to the
+    # origin of the specified drawable and define the origin of the first character.
+    # - **string** Specifies the character string.
+    #
+    # ###Description
+    # The `draw_image_string_16` function is similar to `draw_image_string` except
+    # that it uses 2-byte or 16-bit characters. Both functions also use both the
+    # foreground and background pixels of the GC in the destination.
+    #
+    # The effect is first to fill a destination rectangle with the background pixel
+    # defined in the GC and then to paint the text with the foreground pixel.
+    # The upper-left corner of the filled rectangle is at:
+    # ```
+    # [x, y - font-ascent]
+    # ```
+    # The width is:
+    # ```
+    # overall-width
+    # ```
+    # The height is:
+    # ```
+    # font-ascent + font-descent
+    # ```
+    # The overall-width, font-ascent, and font-descent are as would be returned
+    # by `query_text_extents` using gc and string. The function and fill-style
+    # defined in the GC are ignored for these functions. The effective function
+    # is **GXcopy**, and the effective fill-style is **FillSolid**.
+    #
+    # Both functions use these GC components: plane-mask, foreground, background,
+    # font, subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask.
+    #
+    # `draw_image_string_16` can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_image_string`, `draw_string`, `draw_text`, `load_font`, `text_extents`.
+    def draw_image_string_16(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, string : Array(X11::C::X::PChar2b)) : Int32
+      X.draw_image_string_16 @dpy, d, gc, x, y, string.to_unsafe, string.size
     end
 
+    # Draws a line between the specified set of points (x1, y1) and (x2, y2).
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **x1**, **y1**, **x2**, **y2** Specify the points (x1, y1) and (x2, y2) to be connected.
+    #
+    # ###Description
+    # The `draw_line` function uses the components of the specified GC to draw a
+    # line between the specified set of points (x1, y1) and (x2, y2). It does not
+    # perform joining at coincident endpoints. For any given line, `draw_line`
+    # does not draw a pixel more than once. If lines intersect, the intersecting pixels are drawn multiple times.
+    #
+    # `draw_line` use these GC components: function, plane-mask, line-width,
+    # line-style, cap-style, fill-style, subwindow-mode, clip-x-origin, clip-y-origin,
+    # and clip-mask. `draw_line` also uses these GC mode-dependent components:
+    # foreground, background, tile, stipple, tile-stipple-x-origin, tile-stipple-y-origin, dash-offset, and dash-list.
+    #
+    # `draw_line`, can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_arc`, `draw_lines`, `draw_point`, `draw_rectangle`, `draw_segments`.
     def draw_line(d : X11::C::Drawable, gc : X11::C::X::GC, x1 : Int32, y1 : Int32, x2 : Int32, y2 : Int32) : Int32
       X.draw_line @dpy, d, gc, x1, y1, x2, y2
     end
 
+    # Draws lines between each pair of *points* array.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **points** Specifies an array of points.
+    # - **mode** Specifies the coordinate mode. You can pass **CoordModeOrigin** or **CoordModePrevious**.
+    #
+    # ###Description
+    # The `draw_lines` function uses the components of the specified GC to draw
+    # *points.size - 1* lines between each pair of points (point[i], point[i+1])
+    # in the array of `Point` structures. It draws the lines in the order listed in the array.
+    # The lines join correctly at all intermediate points, and if the first and
+    # last points coincide, the first and last lines also join correctly. For
+    # any given line, `draw_lines` does not draw a pixel more than once. If thin
+    # (zero line-width) lines intersect, the intersecting pixels are drawn multiple times.
+    # If wide lines intersect, the intersecting pixels are drawn only once, as though
+    # the entire **PolyLine** protocol request were a single, filled shape.
+    # **CoordModeOrigin** treats all coordinates as relative to the origin, and
+    # **CoordModePrevious** treats all coordinates after the first as relative to the previous point.
+    #
+    # `draw_lines` use these GC components: function, plane-mask, line-width,
+    # line-style, cap-style, join-style, fill-style, subwindow-mode, clip-x-origin,
+    # clip-y-origin, and clip-mask. `draw_lines` also uses these GC mode-dependent components:
+    # foreground, background, tile, stipple, tile-stipple-x-origin, tile-stipple-y-origin, dash-offset, and dash-list.
+    #
+    # `draw_lines`, can generate **BadDrawable**, **BadGC**, **BadMatch** and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument defined
+    # as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `draw_arc`, `draw_line`, `draw_point`, `draw_rectangle`, `draw_segments`.
     def draw_lines(d : X11::C::Drawable, gc : X11::C::X::GC, points : Array(Point), mode : Int32) : Int32
       X.draw_lines @dpy, d, gc, point.to_unsafe, points.size, mode
     end
 
+    # Draws a single point into the specified drawable
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **x**, **y** Specify the x and y coordinates where you want the point drawn.
+    #
+    # ###Description
+    # The `draw_point` function uses the foreground pixel and function components
+    # of the GC to draw a single point into the specified drawable;
+    #
+    # This function uses these GC components: function, plane-mask, foreground,
+    # subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask.
+    #
+    # `draw_point` can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_arc`, `draw_line`, `draw_points`, `draw_rectangle`.
     def draw_point(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32) : Int32
       X.draw_point @dpy, d, gc, x, y
     end
 
+    # Draws multiple points the same way `draw_point` draws one point.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **points** Specifies an array of points.
+    # - **mode** Specifies the coordinate mode. You can pass **CoordModeOrigin** or **CoordModePrevious**.
+    #
+    # ###Description
+    # `draw_points` draws multiple points the same way `draw_point` draws one point.
+    # **CoordModeOrigin** treats all coordinates as relative to the origin, and
+    # **CoordModePrevious** treats all coordinates after the first as relative
+    # to the previous point. `draw_points` draws the points in the order listed in the array.
+    #
+    # This function uses these GC components: function, plane-mask, foreground,
+    # subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask.
+    # `draw_points` can generate **BadDrawable**, **BadGC**, **BadMatch**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the full
+    # range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `draw_arc`, `draw_line`, `draw_point`, `draw_rectangle`.
     def draw_points(d : X11::Drawable, gc : X11::C::X::GC, points : Array(Point), mode : Int32) : Int32
       X.draw_points @dpy, d, gc, points.to_unsafe, point.size, mode
     end
 
+    # Draws the outlines of the specified rectangle.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **x**, **y** Specify the x and y coordinates, which specify the upper-left corner of the rectangle.
+    # - **width**, **height** Specify the width and height, which specify the dimensions of the rectangle.
+    #
+    # ###Description
+    # The `draw_rectangle` function draws the outlines of the specified rectangle
+    # as if a five-point **PolyLine** protocol request were specified for the rectangle:
+    # ```
+    # [x,y] [x+width,y] [x+width,y+height] [x,y+height] [x,y]
+    # ```
+    # For the specified rectangle, this function does not draw a pixel more than once.
+    #
+    # This function uses these GC components: function, plane-mask, line-width,
+    # line-style, cap-style, join-style, fill-style, subwindow-mode, clip-x-origin,
+    # clip-y-origin, and clip-mask. It also uses these GC mode-dependent components:
+    # foreground, background, tile, stipple, tile-stipple-x-origin, tile-stipple-y-origin, dash-offset, and dash-list.
+    #
+    # `draw_rectangle` can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_arc`, `draw_rectangles`, `draw_point`.
     def draw_rectangle(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, width : UInt32, height : UInt32) : Int32
       X.draw_rectangle @dpy, d, gc, x, y, width, height
     end
 
+    # Draws the outlines of the specified rectangles.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **rectangles** Specifies an array of rectangles.
+    #
+    # ###Description
+    # The `draw_rectangles` functions draw the outlines of the specified rectangles
+    # as if a five-point **PolyLine** protocol request were specified for each rectangle:
+    # ```
+    # [x,y] [x+width,y] [x+width,y+height] [x,y+height] [x,y]
+    # ```
+    # For the specified rectangles, this function does not draw a pixel more than once.
+    # `draw_rectangles` draws the rectangles in the order listed in the array.
+    # If rectangles intersect, the intersecting pixels are drawn multiple times.
+    #
+    # This function uses these GC components: function, plane-mask, line-width,
+    # line-style, cap-style, join-style, fill-style, subwindow-mode, clip-x-origin,
+    # clip-y-origin, and clip-mask. It also uses these GC mode-dependent components:
+    # foreground, background, tile, stipple, tile-stipple-x-origin, tile-stipple-y-origin, dash-offset, and dash-list.
+    #
+    # `draw_rectangles` can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_arc`, `draw_rectangle`, `draw_point`.
     def draw_rectangles(d : X11::C::Drawable, gc : X11::C::X::GC, rectangles : Array(Rectangle)) : Int32
       X.draw_rectangles @dpy, d, gc, rectangles.to_unsafe, rectangles.size
     end
 
+    # Draws multiple, unconnected lines.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **segments** Specifies an array of segments.
+    #
+    # ###Description
+    # The `draw_segments` function draws multiple, unconnected lines. For each
+    # segment, `draw_segments` draws a line between (x1, y1) and (x2, y2).
+    # It draws the lines in the order listed in the array of `Segment` structures
+    # and does not perform joining at coincident endpoints. For any given line,
+    # `draw_segments` does not draw a pixel more than once.
+    # If lines intersect, the intersecting pixels are drawn multiple times.
+    #
+    # `draw_segments` use these GC components: function, plane-mask, line-width,
+    # line-style, cap-style, fill-style, subwindow-mode, clip-x-origin, clip-y-origin,
+    # and clip-mask. `draw_segments` also uses these GC mode-dependent components:
+    # foreground, background, tile, stipple, tile-stipple-x-origin, tile-stipple-y-origin, dash-offset, and dash-list.
+    #
+    # `draw_segments` can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_arc`, `draw_line`, `draw_lines`, `draw_point`, `draw_rectangle`.
     def draw_segments(d : X11::C::Drawable, gc : X11::C::X::GC, segments : Array(Segment)) : Int32
       X.draw_segments @dpy, d, gc, segments.to_unsafe, segments.size
     end
 
+    # Draws a string.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **x**, **y** Specify the x and y coordinates, which are relative to the
+    # origin of the specified drawable and define the origin of the first character.
+    # - **string** Specifies the character string.
+    #
+    # ###Description
+    # Each character image, as defined by the font in the GC, is treated as an
+    # additional mask for a fill operation on the drawable. The drawable is
+    # modified only where the font character has a bit set to 1.
+    #
+    # Both functions use these GC components: function, plane-mask, fill-style,
+    # font, subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask.
+    # They also use these GC mode-dependent components: foreground, background,
+    # tile, stipple, tile-stipple-x-origin, and tile-stipple-y-origin.
+    #
+    # `draw_string` can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_image_string`, `load_font`, `draw_string_16`, `draw_text`.
     def draw_string(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, string : String) : Int32
       X.draw_string @dpy, d, gc, x, y, string.to_unsafe, string.size
     end
 
-    def draw_string_16(d : Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, string : X11::C::PChar2b, length : Int32) : Int32
-      X.draw_string_16 @dpy, d, gc, x, y, string, length
+    # Draws a string.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC. which are relative to the origin of the
+    # specified drawable and define the origin of the first character.
+    # - **x**, **y** Specify the x and y coordinates.
+    # - **string** Specifies the character string.
+    #
+    # ###Description
+    # Each character image, as defined by the font in the GC, is treated as an
+    # additional mask for a fill operation on the drawable. The drawable is
+    # modified only where the font character has a bit set to 1. For fonts defined
+    # with 2-byte matrix indexing and used with `draw_string_16`, each byte
+    # is used as a byte2 with a byte1 of zero.
+    #
+    # Both functions use these GC components: function, plane-mask, fill-style,
+    # font, subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask.
+    # They also use these GC mode-dependent components: foreground, background,
+    # tile, stipple, tile-stipple-x-origin, and tile-stipple-y-origin.
+    #
+    # `draw_string_16` can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_image_string`, `draw_string`, `load_font`, `draw_text`.
+    def draw_string_16(d : Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, string : Array(X11::C::X::PChar2b)) : Int32
+      X.draw_string_16 @dpy, d, gc, x, y, string, string.size
     end
 
+    # Allows complex spacing and font shifts between counted strings.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **x**, **y** Specify the x and y coordinates, which are relative to the
+    # origin of the specified drawable and define the origin of the first character.
+    # - **items** Specifies an array of text items.
+    #
+    # ###Description
+    # The `draw_text` function allows complex spacing and font shifts between counted strings.
+    #
+    # Each text item is processed in turn. A font member other than **None** in
+    # an item causes the font to be stored in the GC and used for subsequent text.
+    # A text element delta specifies an additional change in the position along
+    # the x axis before the string is drawn. The delta is always added to the
+    # character origin and is not dependent on any characteristics of the font.
+    # Each character image, as defined by the font in the GC, is treated as an
+    # additional mask for a fill operation on the drawable. The drawable is modified
+    # only where the font character has a bit set to 1. If a text item generates
+    # a **BadFont** error, the previous text items may have been drawn.
+    #
+    # For fonts defined with linear indexing rather than 2-byte matrix indexing,
+    # each `X11::C::X::Char2b` structure is interpreted as a 16-bit number with byte1 as the most-significant byte.
+    #
+    # The function uses these GC components: function, plane-mask, fill-style,
+    # font, subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask. It also
+    # uses these GC mode-dependent components: foreground, background, tile, stipple,
+    # tile-stipple-x-origin, and tile-stipple-y-origin.
+    #
+    # `draw_text` can generate **BadDrawable**, **BadFont**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadFont** A value for a font argument does not name a defined font (or, in some cases, `GContext`).
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_image_string`, `load_font`, `draw_string`, `draw_text_16`.
     def draw_text(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, items : Array(TextItem)) : Int32
       X.draw_text @dpy, d, gc, x, y, items.to_unsafe, items.size
     end
 
+    # Similar to `draw_text` except that it uses 2-byte or 16-bit characters.
+    #
+    # ###Arguments
+    # - *d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **x**, **y** Specify the x and y coordinates, which are relative to the
+    # origin of the specified drawable and define the origin of the first character.
+    # - **items** Specifies an array of text items.
+    #
+    # ###Description
+    # The `draw_text_16` function is similar to `draw_text` except that it uses
+    # 2-byte or 16-bit characters. Both functions allow complex spacing and font
+    # shifts between counted strings.
+    #
+    # Each text item is processed in turn. A font member other than **None** in
+    # an item causes the font to be stored in the GC and used for subsequent text.
+    # A text element delta specifies an additional change in the position along
+    # the x axis before the string is drawn. The delta is always added to the
+    # character origin and is not dependent on any characteristics of the font.
+    # Each character image, as defined by the font in the GC, is treated as an
+    # additional mask for a fill operation on the drawable. The drawable is
+    # modified only where the font character has a bit set to 1. If a text item
+    # generates a **BadFont** error, the previous text items may have been drawn.
+    #
+    # For fonts defined with linear indexing rather than 2-byte matrix indexing,
+    # each `X11::C::X::Char2b` structure is interpreted as a 16-bit number with
+    # byte1 as the most-significant byte.
+    #
+    # The function uses these GC components: function, plane-mask, fill-style,
+    # font, subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask. It also
+    # uses these GC mode-dependent components: foreground, background, tile,
+    # stipple, tile-stipple-x-origin, and tile-stipple-y-origin.
+    #
+    # `draw_text_16` can generate **BadDrawable**, **BadFont**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadFont** A value for a font argument does not name a defined font (or, in some cases, `GContext`).
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_text`, `draw_image_string`, `load_font`, `draw_string`.
     def draw_text_16(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, items : Array(TextItem16)) : Int32
       X.draw_text_16 @dpy, d, gc, x, y, items.to_unsafe, items.size
     end
 
+    # Enables the use of the access control list at each connection setup.
+    #
+    # ###Description
+    # The `enable_access_control` function enables the use of the access control list at each connection setup.
+    #
+    # `enable_access_control` can generate a **BadAccess** error.
+    #
+    # ###Diagnostics
+    # - **BadAccess** A client attempted to free a color map entry that it did not already allocate.
+    # - **BadAccess** A client attempted to store into a read-only color map entry.
+    #
+    # ###See also
+    # `add_host`, `add_hosts`, `disable_access_control`, `X11::free`, `hosts`,
+    # `remove_host`, `remove_hosts`, `set_access_control`.
     def enable_access_control : Int32
       X.enable_access_control @dpy
     end
 
+    # Returns the number of events already in the event queue.
+    #
+    # ###Arguments
+    # - **mode** Specifies the mode. You can pass **QueuedAlready**,
+    # **QueuedAfterFlush**, or **QueuedAfterReading**.
+    #
+    # ###Description
+    # If mode is **QueuedAlready**, `events_queued` returns the number of events
+    # already in the event queue (and never performs a system call). If mode is
+    # **QueuedAfterFlush**, `events_queued` returns the number of events already
+    # in the queue if the number is nonzero. If there are no events in the queue,
+    # `events_queued` flushes the output buffer, attempts to read more events out
+    # of the application's connection, and returns the number read. If mode is
+    # **QueuedAfterReading**, `events_queued` returns the number of events already
+    # in the queue if the number is nonzero. If there are no events in the queue,
+    # `events_queued` attempts to read more events out of the application's connection
+    # without flushing the output buffer and returns the number read.
+    #
+    # `events_queued` always returns immediately without I/O if there are events
+    # already in the queue. `events_queued` with mode **QueuedAfterFlush** is
+    # identical in behavior to `pending`. `events_queued` with mode
+    # **QueuedAlready** is identical to the `q_length` function.
+    #
+    # ###See also
+    # `flush`, `if_event`, `next_event`, `pending`, `put_back_event`, `sync`.
     def events_queued(mode : Int32) : Int32
       X.events_queued @dpy, mode
     end
