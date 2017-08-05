@@ -3868,156 +3868,836 @@ module X11
       X.events_queued @dpy, mode
     end
 
-    # TODO: user String array instead
-    def fetch_name(w : X11::C::Window, window_name_return : PPChar) : Status
-      X.fetch_name @dpy, w, window_name_return
+    # Returns then window name.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `fetch_name` function returns the name of the specified window. If it
+    # succeeds, it returns a string; otherwise, no name has been set for the window,
+    # and it returns empty string. If the data returned by the server is in the
+    # Latin Portable Character Encoding, then the returned string is in the
+    # Host Portable Character Encoding. Otherwise, the result is implementation dependent.
+    #
+    # `fetch_name` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `X11::alloc_class_hint`, `X11::alloc_icon_size`, `X11::alloc_size_hints`,
+    # `X11::alloc_wm_hints`, `X11::free`, `wm_name`, `set_command`, `set_text_property`,
+    # `set_transient_for_hint`, `set_wm_client_machine`, `set_wm_colormap_windows`,
+    # `set_wm_colormap_windows`, `set_wm_icon_name`, `set_wm_icon_name`, `set_wm_name`,
+    # `set_wm_properties`, `set_wm_protocols`, `store_name`, `X11::string_list_to_text_property`.
+    def fetch_name(w : X11::C::Window) : String
+      status = X.fetch_name @dpy, w, out window_name_return
+      return "" if status == 0
+      name = String.new window_name_return
+      X.free window_name_return
+      name
     end
 
+    # Fills the region closed by the infinitely thin path described by the specified arc.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **x**, **y** Specify the x and y coordinates, which are relative to the
+    # origin of the drawable and specify the upper-left corner of the bounding rectangle.
+    # - **width**, **height** Specify the width and height, which are the major and minor axes of the arc.
+    # - **angle1** Specifies the start of the arc relative to the three-o'clock position from the center, in units of degrees * 64.
+    # - **angle2** Specifies the path and extent of the arc relative to the start of the arc, in units of degrees * 64.
+    #
+    # ###Description
+    # For each arc, `fill_arc` fills the region closed by the infinitely thin path
+    # described by the specified arc and, depending on the arc-mode specified in the GC,
+    # one or two line segments. For **ArcChord**, the single line segment joining
+    # the endpoints of the arc is used. For **ArcPieSlice** , the two line segments
+    # joining the endpoints of the arc with the center point are used. For any given arc,
+    # `fill_arc` does not draw a pixel more than once. If regions intersect,
+    # the intersecting pixels are drawn multiple times.
+    #
+    # Both functions use these GC components: function, plane-mask, fill-style,
+    # arc-mode, subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask.
+    # They also use these GC mode-dependent components: foreground, background,
+    # tile, stipple, tile-stipple-x-origin, and tile-stipple-y-origin.
+    #
+    # `fill_arc` can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_arc`, ``draw_point`, `draw_rectangle`, `fill_arcs`, `fill_polygon`,
+    # `fill_rectangle`, `fill_rectangles`.
     def fill_arc(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, width : UInt32, height : UInt32, angle1 : Int32, angle2 : Int32) : Int32
       X.fill_arc @dpy, d, gc, x, y, width, height, angle1, angle2
     end
 
+    # Fills the region closed by the infinitely thin path described by the specified arc.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **arcs** Specifies an array of arcs.
+    #
+    # ###Description
+    # For each arc, `fill_arcs` fills the region closed by the infinitely thin
+    # path described by the specified arc and, depending on the arc-mode specified
+    # in the GC, one or two line segments. For **ArcChord**, the single line
+    # segment joining the endpoints of the arc is used. For **ArcPieSlice**, the
+    # two line segments joining the endpoints of the arc with the center point are used.
+    # `fill_arcs` fills the arcs in the order listed in the array. For any given arc,
+    # `fill_arcs` do not draw a pixel more than once. If regions intersect, the
+    # intersecting pixels are drawn multiple times.
+    #
+    # Both functions use these GC components: function, plane-mask, fill-style,
+    # arc-mode, subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask.
+    # They also use these GC mode-dependent components: foreground, background,
+    # tile, stipple, tile-stipple-x-origin, and tile-stipple-y-origin.
+    #
+    # `fill_arcs` can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_arc`, `draw_point`, `draw_rectangle`, `fill_arcs`, `fill_polygon`,
+    # `fill_rectangle`, `fill_rectangles`.
     def fill_arcs(d : X11::C::Drawable, gc : X11::C::X::GC, arcs : Array(Arc)) : Int32
       X.fill_arcs @dpy, d, gc, arcs.to_unsafe, arcs.size
     end
 
-    def fill_polygon(d : X11::C::Drawable, gc : X11::C::X::GC, points : Array(Point), npoints :  Int32, shape : Int32, mode : Int32) : Int32
+    # Fills the region closed by the specified path.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **points** Specifies an array of points.
+    # - **shape** Specifies a shape that helps the server to improve performance.
+    # You can pass **Complex**, **Convex**, or **Nonconvex**.
+    # - **mode** Specifies the coordinate mode.
+    # You can pass **CoordModeOrigin** or **CoordModePrevious**.
+    #
+    # ###Description
+    # `fill_polygon` fills the region closed by the specified path. The path is
+    # closed automatically if the last point in the list does not coincide with
+    # the first point. `fill_polygon` does not draw a pixel of the region more
+    # than once. **CoordModeOrigin** treats all coordinates as relative to the
+    # origin, and **CoordModePrevious** treats all coordinates after the first
+    # as relative to the previous point.
+    #
+    # Depending on the specified shape, the following occurs:
+    # - If shape is **Complex**, the path may self-intersect. Note that contiguous
+    # coincident points in the path are not treated as self-intersection.
+    # - If shape is **Convex**, for every pair of points inside the polygon, the
+    # line segment connecting them does not intersect the path. If known by the
+    # client, specifying **Convex** can improve performance. If you specify
+    # **Convex** for a path that is not convex, the graphics results are undefined.
+    # - If shape is **Nonconvex**, the path does not self-intersect, but the
+    # shape is not wholly convex. If known by the client, specifying **Nonconvex**
+    # instead of **Complex** may improve performance. If you specify **Nonconvex**
+    # for a self-intersecting path, the graphics results are undefined.
+    #
+    # The fill-rule of the GC controls the filling behavior of self-intersecting polygons.
+    #
+    # This function uses these GC components: function, plane-mask, fill-style,
+    # fill-rule, subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask.
+    # It also uses these GC mode-dependent components: foreground, background,
+    # tile, stipple, tile-stipple-x-origin, and tile-stipple-y-origin.
+    #
+    # `fill_polygon` can generate **BadDrawable**, **BadGC**, **BadMatch**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument
+    # defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `draw_arc`, `draw_point`, `draw_rectangle`, `fill_arc`, `fill_arcs`,
+    # `fill_rectangle`, `fill_rectangles`.
+    def fill_polygon(d : X11::C::Drawable, gc : X11::C::X::GC, points : Array(Point), shape : Int32, mode : Int32) : Int32
       X.fill_polygon @dpy, d, gc, points.to_unsafe, points.size, shape, mode
     end
 
+    # Fills the specified rectangle.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **x**, **y** Specify the x and y coordinates, which are relative to the
+    # origin of the drawable and specify the upper-left corner of the rectangle.
+    # - **width**, **height** Specify the width and height, which are the
+    # dimensions of the rectangle to be filled.
+    #
+    # ###Description
+    # The `fill_rectangle` function fills the specified rectangle as if a
+    # four-point **FillPolygon** protocol request were specified for each rectangle:
+    # ```
+    # [x,y] [x+width,y] [x+width,y+height] [x,y+height]
+    # ```
+    # The function uses the x and y coordinates, width and height dimensions, and GC you specify.
+    #
+    # For any given rectangle, `fill_rectangle` does not draw a pixel more than once.
+    # If rectangles intersect, the intersecting pixels are drawn multiple times.
+    #
+    # The function uses these GC components: function, plane-mask, fill-style,
+    # subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask. They also use
+    # these GC mode-dependent components: foreground, background, tile, stipple,
+    # tile-stipple-x-origin, and tile-stipple-y-origin.
+    #
+    # `fill_rectangle` can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_arc`, `draw_point`, `draw_rectangle`, `fill_arc`, `fill_arcs`,
+    # `fill_polygon`, `fill_rectangles`.
     def fill_rectangle(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, width : UInt32, height : UInt32) : Int32
       X.fill_rectangle @dpy, gc, x, y, width, height
     end
 
+    # Fills the specified rectangles.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **rectangles** Specifies an array of rectangles.
+    #
+    # ###Description
+    # The `fill_rectangles` function fills rectangles as if a four-point
+    # **FillPolygon** protocol request were specified for each rectangle:
+    # ```
+    # [x,y] [x+width,y] [x+width,y+height] [x,y+height]
+    # ```
+    # The function uses the x and y coordinates, width and height dimensions, and GC you specify.
+    #
+    # `fill_rectangles` fills the rectangles in the order listed in the array.
+    # For any given rectangle, `fill_rectangles` does not draw a pixel more than once.
+    # If rectangles intersect, the intersecting pixels are drawn multiple times.
+    #
+    # The function uses these GC components: function, plane-mask, fill-style,
+    # subwindow-mode, clip-x-origin, clip-y-origin, and clip-mask. They also use
+    # these GC mode-dependent components: foreground, background, tile, stipple,
+    # tile-stipple-x-origin, and tile-stipple-y-origin.
+    #
+    # `fill_rectangles` can generate **BadDrawable**, **BadGC**, and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `draw_arc`, `draw_point`, `draw_rectangles`, `fill_arcs`, `fill_arcs`,
+    # `fill_polygon`, `fill_rectangles`.
     def fill_rectangles(d : X11::C::Drawable, gc : X11::C::X::GC, rectangles : Array(Rectangle)) : Int32
       X.fill_rectangles @dpy, d, gc, rectangles.to_unsafe, rectangles.size
     end
 
+    # Flushes the output buffer.
+    #
+    # ###Description
+    # The `flush` function flushes the output buffer. Most client applications
+    # need not use this function because the output buffer is automatically flushed
+    # as needed by calls to `pending`, `next_event`, and `window_event`.
+    # Events generated by the server may be enqueued into the library's event queue.
+    #
+    # ###See also
+    # `events_queued`, `pending`, `sync`.
     def flush : Int32
       X.flush @dpy
     end
 
+    # Activates the screen saver even if the screen saver had been disabled with a timeout of zero.
+    #
+    # ###Arguments
+    # - **mode** Specifies the mode that is to be applied.
+    # You can pass **ScreenSaverActive** or **ScreenSaverReset**.
+    #
+    # ###Description
+    # If the specified mode is **ScreenSaverActive** and the screen saver currently
+    # is deactivated, `force_screen_saver` activates the screen saver even if the
+    # screen saver had been disabled with a timeout of zero. If the specified mode
+    # is **ScreenSaverReset** and the screen saver currently is enabled,
+    # `force_screen_saver` deactivates the screen saver if it was activated, and
+    # the activation timer is reset to its initial state (as if device input had been received).
+    #
+    # `force_screen_saver` can generate a **BadValue** error.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument defined
+    # as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `set_screen_saver`, `activate_screen_saver`, `reset_screen_saver`, `screen_saver`.
     def force_screen_saver(mode : Int32) : Int32
       X.force_screen_saver @dpy
     end
 
+    # Frees the colormap storage.
+    #
+    # ###Arguments
+    # - **colormap** Specifies the colormap that you want to destroy.
+    #
+    # ###Description
+    # The `free_colormap` function deletes the association between the colormap
+    # resource ID and the colormap and frees the colormap storage. However, this
+    # function has no effect on the default colormap for a screen. If the
+    # specified colormap is an installed map for a screen, it is uninstalled
+    # (see `uninstall_colormap`). If the specified colormap is defined as the
+    # colormap for a window (by `create_window`, `set_window_colormap`, or
+    # `change_window_attributes`), `free_colormap` changes the colormap associated
+    # with the window to **None** and generates a **ColormapNotify** event.
+    # X does not define the colors displayed for a window with a colormap of **None**.
+    #
+    # `free_colormap` can generate a **BadColor** error.
+    #
+    # ###Diagnostics
+    # - **BadColor** A value for a *Colormap* argument does not name a defined *Colormap*.
+    #
+    # ###See also
+    # `alloc_color`, `change_window_attributes`, `copy_colormap_and_free`,
+    # `create_colormap`, `create_window`, `query_color`, `store_colors`.
     def free_colormap(colormap : X11::C::Colormap) : Int32
       X.free_colormap @dpy, colormap
     end
 
+    # Frees the cells represented by pixels.
+    #
+    # ###Arguments
+    # - **colormap** Specifies the colormap.
+    # - **pixels** Specifies an array of pixel values that map to the cells in the specified colormap.
+    # - **planes** Specifies the planes you want to free.
+    #
+    # ###Description
+    # The `free_colors` function frees the cells represented by pixels whose
+    # values are in the pixels array. The planes argument should not have any
+    # bits set to 1 in common with any of the pixels. The set of all pixels is
+    # produced by **ORing** together subsets of the planes argument with the pixels.
+    # The request frees all of these pixels that were allocated by the client
+    # (using `alloc_color`, `alloc_named_color`, `alloc_color_cells`, and `alloc_color_planes`).
+    # Note that freeing an individual pixel obtained from `alloc_color_planes`
+    # may not actually allow it to be reused until all of its related pixels are
+    # also freed. Similarly, a read-only entry is not actually freed until it has
+    # been freed by all clients, and if a client allocates the same read-only entry
+    # multiple times, it must free the entry that many times before the entry is actually freed.
+    #
+    # All specified pixels that are allocated by the client in the colormap are freed,
+    # even if one or more pixels produce an error. If a specified pixel is not a
+    # valid index into the colormap, a **BadValue** error results. If a specified
+    # pixel is not allocated by the client (that is, is unallocated or is only allocated
+    # by another client) or if the colormap was created with all entries writable
+    # (by passing **AllocAll** to `create_colormap`), a **BadAccess** error results.
+    # If more than one pixel is in error, the one that gets reported is arbitrary.
+    #
+    # `free_colors` can generate **BadAccess**, **BadColor**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAccess** A client attempted to free a color map entry that it did not already allocate.
+    # - **BadAccess** A client attempted to store into a read-only color map entry.
+    # - **BadColor** A value for a *Colormap* argument does not name a defined *Colormap*.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the full
+    # range defined by the argument's type is accepted. Any argument defined as
+    # a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `alloc_color`, `alloc_color_cells`, `alloc_color_planes`, `alloc_named_color`,
+    # `create_colormap`, `query_color`, `store_colors`.
     def free_colors(colormap : X11::C::Colormap, pixels : Array(UInt64), planes : UInt64) : Int32
       X.free_colors @dpy, colormap, pixels.to_unsafe, pixels.size, planes
     end
 
+    # Deletes the association between the cursor resource ID and the specified cursor.
+    #
+    # ###Arguments
+    # - **cursor** Specifies the cursor.
+    #
+    # ###Description
+    # The `free_cursor` function deletes the association between the cursor resource
+    # ID and the specified cursor. The cursor storage is freed when no other
+    # resource references it. The specified cursor ID should not be referred to again.
+    #
+    # `free_cursor` can generate a **BadCursor** error.
+    #
+    # ###Diagnostics
+    # - **BadCursor** A value for a *Cursor* argument does not name a defined *Cursor*.
+    #
+    # ###See also
+    # `create_colormap`, `create_font_cursor`, `define_cursor`,
+    # `query_best_cursor`, `recolor_cursor`.
     def free_cursor(cursor : X11::C::Cursor) : Int32
       X.free_cursor @dpy, cursor
     end
 
+    # Destroys the specified GC.
+    #
+    # ###Arguments
+    # - gc** Specifies the GC.
+    #
+    # ###Description
+    # The `free_gc` function destroys the specified GC as well as all the associated storage.
+    #
+    # `free_gc` can generate a **BadGC** error.
+    #
+    # ###Diagnostics
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    #
+    # ###See also
+    # `X11::all_planes`, `change_gc`, `copy_area`, `copy_gc`, `create_gc`,
+    # `X11::create_region`, `draw_arc`, `draw_line`, `draw_rectangle`, `draw_text`,
+    # `fill_rectangle`, `X11::g_context_from_gc`, `gc_values`, `query_best_size`,
+    # `set_arc_mode`, `set_clip_origin`.
     def free_gc(gc : X12::C::GC) : Int32
       X.free_gc @dpy, gc
     end
 
+    # Frees the pixmap storage.
+    #
+    # ###Arguments
+    # - **pixmap** Specifies the pixmap.
+    #
+    # ###Description
+    # The `free_pixmap` function first deletes the association between the pixmap
+    # ID and the pixmap. Then, the X server frees the pixmap storage when there
+    # are no references to it. The pixmap should never be referenced again.
+    #
+    # `free_pixmap` can generate a **BadPixmap** error.
+    #
+    # ###Diagnostics
+    # - **BadPixmap** A value for a *Pixmap* argument does not name a defined *Pixmap*.
+    #
+    # ###See also
+    # `create_pixmap`, `copy_area`.
     def free_pixmap(pixmap : X11::C::Pixmap) : Int32
       X.free_pixmap @dpy, pixmap
     end
 
-    # TODO: implement & document & test
-    def geometry(screen : Int32, position : String, default_position : String,
-      bwidth : UInt32, fwidth : UInt32, fheight : UInt32, xadder : Int32, yadder : Int32,
-      height_return : PInt32) : NamedTuple(x_return: Arrray(Int32), y_return: Array(Int32), width_return: Array(Int32), height_return: Array(Int32), res: Int32)
-
+    # Determines the placement of a window using a geometry specification.
+    #
+    # ###Arguments
+    # - **screen** Specifies the screen.
+    # - **position**, **default_position** Specify the geometry specifications.
+    # - **bwidth** Specifies the border width.
+    # - **fheight**, **fwidth** Specify the font height and width in pixels (increment size).
+    # - **xadder**, **yadder** Specify additional interior padding needed in the window.
+    #
+    # ###Return
+    # - **x**, **y** Return the x and y offsets.
+    # - **width**, **height** Return the width and height determined.
+    #
+    # ###Description
+    # You pass in the border width (bwidth), size of the increments fwidth and
+    # fheight (typically font width and height), and any additional interior space
+    # (xadder and yadder) to make it easy to compute the resulting size.
+    # The `geometry` function returns the position the window should be placed given
+    # a position and a default position. `geometry` determines the placement of a
+    # window using a geometry specification as specified by `parse_geometry` and
+    # the additional information about the window. Given a fully qualified default
+    # geometry specification and an incomplete geometry specification,
+    # `parse_geometry` returns a bitmask value as defined above in the
+    # `parse_geometry` call, by using the position argument.
+    #
+    # The returned width and height will be the width and height specified by
+    # default_position as overridden by any user-specified position. They are not
+    # affected by fwidth, fheight, xadder, or yadder. The x and y coordinates are
+    # computed by using the border width, the screen width and height, padding as
+    # specified by xadder and yadder, and the fheight and fwidth times the width
+    # and height from the geometry specifications.
+    def geometry(screen : Int32, position : String, default_position : String, bwidth : UInt32, fwidth : UInt32, fheight : UInt32, xadder : Int32, yadder : Int32) : NamedTuple(x: Int32, y: Int32, width: Int32, height: Int32, res: Int32)
+      res = X.geometry @dpy, screen, position.to_unsafe, default_position.to_unsafe, bwidth, fwidth, fheight, xadder, yadder, out x_return, out y_return, out width_return, out height_return
+      {x: x_return, y: y_return, width: width_return, height: height_return, res: res}
     end
 
-    def get_error_database_text(
-      name : String,
-      message : String,
-      default_string : String,
-      buffer_return : String,
-      length : Int32) : Int32
+    # Returns a message from the error message database.
+    #
+    # ###Arguments
+    # - **name** Specifies the name of the application.
+    # - **message** Specifies the type of the error message.
+    # - **default_string** Specifies the default error message if none is found in the database.
+    #
+    # ###Description
+    # The `error_database_text` function returns a message (or the default message)
+    # from the error message database. Xlib uses this function internally to look
+    # up its error messages. The text in the default_string argument is assumed
+    # to be in the encoding of the current locale, and the text stored in the
+    # buffer_return argument is in the encoding of the current locale.
+    #
+    # The name argument should generally be the name of your application. The
+    # message argument should indicate which type of error message you want.
+    # If the name and message are not in the Host Portable Character Encoding,
+    # the result is implementation dependent. Xlib uses three predefined
+    #  +application names+ to report errors. In these names, uppercase and
+    # lowercase matter.
+    #
+    # - **XProtoError** The protocol error number is used as a string for the message argument.
+    # - **XlibMessage** These are the message strings that are used internally by the library.
+    # - **XRequest** For a core protocol request, the major request protocol number
+    # is used for the message argument. For an extension request, the extension name
+    # (as given by `init_extension`) followed by a period (.) and the minor request
+    # protocol number is used for the message argument. If no string is found in
+    # the error database, the default_string is returned to the buffer argument.
+    #
+    # ###See also
+    # `name`, `error_text`, `new`, `set_error_handler`, `set_io_error_handler`, `synchronize`.
+    def error_database_text(name : String, message : String, default_string : String) : String
+      buffer = Array(UInt8).new 1024
+      X.get_error_database_text @dpy, name.to_unsafe, message.to_unsafe, default_string.to_unsafe, buffer.to_unsafe 1024
+      String.new buffer.to_unsafe
     end
 
-    def get_error_text(
-      code : Int32,
-      buffer_return : String,
-      length : Int32) : Int32
+    # Returns a string describing the specified error code.
+    #
+    # ###Arguments
+    # - **code** Specifies the error code for which you want to obtain a description.
+    #
+    # ###Description
+    # The `error_text` function returns a string describing the
+    # specified error code. The returned text is in the
+    # encoding of the current locale. It is recommended that you use this function
+    # to obtain an error description because extensions to Xlib may define their own error codes and error strings.
+    #
+    # ###See also
+    # `name`, `error_database_text`, `new`, `set_error_handler`, `set_io_error_handler`, `synchronize`.
+    def error_text(code : Int32) : String
+      buffer = Array(UInt8).new 1024
+      X.error_database_text @dpy, name.to_unsafe, message.to_unsafe, default_string.to_unsafe, buffer.to_unsafe 1024
+      String.new buffer.to_unsafe
     end
 
-    def get_gc_values(gc : X11::C::X::GC, valuemask : UInt64) : GCValues
+    # Returns the components specified by valuemask for the specified GC.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **valuemask** Specifies which components in the GC are to be returned.
+    # This argument is the bitwise inclusive OR of zero or more of the valid GC component mask bits.
+    #
+    # ###Description
+    # The `gc_values` function returns the components specified by valuemask for
+    # the specified GC. If the valuemask contains a valid set of GC mask bits
+    # (**GCFunction**, **GCPlaneMask**, **GCForeground**, **GCBackground**,
+    # **GCLineWidth**, **GCLineStyle**, **GCCapStyle**, **GCJoinStyle**,
+    # **GCFillStyle**, **GCFillRule**, **GCTile**, **GCStipple**,
+    # **GCTileStipXOrigin**, **GCTileStipYOrigin**, **GCFont**, **GCSubwindowMode**,
+    # **GCGraphicsExposures**, **GCClipXOrigin**, **GCCLipYOrigin**, **GCDashOffset**,
+    # or **GCArcMode**) and no error occurs, `gc_values` sets the requested components
+    # in values_return and returns a nonzero status. Otherwise, it returns a
+    # zero status. Note that the clip-mask and dash-list (represented by the
+    # **GCClipMask** and **GCDashList** bits, respectively, in the valuemask)
+    # cannot be requested. Also note that an invalid resource ID (with one or
+    # more of the three most-significant bits set to 1) will be returned for
+    # **GCFont**, **GCTile**, and **GCStipple** if the component has never been explicitly set by the client.
+    #
+    # ###See also
+    # `X11::all_planes`, `change_gc`, `copy_area`, `copy_gc`, `create_gc`,
+    # `X11::create_region`, `draw_arc`, `draw_line`, `draw_rectangle`, `draw_text`,
+    # `fill_rectangle`, `free_gc`, `X11::g_context_from_gc`, `query_best_size`,
+    # `set_arc_mode`, `set_clip_origin`.
+    def gc_values(gc : X11::C::X::GC, valuemask : UInt64) : GCValues
       X.get_gc_values @dpy, gc, valuemask, out pgcvalues
       GCValues.new pgcvalues
     end
 
-    # def get_geometry(
-    #   d : X11::C::Drawable,
-    #   root_return : PWindow,
-    #   x_return : PInt32,
-    #   y_return : PInt32,
-    #   width_return : PUInt32,
-    #   height_return : PInt32,
-    #   border_width_return : PInt32,
-    #   depth_return : PInt32
-    # ) : Status
+    # Returns the root window and the current geometry of the drawable.
     #
-    # fun get_icon_name = XGetIconName(
-    #   display : PDisplay,
-    #   w : Window,
-    #   icon_name_return : PPChar
-    # ) : Status
+    # ###Arguments
+    # - **d** Specifies the drawable, which can be a window or a pixmap.
     #
-    # fun get_input_focus = XGetInputFocus(
-    #   display : PDisplay,
-    #   focus_return : PWindow,
-    #   revert_to_return : PInt32
-    # ) : Int32
+    # ###Return
+    # - **root** Returns the root window.
+    # - **x**, **y** Return the x and y coordinates that define the location of
+    # the drawable. For a window, these coordinates specify the upper-left outer
+    # corner relative to its parent's origin. For pixmaps, these coordinates are always zero.
+    # - **width**, **height** Return the drawable's dimensions (width and height).
+    # For a window, these dimensions specify the inside size, not including the border.
+    # - **border_width** Returns the border width in pixels. If the drawable is a pixmap, it returns zero.
+    # - **depth** Returns the depth of the drawable (bits per pixel for the object).
     #
-    # fun get_keyboard_control = XGetKeyboardControl(
-    #   display : PDisplay,
-    #   values_return : PKeyboardState
-    # ) : Int32
+    # ###Description
+    # The `geometry` function returns the root window and the current geometry of
+    # the drawable. The geometry of the drawable includes the x and y coordinates,
+    # width and height, border width, and depth. These are described in the argument
+    # list. It is legal to pass to this function a window whose class is **InputOnly**.
     #
-    # fun get_pointer_control = XGetPointerControl(
-    #   display : PDisplay,
-    #   accel_numerator_return : PInt32,
-    #   accel_denominator_return : PInt32,
-    #   threshold_return : PInt32
-    # ) : Int32
+    # `geometry` can generate a **BadDrawable** error.
     #
-    # fun get_pointer_mapping = XGetPointerMapping(
-    #   display : PDisplay,
-    #   map_return : PChar,
-    #   nmap : Int32
-    # ) : Int32
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
     #
-    # fun get_screen_saver = XGetScreenSaver(
-    #   display : PDisplay,
-    #   timeout_return : PInt32,
-    #   interval_return : PInt32,
-    #   prefer_blanking_return : PInt32,
-    #   allow_exposures_return : PInt32,
-    # ) : Int32
-    #
-    # fun get_transient_for_hint = XGetTransientForHint(
-    #   display : PDisplay,
-    #   w : Window,
-    #   prop_window_return : PWindow
-    # ) : Status
-    #
-    # fun get_window_property = XGetWindowProperty(
-    #   display : PDisplay,
-    #   w : Window,
-    #   property : Atom,
-    #   long_offset : Int64,
-    #   long_length : Int64,
-    #   delete : Bool,
-    #   req_type : Atom,
-    #   actual_type_return : PAtom,
-    #   actual_format_return : PInt32,
-    #   nitems_return : PUInt64,
-    #   bytes_after_return : PUInt64,
-    #   prop_return : PPChar
-    # ) : Int32
+    # ###See also
+    # `window_attributes`, `query_pointer`, `query_tree`.
+    def geometry(d : X11::C::Drawable) : NamedTuple(root: X11::C::Window, x: Int32, y: Int32, width: UInt32, height: UInt32, border_width: Int32, depth: Int32, res: X11::C::X::Status)
+      res = X.get_geometry @dpy, d, out root_return, out x_return, out y_return, out width_return, out height_return, out border_width_return
+      {root: root_return, x: x_return, y: y_return, width: width_return, height: height_return, border_width: border_width_return, depth: depth_return, res: res}
+    end
 
-    def get_window_attributes(w : X11::C::Window) : WindowAttributes
+    # Returns the name to be displayed in the specified window's icon.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `icon_name` function returns the name to be displayed in the specified
+    # window's icon. If it succeeds, it returns a string; otherwise, if no icon
+    # name has been set for the window, it returns empty string. If the
+    # data returned by the server is in the Latin Portable Character Encoding,
+    # then the returned string is in the Host Portable Character Encoding.
+    # Otherwise, the result is implementation dependent.
+    #
+    # `icon_name` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `X11::alloc_class_hint`, `X11::alloc_icon_size`, `X11::alloc_size_hints`,
+    # `X11::alloc_wm_hints`, `X11::free`, `wm_icon_name`, `set_command`,
+    # `set_icon_name`, `set_text_property`, `set_transient_for_hint`,
+    # `set_wm_client_machine`, `set_wm_colormap_windows`, `set_wm_icon_name`,
+    # `set_wm_name`, `set_wm_properties`, `set_wm_protocols`, `X11:string_list_to_text_property`.
+    def icon_name(w : X11::C::Window) : String
+      X.get_icon_name @dpy, w, out pstring
+      return "" if pstring.null?
+      str = String.new pstring
+      X.free pstring
+      str
+    end
+
+    # Returns the focus window and the current focus state.
+    #
+    # ###Return
+    # - **focus** Returns the focus window, **PointerRoot**, or **None**.
+    # - **revert_to** Returns the current focus state (**RevertToParent**,
+    # **RevertToPointerRoot**, or **RevertToNone**).
+    #
+    # ###Description
+    # The `input_focus` function returns the focus window and the current focus state.
+    #
+    # ###See also
+    # `set_input_focus`, `warp_pointer`.
+    def input_focus : NamedTuple(focus: X11::C::Window, revert_to: Int32, res: Int32)
+      res = X.get_input_focus @dpy, out focus_return, out revert_to_return
+      {focus: focus_return, revert_to: revert_to_return, res: res}
+    end
+
+    # Returns the current keyboard controls in the specified `KeyboardState` structure.
+    #
+    # ###Description
+    # The `keyboard_control` function returns the current control values for the
+    # keyboard to the `KeyboardState` structure.
+    #
+    # For the LEDs, the least-significant bit of **led_mask** corresponds to LED
+    # one, and each bit set to 1 in led_mask indicates an LED that is lit.
+    # The **global_auto_repeat** member can be set to **AutoRepeatModeOn** or
+    # **AutoRepeatModeOff**. The **auto_repeats** member is a bit vector. Each
+    # bit set to 1 indicates that auto-repeat is enabled for the corresponding key.
+    # The vector is represented as 32 bytes. Byte N (from 0) contains the bits
+    # for keys 8N to 8N + 7 with the least-significant bit in the byte representing key 8N.
+    #
+    # ###See also
+    # `auto_repeat_off`, `auto_repeat_on`, `bell`, `change_keyboard_control`,
+    # `change_keyboard_mapping`, `keyboard_control`, `query_keymap`, `set_pointer_mapping`.
+    def keyboard_control : KeyboardState
+      X.get_keyboard_control @dpy, out pstate
+      KeyboardState.new pstate
+    end
+
+    # Returns the pointer's current acceleration multiplier and acceleration threshold.
+    #
+    # ###Return
+    # - **accel_numerator** Returns the numerator for the acceleration multiplier.
+    # - **accel_denominator** Returns the denominator for the acceleration multiplier.
+    # - **threshold** Returns the acceleration threshold.
+    #
+    # ###Description
+    # The `pointer_control` function returns the pointer's current acceleration multiplier and acceleration threshold.
+    #
+    # ###See also
+    # `change_pointer_control`.
+    def pointer_control : NamedTuple(accel_numerator: Int32, accel_denominator: Int32, threshold: Int32, res: Int32)
+      res = X.get_pointer_control @dpy, out accel_numerator_return, out accel_denominator_return, out threshold_return
+      {accel_numerator: accel_numerator_return, accel_denominator: accel_denominator_return, threshold: threshold_return, res: res}
+    end
+
+    # Returns the current mapping of the pointer.
+    #
+    # ###Arguments
+    # - nmap	Specifies the number of items in the mapping list.
+    #
+    # ###Description
+    # The `pointer_mapping` function returns the current mapping of the pointer.
+    # Pointer buttons are numbered starting from one. `pointer_mapping` returns
+    # the number of physical buttons actually on the pointer. The nominal mapping
+    # for a pointer is map[i]=i+1. The nmap argument specifies the length of the
+    # array where the pointer mapping is returned,
+    # and only the first nmap elements are returned.
+    #
+    # ###See also
+    # `change_keyboard_control`, `change_keyboard_mapping`, `set_pointer_mapping`.
+    def pointer_mapping(nmap : Int32) : Array(UInt8)
+      X.get_pointer_mapping @dpy, out map_return, nmap
+      map = Array(UInt8).new(nmap) do |i|
+        (pointerof(map_return) + i).value
+      end
+    end
+
+    # Returns the current screen saver values.
+    #
+    # ###Return
+    # - **timeout** Returns the timeout, in seconds, until the screen saver turns on.
+    # - **interval** Returns the interval between screen saver invocations.
+    # - **prefer_blanking** Returns the current screen blanking preference
+    # (**DontPreferBlanking**, **PreferBlanking**, or **DefaultBlanking**).
+    # - **allow_exposures** Returns the current screen save control value
+    # (**DontAllowExposures**, **AllowExposures**, or **DefaultExposures**).
+    #
+    # ###Description
+    # The `screen_saver` function gets the current screen saver values.
+    #
+    # ###See also
+    # `set_screen_saver`, `force_screen_saver`, `activate_screen_saver`, `reset_screen_saver`.
+    def screen_saver : NamedTuple(timeout: Int32, interval: Int32, prefer_blanking: Int32, allow_exposures: Int32, res: Int32)
+      res = X.get_screen_saver @dpy, out timeout_return, out interval_return, out prefer_blanking_return, out allow_exposures_return
+      {timeout: timeout_return, interval: interval_return, prefer_blanking: prefer_blanking_return, allow_exposures: allow_exposures_return, res: res}
+    end
+
+    # Returns the WM_TRANSIENT_FOR property for the specified window.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `transient_for_hint` function returns the WM_TRANSIENT_FOR property
+    # for the specified window. It returns a nonzero Window on success;
+    # otherwise, it returns a zero.
+    #
+    # `transient_for_hint` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a Window argument does not name a defined Window.
+    #
+    # ###See also
+    # `X11::alloc_class_hint`, `X11::alloc_icon_size`, `X11::alloc_size_hints`,
+    # `X11::alloc_wm_hints`, `set_command`, `set_text_property`, `set_transient_for_hint`,
+    # `set_wm_client_machine`, `set_wm_colormap_windows`, `set_wm_icon_name`,
+    # `set_wm_name`, `set_wm_properties`, `set_wm_protocols`, `X11::string_list_to_text_property`.
+    def transient_for_hint(w : X11::C::Window) : X11::C::Window
+      X.get_transient_for_hint @dpy, w, out prop_window_return
+      prop_window_return
+    end
+
+    # Returns the actual type of the property; the actual format of the property;
+    # the number of 8-bit, 16-bit, or 32-bit items transferred; the number of
+    # bytes remaining to be read in the property; and a string of the data actually returned.
+    #
+    # ###Arguments
+    # - **w** Specifies the window whose property you want to obtain.
+    # - **property** Specifies the property name.
+    # - **long_offset** Specifies the offset in the specified property
+    # (in 32-bit quantities) where the data is to be retrieved.
+    # - **long_length** Specifies the length in 32-bit multiples of the data to be retrieved.
+    # - **delete** Specifies a Boolean value that determines whether the property is deleted.
+    # - **req_type** Specifies the atom identifier associated with the property type or **AnyPropertyType**.
+    #
+    # ###Return
+    # - **actual_type** Returns the atom identifier that defines the actual type of the property.
+    # - **actual_format** Returns the actual format of the property.
+    # - **nitems** Returns the actual number of 8-bit, 16-bit, or 32-bit items stored in the prop_return data.
+    # - **bytes_after** Returns the number of bytes remaining to be read in the property if a partial read was performed.
+    # - **prop** Returns the data in the specified format.
+    #
+    # ###Description
+    # The `window_property` function returns the actual type of the property;
+    # the actual format of the property; the number of 8-bit, 16-bit, or 32-bit
+    # items transferred; the number of bytes remaining to be read in the property;
+    # and a string of the data actually returned. `window_property` sets the return arguments as follows:
+    # - If the specified property does not exist for the specified window,
+    # `window_property` returns **None** to actual_type_return and the value zero
+    # to actual_format_return and bytes_after_return. The nitems_return argument
+    # is empty. In this case, the delete argument is ignored.
+    # - If the specified property exists but its type does not match the
+    # specified type, `window_property` returns the actual property type to
+    # actual_type_return, the actual property format (never zero) to actual_format_return,
+    # and the property length in bytes (even if the actual_format_return is 16 or 32)
+    # to bytes_after_return. It also ignores the delete argument. The nitems_return argument is empty.
+    # - If the specified property exists and either you assign **AnyPropertyType**
+    # to the req_type argument or the specified type matches the actual property type,
+    # `window_property` returns the actual property type to actual_type_return and
+    # the actual property format (never zero) to actual_format_return. It also returns
+    # a value to bytes_after_return and nitems_return, by defining the following values:
+    # ```
+    # N = actual length of the stored property in bytes (even if the format is 16 or 32)
+    # I = 4 * long_offset
+    # T = N - I
+    # L = MINIMUM(T, 4 * long_length)
+    # A = N - (I + L)
+    # ```
+    #The returned value starts at byte index I in the property (indexing from zero),
+    # and its length in bytes is L. If the value for long_offset causes L to be negative,
+    # a **BadValue** error results. The value of bytes_after_return is A, giving
+    # the number of trailing unread bytes in the stored property.
+    #
+    # If the returned format is 8, the returned data is represented as a char array.
+    # If the returned format is 16, the returned data is represented as a short array
+    # and should be cast to that type to obtain the elements. If the returned format
+    # is 32, the returned data is represented as a long array and should be cast
+    # to that type to obtain the elements.
+    #
+    # If delete is **true** and bytes_after is zero, `window_property` deletes the
+    # property from the window and generates a **PropertyNotify** event on the window.
+    #
+    # The function returns **Success** in res if it executes successfully.
+    #
+    # `window_property` can generate **BadAtom**, **BadValue**, and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadAtom** A value for an *Atom* argument does not name a defined *Atom*.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument defined
+    # as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_property`, `delete_property`, `properties`, `rotate_window_properties`.
+    def window_property(w : X11::C::Window, property : Atom | X11::C::Atom, long_offset : Int64, long_length : Int64, delete : Bool, req_type : Atom | X11::C::Atom) : NamedTuple(actual_type: X11::C::Atom, actual_format: Int32, nitems: UInt64, bytes_after: UInt64, prop: String, res: Int32)
+      res = X.get_window_property @dpy, w, property.to_u64, long_offset, long_length, delete ? X::True : X::False, req_type.to_u64, out actual_type_return, out actual_format_return, out nitems_return, out bytes_after_return, out prop_return
+      unless prop_return.null?
+        string = String.new prop_return
+        X.free prop_return
+      else
+        string = ""
+      end
+      {actual_type: actual_type_return, actual_format: actual_format_return, nitems: nitems_return, bytes_after: bytes_after_return, prop: string, res: res}
+    end
+
+    def window_attributes(w : X11::C::Window) : WindowAttributes
       X.get_window_property @dpy, w, out pattributes
       WindowAttributes.new pattributes
     end

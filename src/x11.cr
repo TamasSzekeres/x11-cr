@@ -39,6 +39,7 @@ module X11
   #
   # ###See also
   # `convert_case`, `Display::keycode_to_keysym`, `keysym_to_string`, `KeyEvent::lookup_keysym`.
+  @[AlwaysInline]
   def self.string_to_keysym(string : String) : X11::C::KeySym
     X.string_to_keysym string.to_unsafe
   end
@@ -54,6 +55,7 @@ module X11
   # `Display::draw line`, `Display::draw_rectangle`, `Display::draw_text`,
   # `Display::fill_rectangle`, `Display::free_gc`, `Display::gc_values`,
   # `Display::query_best_size`, `Display::set_arc_mode`, `Display::set_clip_origin`.
+  @[AlwaysInline]
   def self.g_context_from_gc(gc : X11::C::X::GC) : X11::C::GContext
     X.g_context_from_gc gc
   end
@@ -74,6 +76,7 @@ module X11
   #
   # ###See also
   # `Display::lock`, `Display::unlock`.
+  @[AlwaysInline]
   def self.init_threads : X11::C::Status
     X.init_threads
   end
@@ -96,6 +99,7 @@ module X11
   end
 
   # Returns a value with all bits set to 1 suitable for use in a plane argument to a procedure.
+  @[AlwaysInline]
   def self.all_planes : UInt64
     X.all_planes
   end
@@ -119,6 +123,7 @@ module X11
   # ###See also
   # `display_name`, `Display::error_database_text`, `Display::error_text`,
   # `Display::new`, `set_io_error_handler`, `Display::synchronize`.
+  @[AlwaysInline]
   def self.set_error_handler(handler : X11::C::X::ErrorHandler) : X11::C::X::ErrorHandler
     X.set_error_handler handler
   end
@@ -140,6 +145,7 @@ module X11
   # ###See also
   # `display_name`, `Display::error_database_text`, `Display::error_text`,
   # `Display::new`, `set_error_handler`, `Display::synchronize`.
+  @[AlwaysInline]
   def self.set_io_error_handler(handler : X11::C::X::IOErrorHandler) : X11::C::X::IOErrorHandler
     X.set_io_error_handler handler
   end
@@ -162,7 +168,22 @@ module X11
   # `Display::set_wm_icon_name`, `Display::set_wm_name`, `Display::set_wm_properties`,
   # `Display::set_wm_protocols`, `string_list_to_text_property`, `TextProperty::to_string_list`.
   @[AlwaysInline]
-  def self.free_string_list(list : PPChar)
+  def self.free_string_list(list : X11::C::PPChar)
     X.free_string_list list
+  end
+
+  # Frees the specified data.
+  #
+  # ###Arguments
+  # - **data** Specifies the data that is to be freed.
+  #
+  # ###Description
+  # The `free` function is a general-purpose Xlib routine that frees the specified data.
+  # You must use it to free any objects that were allocated by Xlib, unless an
+  # alternate function is explicitly specified for the object. A *null* pointer
+  # cannot be passed to this function.
+  @[AlwaysInline]
+  def free(data : X11::C::PChar) : Int32
+    X.free data
   end
 end
