@@ -28,13 +28,13 @@ module X11Sample
     while true
       if d.pending
         e = d.next_event
-        case e.type
-        when Expose
+        case e
+        when ExposeEvent
           d.draw_string win, d.default_gc(s), 10, 50, display_string
-        when ClientMessage
-          break if e.client.data.ul[0] == wm_delete_window
-        when KeyPress
-          break
+        when ClientMessageEvent
+          break if e.long_data[0] == wm_delete_window
+        when KeyEvent
+          break if e.press?
        end
      end
     end

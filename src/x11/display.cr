@@ -437,7 +437,7 @@ module X11
     # ###See also
     # `set_after_function`, `set_error_handler`.
     def synchronize(onoff : Bool) : X11::C::X::PDisplay -> Int32
-      X.synchronize @dpy, onoff ? 1 : 0
+      X.synchronize @dpy, onoff ? X::True : X::False
     end
 
     # Returns the previous after function.
@@ -480,7 +480,7 @@ module X11
     # ###See also
     # `atom_name`, `window_property`, `intern_atoms`.
     def intern_atom(atom_name : String, only_if_exists : Bool)
-      X.intern_atom @dpy, atom_name.to_unsafe, only_if_exists ? 1 : 0
+      X.intern_atom @dpy, atom_name.to_unsafe, only_if_exists ? X::True : X::False
     end
 
     # Creates a colormap
@@ -1904,7 +1904,7 @@ module X11
     # `alloc_color`, `alloc_color_planes`, `alloc_named_color`, `create_colormap`,
     # `free_colors`, `query_color`, `store_colors`.
     def alloc_color_cells(colormap : X11::C::Colormap, contig : Bool, nplanes : UInt32, npixels : UInt32) : NamedTuple(status: X11::C::X::Status, plane_masks: Array(UInt64), pixels: Array(UInt64))
-      status = X.alloc_color_cells @dpy, colormap, contig ? 1 : 0, out plane_masks_return, nplanes, out pixels_return, npixels
+      status = X.alloc_color_cells @dpy, colormap, contig ? X::True : X::False, out plane_masks_return, nplanes, out pixels_return, npixels
       plane_masks = Array(UInt64).new(nplanes) { |i| plane_masks_return[i] }
       pixels = Array(UInt64).new(npixels) { |i| pixels_return[i] }
       {status: status, plane_masks: plane_masks, pixels: pixels}
@@ -1948,7 +1948,7 @@ module X11
     # `alloc_color`, `alloc_color_cells`, `alloc_named_color`, `create_colormap`,
     # `free_colors`, `query_color`, `store_colors`.
     def alloc_color_planes(colormap : X11::C::Colormap, contig : Bool, ncolors : Int32, nreds : Int32, ngreens : Int32, nblues : Int32) : NamedTuple(status: X11::C::X::Status, pixels: Array(UInt64), rmask: UInt64, gmask: UInt64, bmask: UInt64)
-      status = X.alloc_color_planes @dpy, colormap, contig ? 1 : 0, out pixels_return, ncolors, nreds, nblues, out rmask, out gmask, out bmask
+      status = X.alloc_color_planes @dpy, colormap, contig ? X::True : X::False, out pixels_return, ncolors, nreds, nblues, out rmask, out gmask, out bmask
       pixels = Array(UInt64).new(ncolors) { |i| pixels_return[i] }
       {status: status, pixels: pixels, rmask: rmask, gmask: gmask, bmask: bmask}
     end
@@ -2313,7 +2313,7 @@ module X11
     # ###See also
     # `pointer_control`.
     def change_pointer_control(do_accel : Bool, do_threshold : Bool, accel_numerator : Int32, accel_denominator : Int32, threshold : Int32) : Int32
-      X.change_pointer_control @dpy, do_accel ? 1 : 0, do_threshold ? 1 : 0, accel_numerator, accel_denominator, threshold
+      X.change_pointer_control @dpy, do_accel ? X::True : X::False, do_threshold ? X::True : X::False, accel_numerator, accel_denominator, threshold
     end
 
     # Alters the property for the specified window.
@@ -2704,7 +2704,7 @@ module X11
     # ###See also
     # `clear_area`, `copy_area`.
     def clear_area(w : X11::C::Window, x : Int32, y : Int32, width : UInt32, height : UInt32, exposures : Bool) : Int32
-      X.clear_area @dpy, w, x, y, width, height, exposures ? 1 : 0
+      X.clear_area @dpy, w, x, y, width, height, exposures ? X::True : X::False
     end
 
     # Clears the entire area in the specified window.
@@ -4697,116 +4697,469 @@ module X11
       {actual_type: actual_type_return, actual_format: actual_format_return, nitems: nitems_return, bytes_after: bytes_after_return, prop: string, res: res}
     end
 
+    # Returns the specified window's attributes in the `WindowAttributes` structure.
+    #
+    # ###Arguments
+    # - **w** Specifies the window whose current attributes you want to obtain.
+    #
+    # ###Description
+    # The `window_attributes` function returns the current attributes for the
+    # specified window to an `WindowAttributes` structure.
+    #
+    # The **x** and **y** members are set to the upper-left outer corner relative to the parent window's origin.
+    #
+    # The **width** and **height** members are set to the inside size of the window, not including the border.
+    #
+    # The **border_width** member is set to the window's border width in pixels.
+    #
+    # The **depth** member is set to the depth of the window (that is, bits per pixel for the object).
+    #
+    # The **visual** member is a pointer to the screen's associated `Visual` structure.
+    #
+    # The **root** member is set to the root window of the screen containing the window.
+    #
+    # The **class** member is set to the window's class and can be either **InputOutput** or **InputOnly**.
+    #
+    # The **bit_gravity** member is set to the window's bit gravity and can be one of the following:
+    # - **ForgetGravity**    **EastGravity**
+    # - **NorthWestGravity** **SouthWestGravity**
+    # - **NorthGravity**     **SouthGravity**
+    # - **NorthEastGravity** **SouthEastGravity**
+    # - **WestGravity**      **StaticGravity**
+    # - **CenterGravity**
+    #
+    # The **win_gravity** member is set to the window's window gravity and can be one of the following:
+    # - **UnmapGravity**     **EastGravity**
+    # - **NorthWestGravity** **SouthWestGravity**
+    # - **NorthGravity**     **SouthGravity**
+    # - **NorthEastGravity** **SouthEastGravity**
+    # - **WestGravity**      **StaticGravity**
+    # - **CenterGravity**
+    #
+    # The **backing_store** member is set to indicate how the X server should maintain
+    # the contents of a window and can be **WhenMapped**, **Always**, or **NotUseful**.
+    #
+    # The **backing_planes** member is set to indicate (with bits set to 1) which
+    # bit planes of the window hold dynamic data that must be preserved in backing_stores and during save_unders.
+    #
+    # The **backing_pixel** member is set to indicate what values to use for planes not set in backing_planes.
+    #
+    # The **save_under** member is set to **true** or **false**.
+    #
+    # The **colormap** member is set to the colormap for the specified window and can be a colormap ID or **None**.
+    #
+    # The **map_installed** member is set to indicate whether the colormap is currently installed and can be **true** or **false**.
+    #
+    # The **map_state** member is set to indicate the state of the window and can
+    # be **IsUnmapped**, **IsUnviewable**, or **IsViewable**. **IsUnviewable** is
+    # used if the window is mapped but some ancestor is unmapped.
+    #
+    # The **all_event_masks** member is set to the bitwise inclusive OR of all
+    # event masks selected on the window by all clients.
+    #
+    # The **your_event_mask** member is set to the bitwise inclusive OR of all
+    # event masks selected by the querying client.
+    #
+    # The **do_not_propagate_mask** member is set to the bitwise inclusive OR of
+    # the set of events that should not propagate.
+    #
+    # The **override_redirect** member is set to indicate whether this window
+    # overrides structure control facilities and can be **true** or **false**.
+    # Window manager clients should ignore the window if this member is **true**.
+    #
+    # The **screen** member is set to a screen pointer that gives you a back
+    # pointer to the correct screen. This makes it easier to obtain the screen
+    # information without having to loop over the root window fields to see which field matches.
+    #
+    # `window_attributes` can generate **BadDrawable** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `geometry`, `query_pointer`, `query_tree`.
     def window_attributes(w : X11::C::Window) : WindowAttributes
       X.get_window_property @dpy, w, out pattributes
       WindowAttributes.new pattributes
     end
 
+    # Establishes a passive grab.
+    #
+    # ###Arguments
+    # - **button** Specifies the pointer button that is to be grabbed or **AnyButton**.
+    # - **modifiers** Specifies the set of keymasks or **AnyModifier**. The mask
+    # is the bitwise inclusive OR of the valid keymask bits.
+    # - **grab_window** Specifies the grab window.
+    # - **owner_events** Specifies a Boolean value that indicates whether the
+    # pointer events are to be reported as usual or reported with respect to the
+    # grab window if selected by the event mask.
+    # - **event_mask** Specifies which pointer events are reported to the client.
+    # The mask is the bitwise inclusive OR of the valid pointer event mask bits.
+    # - **pointer_mode** Specifies further processing of pointer events.
+    # You can pass **GrabModeSync** or **GrabModeAsync**.
+    # - **keyboard_mode** Specifies further processing of keyboard events.
+    # You can pass **GrabModeSync** or **GrabModeAsync**.
+    # - **confine_to*** Specifies the window to confine the pointer in or **None**.
+    # - **cursor** Specifies the cursor that is to be displayed or **None**.
+    #
+    # ###Description
+    # The `grab_button` function establishes a passive grab. In the future, the
+    # pointer is actively grabbed (as for `grab_pointer`), the last-pointer-grab
+    # time is set to the time at which the button was pressed (as transmitted in
+    # the **ButtonPress** event), and the **ButtonPress** event is reported if
+    # all of the following conditions are true:
+    # - The pointer is not grabbed, and the specified button is logically pressed
+    # when the specified modifier keys are logically down,
+    # and no other buttons or modifier keys are logically down.
+    # - The **grab_window** contains the pointer.
+    # - The **confine_to** window (if any) is viewable.
+    # - A passive grab on the same button/key combination does not exist on any ancestor of grab_window.
+    #
+    # The interpretation of the remaining arguments is as for `grab_pointer`.
+    # The active grab is terminated automatically when the logical state of the
+    # pointer has all buttons released (independent of the state of the logical modifier keys).
+    #
+    # Note that the logical state of a device (as seen by client applications)
+    # may lag the physical state if device event processing is frozen.
+    #
+    # This request overrides all previous grabs by the same client on the same
+    # button/key combinations on the same window. A modifiers of **AnyModifier**
+    # is equivalent to issuing the grab request for all possible modifier combinations
+    # (including the combination of no modifiers). It is not required that all
+    # modifiers specified have currently assigned **KeyCodes**. A button of
+    # **AnyButton** is equivalent to issuing the request for all possible buttons.
+    # Otherwise, it is not required that the specified button currently be assigned to a physical button.
+    #
+    # If some other client has already issued a `grab_button` with the same
+    # button/key combination on the same window, a **BadAccess** error results.
+    # When using **AnyModifier** or **AnyButton**, the request fails completely,
+    # and a **BadAccess** error results (no grabs are established) if there is a
+    # conflicting grab for any combination. `grab_button` has no effect on an active grab.
+    #
+    # `grab_button` can generate **BadCursor**, **BadValue**, and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadCursor** A value for a *Cursor* argument does not name a defined *Cursor*.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument defined
+    # as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `allow_events`, `change_active_pointer_grab`, `grab_key`, `grab_keyboard`,
+    # `grab_pointer`, `ungrab_pointer`.
     def grab_button(button : UInt32, modifiers : UInt32, grab_window : X11::C::Window, owner_events : Bool, event_mask : UInt32, pointer_mode : Int32, keyboard_mode : Int32, confine_to : X11::C::Window, cursor : X11::C::Cursor) : Int32
-      X.grab_button @dpy, buton, modifiers, grab_window, owner_events ? 1 : 0, event_mask, pointer_mode, keyboard_mode, confine_to, cursor
+      X.grab_button @dpy, buton, modifiers, grab_window, owner_events ? X::True : X::False, event_mask, pointer_mode, keyboard_mode, confine_to, cursor
     end
 
+    # Establishes a passive grab on the keyboard.
+    #
+    # ###Arguments
+    # - **keycode** Specifies the *KeyCode* or **AnyKey**.
+    # - **modifiers** Specifies the set of keymasks or **AnyModifier**.
+    # The mask is the bitwise inclusive OR of the valid keymask bits.
+    # - **grab_window** Specifies the grab window.
+    # - **owner_events** Specifies a Boolean value that indicates whether the
+    # keyboard events are to be reported as usual.
+    # - **pointer_mode** Specifies further processing of pointer events.
+    # You can pass **GrabModeSync** or **GrabModeAsync**.
+    # - **keyboard_mode** Specifies further processing of keyboard events.
+    # You can pass **GrabModeSync** or **GrabModeAsync**.
+    #
+    # ###Description
+    # The `grab_key` function establishes a passive grab on the keyboard. In the
+    # future, the keyboard is actively grabbed (as for `grab_keyboard`), the
+    # last-keyboard-grab time is set to the time at which the key was pressed
+    # (as transmitted in the **KeyPress** event), and the **KeyPress** event is
+    # reported if all of the following conditions are true:
+    # - The keyboard is not grabbed and the specified key (which can itself be
+    # a modifier key) is logically pressed when the specified modifier keys are
+    # logically down, and no other modifier keys are logically down.
+    # - Either the grab_window is an ancestor of (or is) the focus window, or the
+    # grab_window is a descendant of the focus window and contains the pointer.
+    # - A passive grab on the same key combination does not exist on any ancestor of grab_window.
+    #
+    # The interpretation of the remaining arguments is as for `grab_keyboard`.
+    # The active grab is terminated automatically when the logical state of the
+    # keyboard has the specified key released (independent of the logical state of the modifier keys).
+    #
+    # Note that the logical state of a device (as seen by client applications)
+    # may lag the physical state if device event processing is frozen.
+    #
+    # A modifiers argument of **AnyModifier** is equivalent to issuing the request
+    # for all possible modifier combinations (including the combination of no modifiers).
+    # It is not required that all modifiers specified have currently assigned KeyCodes.
+    # A keycode argument of **AnyKey** is equivalent to issuing the request for all
+    # possible KeyCodes. Otherwise, the specified keycode must be in the range
+    # specified by min_keycode and max_keycode in the connection setup, or a **BadValue** error results.
+    #
+    # If some other client has issued a `grab_key` with the same key combination
+    # on the same window, a **BadAccess** error results. When using **AnyModifier**
+    # or **AnyKey**, the request fails completely, and a **BadAccess** error results
+    # (no grabs are established) if there is a conflicting grab for any combination.
+    #
+    # `grab_key` can generate **BadAccess**, **BadValue**, and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadAccess** A client attempted to free a color map entry that it did not already allocate.
+    # - **BadAccess** A client attempted to store into a read-only color map entry.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the full
+    # range defined by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `allow_events`, `grab_button`, `grab_keyboard`, `grab_pointer`, `ungrab_key`.
     def grab_key(keycode : Int32, modifiers : UInt32, grab_window : X11::C::Window, owner_events : Bool, pointer_mode : Int32, keyboard_mode : Int32) : Int32
       X.grab_key @dpy, keycode, modifiers, grab_window, owner_events, pointer_mode, keyboard_mode
     end
 
+    # Actively grabs control of the keyboard and generates **FocusIn** and **FocusOut** events.
+    #
+    # ###Arguments
+    # - **grab_window** Specifies the grab window.
+    # - **owner_events** Specifies a Boolean value that indicates whether the
+    # keyboard events are to be reported as usual.
+    # - **pointer_mode** Specifies further processing of pointer events.
+    # You can pass **GrabModeSync** or **GrabModeAsync**.
+    # - **keyboard_mode** Specifies further processing of keyboard events.
+    # You can pass **GrabModeSync** or **GrabModeAsync**.
+    # - **time** Specifies the time. You can pass either a timestamp or **CurrentTime**.
+    #
+    # ###Description
+    # The `grab_keyboard` function actively grabs control of the keyboard and
+    # generates **FocusIn** and **FocusOut** events. Further key events are
+    # reported only to the grabbing client. `grab_keyboard` overrides any active
+    # keyboard grab by this client. If owner_events is **false**, all generated key
+    # events are reported with respect to grab_window. If owner_events is **true**
+    # and if a generated key event would normally be reported to this client, it
+    # is reported normally; otherwise, the event is reported with respect to the grab_window.
+    # Both **KeyPress** and **KeyRelease** events are always reported, independent
+    # of any event selection made by the client.
+    #
+    # If the keyboard_mode argument is **GrabModeAsync**, keyboard event processing
+    # continues as usual. If the keyboard is currently frozen by this client, then
+    # processing of keyboard events is resumed. If the keyboard_mode argument is
+    # **GrabModeSync**, the state of the keyboard (as seen by client applications)
+    # appears to freeze, and the X server generates no further keyboard events until
+    # the grabbing client issues a releasing `allow_events` call or until the keyboard
+    # grab is released. Actual keyboard changes are not lost while the keyboard is
+    # frozen; they are simply queued in the server for later processing.
+    #
+    # If pointer_mode is **GrabModeAsync**, pointer event processing is unaffected
+    # by activation of the grab. If pointer_mode is **GrabModeSync**, the state
+    # of the pointer (as seen by client applications) appears to freeze, and the
+    # X server generates no further pointer events until the grabbing client issues
+    # a releasing `allow_events` call or until the keyboard grab is released.
+    # Actual pointer changes are not lost while the pointer is frozen;
+    # they are simply queued in the server for later processing.
+    #
+    # If the keyboard is actively grabbed by some other client, `grab_keyboard`
+    # fails and returns **AlreadyGrabbed**. If grab_window is not viewable, it
+    # fails and returns **GrabNotViewable**. If the keyboard is frozen by an active
+    # grab of another client, it fails and returns **GrabFrozen**. If the specified time
+    # is earlier than the last-keyboard-grab time or later than the current X server
+    # time, it fails and returns **GrabInvalidTime**. Otherwise, the last-keyboard-grab
+    # time is set to the specified time (**CurrentTime** is replaced by the current X server time).
+    #
+    # `grab_keyboard` can generate **BadValue** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `allow_events`, `grab_button`, `grab_key`, `grab_pointer`, `ungrab_keyboard`.
     def grab_keyboard(grab_window : X11::C::Window, owner_events : Bool, pointer_mode : Int32, keyboard_mode : Int32, time : X11::C::Time) : Int32
-      X.grab_keyboard @dpy, grab_window, owner_events ? 1 : 0, pointer_mode, keyboard_mode, time
+      X.grab_keyboard @dpy, grab_window, owner_events ? X::True : X::False, pointer_mode, keyboard_mode, time
     end
 
+    # Actively grabs control of the pointer and returns **GrabSuccess** if the grab was successful.
+    #
+    # ###Arguments
+    # - **grab_window** Specifies the grab window.
+    # - **owner_events** Specifies a Boolean value that indicates whether the
+    # pointer events are to be reported as usual or reported with respect to the
+    # grab window if selected by the event mask.
+    # - **event_mask** Specifies which pointer events are reported to the client.
+    # The mask is the bitwise inclusive OR of the valid pointer event mask bits.
+    # - **pointer_mode** Specifies further processing of pointer events.
+    # You can pass **GrabModeSync** or **GrabModeAsync**.
+    # - **keyboard_mode** Specifies further processing of keyboard events.
+    # You can pass **GrabModeSync** or **GrabModeAsync**.
+    # - **confine_to** Specifies the window to confine the pointer in or **None**.
+    # - **cursor** Specifies the cursor that is to be displayed during the grab or **None**.
+    # - **time** Specifies the time. You can pass either a timestamp or **CurrentTime**.
+    #
+    # ###Description
+    # The `grab_pointer` function actively grabs control of the pointer and
+    # returns **GrabSuccess** if the grab was successful. Further pointer events
+    # are reported only to the grabbing client. `grab_pointer` overrides any
+    # active pointer grab by this client. If owner_events is **false**, all
+    # generated pointer events are reported with respect to grab_window and are
+    # reported only if selected by event_mask. If owner_events is **true** and
+    # if a generated pointer event would normally be reported to this client, it
+    # is reported as usual. Otherwise, the event is reported with respect to the
+    # grab_window and is reported only if selected by event_mask. For either value
+    # of owner_events, unreported events are discarded.
+    #
+    # If the pointer_mode is **GrabModeAsync**, pointer event processing continues
+    # as usual. If the pointer is currently frozen by this client, the processing
+    # of events for the pointer is resumed. If the pointer_mode is **GrabModeSync**,
+    # the state of the pointer, as seen by client applications, appears to freeze,
+    # and the X server generates no further pointer events until the grabbing client
+    # calls `allow_events` or until the pointer grab is released. Actual pointer
+    # changes are not lost while the pointer is frozen;
+    # they are simply queued in the server for later processing.
+    #
+    # If the keyboard_mode is **GrabModeAsync**, keyboard event processing is
+    # unaffected by activation of the grab. If the keyboard_mode is **GrabModeSync**,
+    # the state of the keyboard, as seen by client applications, appears to freeze,
+    # and the X server generates no further keyboard events until the grabbing client
+    # calls `allow_events` or until the pointer grab is released. Actual keyboard
+    # changes are not lost while the pointer is frozen;
+    # they are simply queued in the server for later processing.
+    #
+    # If a cursor is specified, it is displayed regardless of what window the pointer
+    # is in. If **None** is specified, the normal cursor for that window is displayed
+    # when the pointer is in grab_window or one of its subwindows; otherwise, the cursor for grab_window is displayed.
+    #
+    # If a confine_to window is specified, the pointer is restricted to stay contained
+    # in that window. The confine_to window need have no relationship to the
+    # grab_window. If the pointer is not initially in the confine_to window, it
+    # is warped automatically to the closest edge just before the grab activates
+    # and enter/leave events are generated as usual. If the confine_to window is
+    # subsequently reconfigured, the pointer is warped automatically, as necessary,
+    # to keep it contained in the window.
+    #
+    # The time argument allows you to avoid certain circumstances that come up if
+    # applications take a long time to respond or if there are long network delays.
+    # Consider a situation where you have two applications, both of which normally
+    # grab the pointer when clicked on. If both applications specify the timestamp
+    # from the event, the second application may wake up faster and successfully
+    # grab the pointer before the first application. The first application then will
+    # get an indication that the other application grabbed the pointer before its request was processed.
+    #
+    # `grab_pointer` generates **EnterNotify** and **LeaveNotify** events.
+    #
+    # Either if grab_window or confine_to window is not viewable or if the
+    # confine_to window lies completely outside the boundaries of the root window,
+    # `grab_pointer` fails and returns **GrabNotViewable**. If the pointer is
+    # actively grabbed by some other client, it fails and returns **AlreadyGrabbed**.
+    # If the pointer is frozen by an active grab of another client, it fails and
+    # returns **GrabFrozen**. If the specified time is earlier than the
+    # last-pointer-grab time or later than the current X server time, it fails
+    # and returns GrabInvalidTime. Otherwise, the last-pointer-grab time is set
+    # to the specified time (**CurrentTime** is replaced by the current X server time).
+    #
+    # `grab_pointer` can generate **BadCursor**, **BadValue**, and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadCursor** A value for a *Cursor* argument does not name a defined *Cursor*.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the full
+    # range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `allow_events`, `change_active_pointer_grab`, `grab_button`, `grab_key`,
+    # `grab_keyboard`, `ungrab_pointer`.
     def grab_pointer(grab_window : X11::C::Window, owner_events : Bool, event_mask : UInt32, pointer_mode : Int32, keyboard_mode : Int32, confine_to : X11::C::Window, cursor : X11::C::Cursor, time : X11::C::Time) : Int32
-      X.grab_pointer @dpy, owner_events ? 1 : 0, event_mask, pointer_mode, keyboard_mode, confine_to, cursor, time
+      X.grab_pointer @dpy, owner_events ? X::True : X::False, event_mask, pointer_mode, keyboard_mode, confine_to, cursor, time
     end
 
+    # Disables processing of requests and close downs
+    # on all other connections than the one this request arrived on.
+    #
+    # ###Description
+    # The `grab_server` function disables processing of requests and close downs
+    # on all other connections than the one this request arrived on.
+    # You should not grab the X server any more than is absolutely necessary.
+    #
+    # ###See also
+    # `grab_key`, `grab_keyboard`, `grab_pointer`, `ungrab_server`.
     def grab_server : Int32
       X.grab_server @dpy
     end
 
-    # fun if_event = XIfEvent(
-    #   display : PDisplay,
-    #   event_return : PEvent,
-    #   predicate : PDisplay, PEvent, Pointer -> Bool,
-    #   arg : Pointer
-    # );
-    #
-    # fun image_byte_order = XImageByteOrder(
-    #   display : PDisplay
-    # ) : Int32
-    #
-    # fun install_colormap = XInstallColormap(
-    #   display : PDisplay,
-    #   colormap : Colormap
-    # ) : Int32
-    #
-    # fun keysym_to_keycode = XKeysymToKeycode(
-    #   display : PDisplay,
-    #   keysym : KeySym
-    # ) : KeyCode
-    #
-    # fun kill_client = XKillClient(
-    #   display : PDisplay,
-    #   resource : XID
-    # ) : Int32
-    #
-    # fun lookup_color = XLookupColor(
-    #   display : PDisplay,
-    #   colormap : Colormap,
-    #   color_name : PChar,
-    #   exact_def_return : PColor,
-    #   screen_def_return : PColor
-    # ) : Status
-    #
-    # fun lower_window = XLowerWindow(
-    #   display : PDisplay,
-    #   w : Window
-    # ) : Int32
-    #
-    # fun map_raised = XMapRaised(
-    #   display : PDisplay,
-    #   w : Window
-    # ) : Int32
-    #
-    # fun map_subwindows = XMapSubwindows(
-    #   display : PDisplay,
-    #   w : Window
-    # ) : Int32
-    #
-    # fun map_window = XMapWindow(
-    #   display : PDisplay,
-    #   w : Window
-    # ) : Int32
-    #
-    # fun mask_event = XMaskEvent(
-    #   display : PDisplay,
-    #   event_mask : Int64,
-    #   event_return : PEvent
-    # ) : Int32
+    def if_event(predicate : PDisplay, PEvent, Pointer -> Bool, arg : Pointer) : Event?
+      X.if_event @dpy, out pevent, predicate, arg
+      if pevent.null?
+        nil
+      else
+        Event.from_xevent pevent.value
+      end
+    end
 
-    # fun move_resize_window = XMoveResizeWindow(
-    #   display : PDisplay,
-    #   w : Window,
-    #   x : Int32,
-    #   y : Int32,
-    #   width : UInt32,
-    #   height : UInt32
-    # ) : Int32
-    #
-    # fun move_window = XMoveWindow(
-    #   display : PDisplay,
-    #   w : Window,
-    #   x : Int32,
-    #   y : Int32
-    # ) : Int32
-    #
-    # fun next_event = XNextEvent(
-    #   display : PDisplay,
-    #   event_return : PEvent
-    # ) : Int32
-    #
-    # fun no_op = XNoOp(
-    #   display : PDisplay
-    # ) : Int32
-    #
+    def image_byte_order : Int32
+      X.image_byte_order @dpy
+    end
+
+    def install_colormap(colormap : X11::C::Colormap) : Int32
+      X.install_colormap @dpy, colormap
+    end
+
+    def keysym_to_keycode(keysym : X11::C::KeySym) : X11::C::KeyCode
+      X.keysym_to_keycode @dpy, keysym
+    end
+
+    def kill_client(resource : X11::C::XID) : Int32
+      X.kill_client @dpy, resource
+    end
+
+    def lookup_color(colormap : X11::C::Colormap, color_name : String) : NamedTuple(exact_def: Color, screen_def: Color, res: X11::C::Status)
+      res = X.lookup_color @dpy, colormap, color_name.to_unsafe, out exact_def_return, out screen_def_return
+      {exact_def: Color.new(exact_def_return), screen_def: Color.new(screen_def_return), res: res}
+    end
+
+    def lower_window(w : X11::C::Window) : Int32
+      X.lower_window @dpy, w
+    end
+
+    def map_raised(w : X11::C::Window) : Int32
+      X.map_raised @dpy, w
+    end
+
+    def map_subwindows(w : X11::C::Window) : Int32
+      X.map_subwindows @dpy, w
+    end
+
+    def map_window(w : X11::C::Window) : Int32
+      X.map_window @dpy, w
+    end
+
+    def mask_event(event_mask : Int64) : Event?
+      X.mask_event @dpy, event_mask, out pevent
+      if pevent.null?
+        nil
+      else
+        Event.from_xevent pevent.value
+      end
+    end
+
+    def move_resize_window(w : X11::C::Window, x : Int32, y : Int32, width : UInt32, height : UInt32) : Int32
+      X.move_resize_window @dpy, w, x, y, width, height
+    end
+
+    def move_window(w : X11::C::Window, x : Int32, y : Int32) : Int32
+      X.move_window @dpy, w, x, y
+    end
+
+    def next_event : Event?
+      X.next_event @dpy, out xevent
+      Event.from_xevent xevent
+    end
+
+    def no_op : Int32
+      X.no_op @dpy
+    end
+
     # fun parse_color = XParseColor(
     #   display : PDisplay,
     #   colormap : Colormap,
@@ -5618,18 +5971,8 @@ module X11
       X.select_input @dpy, w, event_mask
     end
 
-    def map_window(w : Window)
-      X.map_window @dpy, w
-    end
-
     def pending : Int32
       X.pending @dpy
-    end
-
-    def next_event : X::Event
-      e = uninitialized X::Event
-      X.next_event @dpy, pointerof(e)
-      e
     end
 
     def store_name(w : Window, name : String) : Int32

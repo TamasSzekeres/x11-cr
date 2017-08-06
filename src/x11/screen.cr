@@ -94,6 +94,16 @@ module X11
       (X.does_save_unders(@screen)) == 0 ? false : true
     end
 
+    # Returns height of screen in millimeters.
+    def height_mm : Int32
+      X.height_of_screen @screen
+    end
+
+    # Returns height of screen in pixels.
+    def height : Int32
+      X.height_of_screen @screen
+    end
+
     # Returns the underlieing `X11::C::X::PScreen` pointer
     def to_unsafe : X11::C::X::PScreen
       @screen

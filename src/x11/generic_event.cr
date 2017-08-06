@@ -5,22 +5,22 @@ module X11
   # Wrapper for `X11::C::X::GenericEvent` structure.
   class GenericEvent < Event
     def initialize
-      @event = X11::C::X::GenericEvent.new
+      @event = X11::C::X::GenericEventCookie.new
     end
 
-    def initialize(event : X11::C::X::PGenericEvent)
+    def initialize(event : X11::C::X::PGenericEventCookie)
       raise BadAllocException.new if event.null?
       @event = event.value
     end
 
-    def initialize(@event : X11::C::X::GenericEvent)
+    def initialize(@event : X11::C::X::GenericEventCookie)
     end
 
-    def to_unsafe : X11::C::X::PGenericEvent
+    def to_unsafe : X11::C::X::PGenericEventCookie
       return pointerof(@event)
     end
 
-    def to_x : X11::C::X::GenericEvent
+    def to_x : X11::C::X::GenericEventCookie
       @event
     end
 
