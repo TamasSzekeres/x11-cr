@@ -2928,7 +2928,7 @@ module X11::C
       root_return : PWindow,
       parent_return : PWindow,
       children_return : PWindow*,
-      nchildren_return : UInt32
+      nchildren_return : PUInt32
     ) : Status
 
     fun raise_window = XRaiseWindow(
@@ -3232,7 +3232,7 @@ module X11::C
       ts_y_origin : Int32
     ) : Int32
 
-    fun set_title = XSetTile(
+    fun set_tile = XSetTile(
       display : PDisplay,
       gc : GC,
       tile : Pixmap
@@ -3517,9 +3517,9 @@ module X11::C
     fun create_font_set = XCreateFontSet(
       display : PDisplay,
       base_font_name_list : PChar,
-      missing_charset_list : PPChar*,
-      missing_charset_count : PInt32,
-      def_string : PPChar
+      missing_charset_list_return : PPChar*,
+      missing_charset_count_return : PInt32,
+      def_string_return : PPChar
     ) : FontSet
 
     fun free_font_set = XFreeFontSet(

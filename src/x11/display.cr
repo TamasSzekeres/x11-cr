@@ -5088,7 +5088,7 @@ module X11
       X.grab_server @dpy
     end
 
-    def if_event(predicate : PDisplay, PEvent, Pointer -> Bool, arg : Pointer) : Event?
+    def if_event(predicate : X11::C::X::PDisplay, PEvent, Pointer -> Bool, arg : Pointer) : Event?
       X.if_event @dpy, out pevent, predicate, arg
       if pevent.null?
         nil
@@ -5152,831 +5152,545 @@ module X11
     end
 
     def next_event : Event?
-      X.next_event @dpy, out xevent
-      Event.from_xevent xevent
+      if X.next_event @dpy, out xevent
+        Event.from_xevent xevent
+      else
+        nil
+      end
     end
 
     def no_op : Int32
       X.no_op @dpy
     end
 
-    # fun parse_color = XParseColor(
-    #   display : PDisplay,
-    #   colormap : Colormap,
-    #   spec : PChar,
-    #   exact_def_return : PColor
-    # ) : Status
+    def parse_color(colormap : X11::C::Colormap, spec : String) : String
+      if X.parse_color @dpy, colormap, out exact_def_return
+        str = String.new exact_def_return
+        X.free exact_def_return
+        str
+      else
+        ""
+      end
+    end
 
-    # fun peek_event = XPeekEvent(
-    #   display : PDisplay,
-    #   event_return : PEvent
-    # ) : Int32
-    #
-    # fun peek_if_event = XPeekIfEvent(
-    #   display : PDisplay,
-    #   event_return : PEvent,
-    #   predicate : PDisplay, PEvent, Pointer -> Bool,
-    #   arg : Pointer
-    # ) : Int32
-    #
-    # fun pending = XPending(
-    #   display : PDisplay
-    # ) : Int32
+    def peek_event : Event?
+      if X.peek_event @dpy, xevent
+        Event.from_xevent xevent
+      else
+        nil
+      end
+    end
 
-    # fun protocol_revision = XProtocolRevision(
-    #   display : PDisplay
-    # ) : Int32
-    #
-    # fun protocol_version = XProtocolVersion(
-    #   display : PDisplay
-    # ) : Int32
-    #
-    # fun put_back_event = XPutBackEvent(
-    #   display : PDisplay,
-    #   event : PEvent
-    # ) : Int32
-    #
-    # fun put_image = XPutImage(
-    #   display : PDisplay,
-    #   d : Drawable,
-    #   gc : GC,
-    #   image : PImage,
-    #   src_x : Int32,
-    #   src_y : Int32,
-    #   dest_x : Int32,
-    #   dest_y : Int32,
-    #   width : UInt32,
-    #   height : UInt32
-    # ) : Int32
-    #
-    # fun q_length = XQLength(
-    #   display : PDisplay
-    # ) : Int32
-    #
-    # fun query_best_cursor = XQueryBestCursor(
-    #   display : PDisplay,
-    #   d : Drawable,
-    #   width : UInt32,
-    #   height : UInt32,
-    #   width_return : PUInt32,
-    #   height_return : PUInt32
-    # ) : Status
-    #
-    # fun query_best_size = XQueryBestSize(
-    #   display : PDisplay,
-    #   c_class : Int32,
-    #   which_screen : Drawable,
-    #   width : UInt32,
-    #   height : UInt32,
-    #   width_return : PUInt32,
-    #   height_return : PUInt32
-    # ) : Status
-    #
-    # fun query_best_stipple = XQueryBestStipple(
-    #   display : PDisplay,
-    #   which_screen : Drawable,
-    #   width : UInt32,
-    #   height : UInt32,
-    #   width_return : PUInt32,
-    #   height_return : PUInt32
-    # ) : Status
-    #
-    # fun query_best_tile = XQueryBestTile(
-    #   display : PDisplay,
-    #   which_screen : Drawable,
-    #   width : UInt32,
-    #   height : UInt32,
-    #   width_return : PUInt32,
-    #   height_return : PUInt32
-    # ) : Status
-    #
-    # fun query_color = XQueryColor(
-    #   display : PDisplay,
-    #   colormap : Colormap,
-    #   def_in_out : PColor
-    # ) : Int32
-    #
-    # fun query_colors = XQueryColors(
-    #   display : PDisplay,
-    #   colormap : Colormap,
-    #   defs_in_out : PColor,
-    #   ncolors : Int32
-    # ) : Int32
-    #
-    # fun query_extension = XQueryExtension(
-    #   display : PDisplay,
-    #   name : PChar,
-    #   major_opcode_return : PInt32,
-    #   first_event_return : PInt32,
-    #   first_error_return : PInt32
-    # ) : Bool
-    #
-    # fun query_keymap = XQueryKeymap(
-    #   display : PDisplay,
-    #   keys_return : Char[32]
-    # ) : Int32
-    #
-    # fun query_pointer = XQueryPointer(
-    #   display : PDisplay,
-    #   w : Window,
-    #   root_return : PWindow,
-    #   child_return : PWindow,
-    #   root_x_return : PInt32,
-    #   root_y_return : PInt32,
-    #   win_x_return : PInt32,
-    #   win_y_return : PInt32,
-    #   mask_return : PUInt32
-    # ) : Bool
-    #
-    # fun query_text_extents = XQueryTextExtents(
-    #   display : PDisplay,
-    #   font_ID : XID,
-    #   string : PChar,
-    #   nchars : Int32,
-    #   direction_return : PInt32,
-    #   font_ascent_return : PInt32,
-    #   font_descent_return : PInt32,
-    #   overall_return : PCharStruct
-    # ) : Int32
-    #
-    # fun query_text_extents_16 = XQueryTextExtents16(
-    #   display : PDisplay,
-    #   font_ID : XID,
-    #   string : PChar2b,
-    #   nchars : Int32,
-    #   direction_return : PInt32,
-    #   font_ascent_return : PInt32,
-    #   font_descent_return : PInt32,
-    #   overall_return : PCharStruct
-    # ) : Int32
-    #
-    # fun query_tree = XQueryTree(
-    #   display : PDisplay,
-    #   w : Window,
-    #   root_return : PWindow,
-    #   parent_return : PWindow,
-    #   children_return : PWindow*,
-    #   nchildren_return : UInt32
-    # ) : Status
-    #
-    # fun raise_window = XRaiseWindow(
-    #   display : PDisplay,
-    #   w : Window
-    # ) : Int32
-    #
-    # fun read_bitmap_file = XReadBitmapFile(
-    #   display : PDisplay,
-    #   d : Drawable,
-    #   filename : PChar,
-    #   width_return : PUInt32,
-    #   height_return : PUInt32,
-    #   bitmap_return : PPixmap,
-    #   x_hot_return : PInt32,
-    #   y_hot_return : PInt32
-    # ) : Int32
-
-    # fun rebind_keysym = XRebindKeysym(
-    #   display : PDisplay,
-    #   keysym : KeySym,
-    #   list : PKeySym,
-    #   mod_count : Int32,
-    #   string : PChar,
-    #   bytes_string : Int32
-    # ) : Int32
-    #
-    # fun recolor_cursor = XRecolorCursor(
-    #   display : PDisplay,
-    #   cursor : Cursor,
-    #   foreground_color : PColor,
-    #   background_color : PColor
-    # ) : Int32
-
-    # fun remove_from_save_set = XRemoveFromSaveSet(
-    #   display : PDisplay,
-    #   w : Window
-    # ) : Int32
-    #
-    # fun remove_host = XRemoveHost(
-    #   display : PDisplay,
-    #   host : PHostAddress
-    # ) : Int32
-    #
-    # fun remove_hosts = XRemoveHosts(
-    #   display : PDisplay,
-    #   hosts : PHostAddress,
-    #   num_hosts : Int32
-    # ) : Int32
-    #
-    # fun reparent_window = XReparentWindow(
-    #   display : PDisplay,
-    #   w : Window,
-    #   parent : Window,
-    #   x : Int32,
-    #   y : Int32
-    # ) : Int32
-    #
-    # fun reset_screen_saver = XResetScreenSaver(
-    #   display : PDisplay
-    # ) : Int32
-    #
-    # fun resize_window = XResizeWindow(
-    #   display : PDisplay,
-    #   w : Window,
-    #   width : UInt32,
-    #   height : UInt32
-    # ) : Int32
-    #
-    # fun restack_windows = XRestackWindows(
-    #   display : PDisplay,
-    #   windows : PWindow,
-    #   nwindows : Int32
-    # ) : Int32
-    #
-    # fun rotate_buffers = XRotateBuffers(
-    #   display : PDisplay,
-    #   rotate : Int32
-    # ) : Int32
-    #
-    # fun rotate_window_properties = XRotateWindowProperties(
-    #   display : PDisplay,
-    #   w : Window,
-    #   properties : PAtom,
-    #   num_prop : Int32,
-    #   npositions : Int32
-    # ) : Int32
-    #
-    # fun screen_count = XScreenCount(
-    #   display : PDisplay
-    # ) : Int32
-    #
-    # fun select_input = XSelectInput(
-    #   display : PDisplay,
-    #   w : Window,
-    #   event_mask : Int64
-    # ) : Int32
-    #
-    # fun send_event = XSendEvent(
-    #   display : PDisplay,
-    #   w : Window,
-    #   propagate : Bool,
-    #   event_mask : Int64,
-    #   event_send : PEvent
-    # ) : Status
-    #
-    # fun set_access_control = XSetAccessControl(
-    #   display : PDisplay,
-    #   mode : Int32
-    # ) : Int32
-    #
-    # fun set_arc_mode = XSetArcMode(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   arc_mode : Int32
-    # ) : Int32
-    #
-    # fun set_background = XSetBackground(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   background : UInt64
-    # ) : Int32
-    #
-    # fun set_clip_mask = XSetClipMask(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   pixmap : Pixmap
-    # ) : Int32
-    #
-    # fun set_clip_origin = XSetClipOrigin(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   clip_x_origin : Int32,
-    #   clip_y_origin : Int32
-    # ) : Int32
-    #
-    # fun set_clip_rectangles = XSetClipRectangles(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   clip_x_origin : Int32,
-    #   clip_y_origin : Int32,
-    #   rectangles : PRectangle,
-    #   n : Int32,
-    #   ordering : Int32
-    # ) : Int32
-    #
-    # fun set_close_down_mode = XSetCloseDownMode(
-    #   display : PDisplay,
-    #   close_mode : Int32
-    # ) : Int32
-    #
-    # fun set_command = XSetCommand(
-    #   display : PDisplay,
-    #   w : Window,
-    #   argv : PPChar,
-    #   argc : Int32
-    # ) : Int32
-    #
-    # fun set_dashes = XSetDashes(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   dash_offset : Int32,
-    #   dash_list : PChar,
-    #   n : Int32
-    # ) : Int32
-    #
-    # fun set_fill_rule = XSetFillRule(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   fill_rule : Int32
-    # ) : Int32
-    #
-    # fun set_fill_style = XSetFillStyle(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   fill_style : Int32
-    # ) : Int32
-    #
-    # fun set_font = XSetFont(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   font : Font
-    # ) : Int32
-    #
-    # fun set_font_path = XSetFontPath(
-    #   display : PDisplay,
-    #   directories : PPChar,
-    #   ndirs : Int32
-    # ) : Int32
-    #
-    # fun set_foreground = XSetForeground(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   foreground : UInt64
-    # ) : Int32
-    #
-    # fun set_function = XSetFunction(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   function : Int32
-    # ) : Int32
-    #
-    # fun set_graphics_exposures = XSetGraphicsExposures(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   graphics_exposures : Bool
-    # ) : Int32
-    #
-    # fun set_icon_name = XSetIconName(
-    #   display : PDisplay,
-    #   w : Window,
-    #   icon_name : PChar
-    # ) : Int32
-    #
-    # fun set_input_focus = XSetInputFocus(
-    #   display : PDisplay,
-    #   focus : Window,
-    #   revert_to : Int32,
-    #   time : Time
-    # ) : Int32
-    #
-    # fun set_line_attributes = XSetLineAttributes(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   line_width : UInt32,
-    #   line_style : Int32,
-    #   cap_style : Int32,
-    #   join_style : Int32
-    # ) : Int32
-    #
-    # fun set_modifier_mapping = XSetModifierMapping(
-    #   display : PDisplay,
-    #   modmap : PModifierKeymap
-    # ) : Int32
-    #
-    # fun set_plane_mask = XSetPlaneMask(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   plane_mask : UInt64
-    # ) : Int32
-    #
-    # fun set_pointer_mapping = XSetPointerMapping(
-    #   display : PDisplay,
-    #   map : PChar,
-    #   nmap : Int32
-    # ) : Int32
-    #
-    # fun set_screen_saver = XSetScreenSaver(
-    #   display : PDisplay,
-    #   timeout : Int32,
-    #   interval : Int32,
-    #   prefer_blanking : Int32,
-    #   allow_exposures : Int32
-    # ) : Int32
-    #
-    # fun set_selection_owner = XSetSelectionOwner(
-    #   display : PDisplay,
-    #   selection : Atom,
-    #   owner : Window,
-    #   time : Time
-    # ) : Int32
-    #
-    # fun set_state = XSetState(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   foreground : UInt64,
-    #   background : UInt64,
-    #   function : Int32,
-    #   plane_mask : UInt64
-    # ) : Int32
-    #
-    # fun set_stipple = XSetStipple(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   stipple : Pixmap
-    # ) : Int32
-    #
-    # fun set_subwindow_mode = XSetSubwindowMode(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   subwindow_mode : Int32
-    # ) : Int32
-    #
-    # fun set_ts_origin = XSetTSOrigin(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   ts_x_origin : Int32,
-    #   ts_y_origin : Int32
-    # ) : Int32
-    #
-    # fun set_title = XSetTile(
-    #   display : PDisplay,
-    #   gc : GC,
-    #   tile : Pixmap
-    # ) : Int32
-    #
-    # fun set_window_background = XSetWindowBackground(
-    #   display : PDisplay,
-    #   w : Window,
-    #   background_pixel : UInt64
-    # ) : Int32
-    #
-    # fun set_window_background_pixmap = XSetWindowBackgroundPixmap(
-    #   display : PDisplay,
-    #   w : Window,
-    #   background_pixmap : Pixmap
-    # ) : Int32
-    #
-    # fun set_window_border = XSetWindowBorder(
-    #   display : PDisplay,
-    #   w : Window,
-    #   border_pixel : UInt64
-    # ) : Int32
-    #
-    # fun set_window_border_pixmap = XSetWindowBorderPixmap(
-    #   display : PDisplay,
-    #   w : Window,
-    #   border_pixmap : Pixmap
-    # ) : Int32
-    #
-    # fun set_window_border_width = XSetWindowBorderWidth(
-    #   display : PDisplay,
-    #   w : Window,
-    #   width : UInt32
-    # ) : Int32
-    #
-    # fun set_window_colormap = XSetWindowColormap(
-    #   display : PDisplay,
-    #   w : Window,
-    #   colormap : Colormap
-    # ) : Int32
-    #
-    # fun store_buffer = XStoreBuffer(
-    #   display : PDisplay,
-    #   bytes  : PChar,
-    #   nbytes : Int32,
-    #   buffer : Int32
-    # ) : Int32
-    #
-    # fun store_bytes = XStoreBytes(
-    #   display : PDisplay,
-    #   bytes : PChar,
-    #   nbytes : Int32
-    # ) : Int32
-    #
-    # fun store_color = XStoreColor(
-    #   display : PDisplay,
-    #   colormap : Colormap,
-    #   color : PColor
-    # ) : Int32
-    #
-    # fun store_colors = XStoreColors(
-    #   display : PDisplay,
-    #   colormap : Colormap,
-    #   color : PColor,
-    #   ncolors : Int32
-    # ) : Int32
-    #
-    # fun store_name = XStoreName(
-    #   display : PDisplay,
-    #   w : Window,
-    #   window_name : PChar
-    # ) : Int32
-    #
-    # fun store_named_color = XStoreNamedColor(
-    #   display : PDisplay,
-    #   colormap : Colormap,
-    #   color : PColor,
-    #   pixel : UInt64,
-    #   flags : Int32
-    # ) : Int32
-    #
-    # fun sync = XSync(
-    #   display : PDisplay,
-    #   discard : Bool
-    # ) : Int32
-
-    # fun translate_coordinates = XTranslateCoordinates(
-    #   display : PDisplay,
-    #   src_w : Window,
-    #   dest_w : Window,
-    #   src_x : Int32,
-    #   src_y : Int32,
-    #   dest_x_return : PInt32,
-    #   dest_y_return : PInt32,
-    #   child_return : PWindow
-    # ) : Bool
-    #
-    # fun undefine_cursor = XUndefineCursor(
-    #   display : PDisplay,
-    #   w : Window
-    # ) : Int32
-    #
-    # fun ungrab_button = XUngrabButton(
-    #   display : PDisplay,
-    #   button : UInt32,
-    #   modifiers : UInt32,
-    #   grab_window : Window
-    # ) : Int32
-    #
-    # fun ungrab_key = XUngrabKey(
-    #   display : PDisplay,
-    #   keycode : Int32,
-    #   modifiers : UInt32,
-    #   grab_window : Window
-    # ) : Int32
-    #
-    # fun ungrab_keyboard = XUngrabKeyboard(
-    #   display : PDisplay,
-    #   time : Time
-    # ) : Int32
-    #
-    # fun ungrab_pointer = XUngrabPointer(
-    #   display : PDisplay,
-    #   time : Time
-    # ) : Int32
-    #
-    # fun ungrab_server = XUngrabServer(
-    #   display : PDisplay
-    # ) : Int32
-    #
-    # fun uninstall_colormap = XUninstallColormap(
-    #   display : PDisplay,
-    #   colormap : Colormap
-    # ) : Int32
-    #
-    # fun unload_font = XUnloadFont(
-    #   display : PDisplay,
-    #   font : Font
-    # ) : Int32
-    #
-    # fun unmap_subwindows = XUnmapSubwindows(
-    #   display : PDisplay,
-    #   w : Window
-    # ) : Int32
-    #
-    # fun unmap_window = XUnmapWindow(
-    #   display : PDisplay,
-    #   w : Window
-    # ) : Int32
-    #
-    # fun vendor_release = XVendorRelease(
-    #   display : PDisplay
-    # ) : Int32
-    #
-    # fun warp_pointer = XWarpPointer(
-    #   display : PDisplay,
-    #   src_w : Window,
-    #   dest_w : Window,
-    #   src_x : Int32,
-    #   src_y : Int32,
-    #   src_width : UInt32,
-    #   src_height : UInt32,
-    #   dest_x : Int32,
-    #   dest_y : Int32
-    # ) : Int32
-
-    # fun window_event = XWindowEvent(
-    #   display : PDisplay,
-    #   w : Window,
-    #   event_mask : Int64,
-    #   event_return : PEvent
-    # ) : Int32
-    #
-    # fun write_bitmap_file = XWriteBitmapFile(
-    #   display : PDisplay,
-    #   filename : PChar,
-    #   bitmap : Pixmap,
-    #   width : UInt32,
-    #   height : UInt32,
-    #   x_hot : Int32,
-    #   y_hot : Int32
-    # ) : Int32
-
-    # fun open_om = XOpenOM(
-    #   display : PDisplay,
-    #   rdb : PrmHashBucketRec,
-    #   res_name : PChar,
-    #   res_class : PChar
-    # ) : XOM
-
-    # fun create_font_set = XCreateFontSet(
-    #   display : PDisplay,
-    #   base_font_name_list : PChar,
-    #   missing_charset_list : PPChar*,
-    #   missing_charset_count : PInt32,
-    #   def_string : PPChar
-    # ) : FontSet
-    #
-    # fun free_font_set = XFreeFontSet(
-    #   display : PDisplay,
-    #   font_set : FontSet
-    # ) : NoReturn
-
-    # fun mb_draw_text = XmbDrawText(
-    #   display : PDisplay,
-    #   d : Drawable,
-    #   gc : GC,
-    #   x : Int32,
-    #   y : Int32,
-    #   text_items : PmbTextItem,
-    #   nitems : Int32
-    # ) : NoReturn
-    #
-    # fun wc_draw_text = XwcDrawText(
-    #   display : PDisplay,
-    #   d : Drawable,
-    #   gc : GC,
-    #   x : Int32,
-    #   y : Int32,
-    #   text_items : PwcTextItem,
-    #   nitems : Int32
-    # ) : NoReturn
-    #
-    # fun utf8_draw_text = Xutf8DrawText(
-    #   display : PDisplay,
-    #   d : Drawable,
-    #   gc : GC,
-    #   x : Int32,
-    #   y : Int32,
-    #   text_items : PmbTextItem,
-    #   nitems : Int32
-    # ) : NoReturn
-    #
-    # fun mb_draw_string = XmbDrawString(
-    #   display : PDisplay,
-    #   d : Drawable,
-    #   font_set : FontSet,
-    #   gc : GC,
-    #   x : Int32,
-    #   y : Int32,
-    #   text : PChar,
-    #   bytes_text : Int32
-    # ) : NoReturn
-    #
-    # fun wc_draw_string = XwcDrawString(
-    #   display : PDisplay,
-    #   d : Drawable,
-    #   font_set : FontSet,
-    #   gc : GC,
-    #   x : Int32,
-    #   y : Int32,
-    #   text : PWChar_t,
-    #   num_wchars : Int32
-    # ) : NoReturn
-    #
-    # fun utf8_draw_string = Xutf8DrawString(
-    #   display : PDisplay,
-    #   d : Drawable,
-    #   font_set : FontSet,
-    #   gc : GC,
-    #   x : Int32,
-    #   y : Int32,
-    #   text : PChar,
-    #   bytes_text : Int32
-    # ) : NoReturn
-    #
-    # fun mb_draw_image_string = XmbDrawImageString(
-    #   display : PDisplay,
-    #   d : Drawable,
-    #   font_set : FontSet,
-    #   gc : GC,
-    #   x : Int32,
-    #   y : Int32,
-    #   text : PChar,
-    #   bytes_text : Int32
-    # ) : NoReturn
-    #
-    # fun wc_draw_image_string = XwcDrawImageString(
-    #   display : PDisplay,
-    #   d : Drawable,
-    #   font_set : FontSet,
-    #   gc : GC,
-    #   x : Int32,
-    #   y : Int32,
-    #   text : PWChar_t,
-    #   num_wchars : Int32
-    # ) : NoReturn
-    #
-    # fun utf8_draw_image_string = Xutf8DrawImageString(
-    #   display : PDisplay,
-    #   d : Drawable,
-    #   font_set : FontSet,
-    #   gc : GC,
-    #   x : Int32,
-    #   y : Int32,
-    #   text : PChar,
-    #   bytes_text : Int32
-    # ) : NoReturn
-    #
-    # fun open_im = XOpenIM(
-    #   dpy : PDisplay,
-    #   rdb : PrmHashBucketRec,
-    #   res_name : PChar,
-    #   res_class : PChar
-    # ) : XIM
-
-    # fun register_im_instantiate_callback = XRegisterIMInstantiateCallback(
-    #   dpy : PDisplay,
-    #   rdb : PrmHashBucketRec,
-    #   res_name : PChar,
-    #   res_class : PChar,
-    #   callback : IDProc,
-    #   client_data : Pointer
-    # ) : Bool
-    #
-    # fun unregister_im_instantiate_callback = XUnregisterIMInstantiateCallback(
-    #   dpy : PDisplay,
-    #   rdb : PrmHashBucketRec,
-    #   res_name : PChar,
-    #   res_class : PChar,
-    #   callback : IDProc,
-    #   client_data : Pointer
-    # ) : Bool
-    #
-    # fun internal_connection_numbers = XInternalConnectionNumbers(
-    #   dpy : PDisplay,
-    #   fd_return : PInt32*,
-    #   count_return : PInt32
-    # ) : Status
-    #
-    # fun process_internal_connection = XProcessInternalConnection(
-    #   dpy : PDisplay,
-    #   fd : Int32
-    # ) : NoReturn
-    #
-    # fun add_connectioin_watch = XAddConnectionWatch(
-    #   dpy : PDisplay,
-    #   callback : ConnectionWatchProc,
-    #   client_data : Pointer
-    # ) : Status
-    #
-    # fun remove_connection_watch = XRemoveConnectionWatch(
-    #   dpy : PDisplay,
-    #   callback : ConnectionWatchProc,
-    #   client_data : Pointer
-    # ) : NoReturn
-
-    # fun get_event_data = XGetEventData(
-    #   dpy : PDisplay,
-    #   cookie : PGenericEventCookie
-    # ) : Bool
-    #
-    # fun free_event_data = XFreeEventData(
-    #   dpy : PDisplay,
-    #   cookie : PGenericEventCookie
-    # ) : NoReturn
-
-    # -------------------
-
-    def select_input(w : Window, event_mask)
-      X.select_input @dpy, w, event_mask
+    def peek_if_event(predicate : PDisplay, PEvent, Pointer -> Bool, arg : Pointer) : Event?
+      if X.peek_if_event @dpy, out xevent, predicate, arg
+        Event.from_xevent xevent
+      else
+        nil
+      end
     end
 
     def pending : Int32
       X.pending @dpy
     end
 
-    def store_name(w : Window, name : String) : Int32
-      X.store_name @dpy, w, name.to_unsafe
+    def protocol_revision : Int32
+      X.protocol_revision @dpy
+    end
+
+    def protocol_version : Int32
+      X.protocol_version @dpy
+    end
+
+    def put_back_event(event : Event) : Int32
+      X.put_back_event @dpy, event.to_unsafe
+    end
+
+    def put_image(d : X11::C::Drawable, gc : X11::C::X::GC, image : Image, src_x : Int32, src_y : Int32, dest_x : Int32, dest_y : Int32, width : UInt32, height : UInt32) : Int32
+      X.put_image @dpy, d, gc, image.to_unsafe, src_x, xrc_y, dest_x, dest_y, width, height
+    end
+
+    def q_length : Int32
+      X.q_length @dpy
+    end
+
+    def query_best_cursor(d : X11::C::Drawable, width : UInt32, height : UInt32) : NamedTuple(width: UInt32, height: UInt32, status: X11::C::X::Status)
+      status = X.query_best_cursor @dpy, d, width, height, out width_return, out height_return
+      {width: width_return, height: height_return, status: status}
+    end
+
+    def query_best_size(c_class : Int32, which_screen : X11::C::Drawable, width : UInt32, height : UInt32) : NamedTuple(width: UInt32, height: UInt32, status: X11::C::X::Status)
+      status = X.query_best_size @dpy, c_class, which_screen, width, height, out width_return, out height_return
+      {width: width_return, height: height_return, status: status}
+    end
+
+    def query_best_stipple(which_screen : X11::C::Drawable, width : UInt32, height : UInt32) : NamedTuple(width: UInt32, height: UInt32, status: X11::C::X::Status)
+      status = X.query_best_stipple @dpy, which_screen, width, height, out width_return, out height_return
+      {width: width_return, height: height_return, status: status}
+    end
+
+    def query_best_tile(which_screen : X11::C::Drawable, width : UInt32, height : UInt32) : NamedTuple(width: UInt32, height: UInt32, status: X11::C::X::Status)
+      status = X.query_best_tile @dpy, which_screen, width, height, out width_return, out height_return
+      {width: width_return, height: height_return, status: status}
+    end
+
+    def query_color(colormap : X11::C::Colormap, def_in : Color) : Color
+      xcolor = def_in.to_x
+      X.query_color @dpy, colormap, pointerof(xcolor)
+      Color.new xcolor
+    end
+
+    def query_colors(colormap : X11::C::Colormap, defs_in : Array(Color)) : Array(Color)
+      xcolors = defs_in.map(&.to_x)
+      X.query_colors @dpy, colormap xcolors.to_unsafe, xcolors.size
+      xcolors.map { |xcolor| Color.new xcolor }
+    end
+
+    def query_extension(name : String) : NamedTuple(major_opcode: Int32, first_event: Int32, first_error: Int32, res: Bool)
+      res = X.query_extension @dpy, name.to_unsafe, out major_opcode_return, out first_event_return, out first_error_return
+      {major_opcode: major_opcode_return, first_event: first_event_return, first_error: first_error_return, res: res == X::True ? true : false}
+    end
+
+    def query_keymap : StaticArray(UInt8, 32)
+      keys_return = StaticArray(UInt8, 32).new
+      X.query_keymap @dpy, keys_return.to_unsafe
+      keys_return
+    end
+
+    def query_pointer(w : X11::C::Window) : NamedTuple(root: X11::C::Window, child: X11::C::Window, root_x: Int32, root_y: Int32, win_x: Int32, win_y: Int32, mask: UInt32, res: Bool)
+      res = X.query_pointer @dpy, w, out root_return, out child_return, out root_x_return, out root_y_return, out win_x_return, out win_y_return, out mask_return
+      {root: root_return, child: child_return, root_x: root_x_return, root_y: root_y_return, win_x: win_x_return, win_y: win_y_return, mask: mask_return, res: res == X::True ? true : false}
+    end
+
+    def query_text_extents(font_id : X11::C::XID, string : String) : NamedTuple(direction: Int32, font_ascent: Int32, font_descent: Int32, overall: CharStruct, res: Int32)
+      res = X.query_text_extents @dpy, font_id, string.to_unsafe, string.size, out direction_return, out font_ascent_return, out font_descent_return, out overall_return
+      {direction: direction_return, font_ascent: font_ascent_return, font_descent: font_descent_return, overall: overall_return, res: res}
+    end
+
+    def query_text_extents_16(font_id : X11::C::XID, string : Array(X11::C::X::Char2b)) : NamedTuple(direction: Int32, font_ascent: Int32, font_descent: Int32, overall: CharStruct, res: Int32)
+      res = X.query_text_extents_16 @dpy, font_id, string.to_unsafe, string.size, out direction_return, out font_ascent_return, out font_descent_return, out overall_return
+      {direction: direction_return, font_ascent: font_ascent_return, font_descent: font_descent_return, overall: overall_return, res: res}
+    end
+
+    def query_tree(w : X11::C::Window) : NamedTuple(root: X11::C::Window, parent: X11::C::Window, children: Array(X11::C::Window), status: X11::C::X::Status)
+      status = X.query_tree @dpy, w, out root_return, out parent_return, out children_return, out nchildren_return
+      if nchildren_return > 0
+        children = Array(X11::C::Window).new(nchildren_return) do |i|
+          (children_return + i).value
+        end
+      else
+        children = [] of X11::C::Window;
+      end
+      {root: root_return, parent: parent_return, children: children, status: status}
+    end
+
+    def raise_window(w : X11::C::Window) : Int32
+      X.raise_window @dpy, w
+    end
+
+    def read_bitmap_file(d : X11::C::Drawable, filename : String) : NamedTuple(width: UInt32, height: UInt32, bitmap: Pixmap, x_hot: Int32, y_hot: Int32, res: Int32)
+      res = X.read_bitmap_file @dpy, d, filename.to_unsafe, out width_return, out height_return. out bitmap_return, out x_hot_return, out y_hot_return
+      {width: width_return, height: height_return, bitmap: bitmap_return, x_hot: x_hot_return, y_hot: y_hot_return, res: res}
+    end
+
+    def rebind_keysym(keysym : KeySym, list : Array(KeySym), string : String) : Int32
+      X.rebind_keysym @dpy, keysym, list.to_unsafe, list.size, string.to_unsafe, string.size
+    end
+
+    def recolor_cursor(cursor : X11::C::Cursor, foreground_color : Color, background_color : Color) : Int32
+      X.recolor_cursor @dpy, cursor, foreground_color.to_unsafe, background_color.to_unsafe
+    end
+
+    def remove_from_save_set(w : X11::C::Window) : Int32
+      X.remove_from_save_set @dpy, w
+    end
+
+    def remove_host(host : HostAddress) : Int32
+      X.remove_host @dpy, host.to_unsafe
+    end
+
+    def remove_hosts(hosts : Array(HostAddress)) : Int32
+      X.remove_hosts @dpy, hosts.to_unsafe, hosts.size
+    end
+
+    def reparent_window(w : X11::C::Window, parent : X11::C::Window, x : Int32, y : Int32) : Int32
+      X.reparent_window @dpy, w, parent, x, y
+    end
+
+    def reset_screen_saver : Int32
+      X.reset_screen_saver @dpy
+    end
+
+    def resize_window(w : X11::C::Window, width : UInt32, height : UInt32) : Int32
+      X.resize_window @dpy, w, width, height
+    end
+
+    def restack_windows(windows : Array(X11::C::Window)) : Int32
+      X.restack_windows @dpy, windows.to_unsafe, windows.size
+    end
+
+    def rotate_buffers(rotate : Int32) : Int32
+      X.rotate_buffers @dpy, rotate
+    end
+
+    def rotate_window_properties(w : X11::C::Window, properties : Array(Atom | X11::C::Atom), npositions : Int32) : Int32
+      X.rotate_window_properties @dpy, w, properties.to_unsafe.as(X11::C::Atom*), properties.size, npositions
+    end
+
+    def screen_count : Int32
+      X.screen_count @dpy
+    end
+
+    def select_input(w : X11::C::Window, event_mask : Int64) : Int32
+      X.select_input @dpy, w, event_mask
+    end
+
+    def send_event(w : X11::C::Window, propagate : Bool, event_mask : Int64, event_send : Event) : X11::C::X::Status
+      X.send_event @dpy, w, propagate ? X::True : X::False, event_mask, event_send.to_unsafe.as(X11::C::X::PEvent)
+    end
+
+    def set_access_control(mode : Int32) : Int32
+      X.set_access_control @dpy, mode
+    end
+
+    def set_arc_mode(gc : X11::C::X::GC, arc_mode : Int32) : Int32
+      X.set_arc_mode @dpy, gc, arc_mode
+    end
+
+    def set_background(gc : X11::C::X::GC, background : UInt64) : Int32
+      X.set_background @dpy, gc, background
+    end
+
+    def set_clip_mask(gc : X11::C::X::GC, pixmap : X11::C::Pixmap) : Int32
+      X.set_clip_mask @dpy, gc, pixmap
+    end
+
+    def set_clip_origin(gc : X11::C::GC, clip_x_origin : Int32, clip_y_origin : Int32) : Int32
+      X.set_clip_origin @dpy, gc, clip_x_origin, clip_y_origin
+    end
+
+    def set_clip_rectangles(gc : X11::C::X::GC, clip_x_origin : Int32, clip_y_origin : Int32, rectangles : Array(Rectangle), ordering : Int32) : Int32
+      X.set_clip_rectangles @dpy, gc, clip_x_origin, clip_y_origin, rectangles.to_unsafe, rectangles.size, ordering
+    end
+
+    def set_close_down_mode(close_mode : Int32) : Int32
+      X.set_close_down_mode @dpy, close_mode
+    end
+
+    def set_command(w : X11::C::Window, argv : Array(String)) : Int32
+      pargv = argb.map(&.to_unsafe)
+      X.set_command @dpy, w, pargv.to_unsafe, pargv.size
+    end
+
+    def set_dashes(gc : X11::C::X::GC, dash_offset : Int32, dash_list : String) : Int32
+      X.set_dashes @dpy, gc, dash_offset, dash_list.to_unsafe, dash_list.size
+    end
+
+    def set_fill_rule(gc : X11::C::X::GC, fill_rule : Int32) : Int32
+      X.set_fill_rule @dpy, gc, fill_rule
+    end
+
+    def set_fill_style(gc : X11::C::X::GC, fill_style : Int32) : Int32
+      X.set_fill_style @dpy, gc, fill_style
+    end
+
+    def set_font(gc : X11::C::X::GC, font : X11::C::Font) : Int32
+      X.set_font @dpy, gc, font
+    end
+
+    def set_font_path(directories : Array(String)) : Int32
+      pdirs = directories.map(&.to_unsafe)
+      X.set_font_path @dpy, pdirst.to_unsafe, pdirs.size
+    end
+
+    def set_foreground(gc : X11::C::X::GC, foreground : UInt64) : Int32
+      X.set_foreground = @dpy, gc, foreground
+    end
+
+    def set_function(gc : X11::C::GC, function : Int32) : Int32
+      X.set_function @dpy, gc, function
+    end
+
+    def set_graphics_exposures(gc : X11::C::X::GC, graphics_exposures : Bool) : Int32
+      X.set_graphics_exposures @dpy, gc, graphics_exposures ? X::True : X::False
+    end
+
+    def set_icon_name(w : X11::C::Window, icon_name : String) : Int32
+      X.set_icon_name @dpy, w, icon_name.to_unsafe
+    end
+
+    def set_input_focus(focus : X11::C::Window, revert_to : Int32, time : X11::C::Time) : Int32
+      X.set_input_focus @dpy, focus, revert_to, time
+    end
+
+    def set_line_attributes(gc : X11::C::X::GC, line_width : UInt32, line_style : Int32, cap_style : Int32, join_style : Int32) : Int32
+      X.set_line_attributes @dpy, gc, line_width, line_style, cap_stype, join_style
+    end
+
+    def set_modifier_mapping(modmap : ModifierKeymap) : Int32
+      X.set_modifier_mapping @dpy, modmap.to_unsafe
+    end
+
+    def set_plane_mask(gc : X11::C::X::GC, plane_mask : UInt64) : Int32
+      X.set_plane_mask @dpy, gc, plane_mask
+    end
+
+    def set_pointer_mapping(map : Array(UInt8)) : Int32
+      X.set_pointer_mapping @dpy, map.to_unsafe, map.size
+    end
+
+    def set_screen_saver(timeout : Int32, interval : Int32, prefer_blanking : Int32, allow_exposures : Int32) : Int32
+      X.set_screen_saver @dpy, timeout, interval, prefer_blanking, allow_exposures
+    end
+
+    def set_selection_owner(selection : Atom | X11::C::Atom, owner : X11::C::Window, time : X11::C::Time) : Int32
+      X.set_selection_owner @dpy, selection.to_u64, owner, time
+    end
+
+    def set_state(gc : X11::C::X::GC, foreground : UInt64, background : UInt64, function : Int32, plane_mask : UInt64) : Int32
+      X.set_state @dpy, gc, foreground, background, function, plane_mask
+    end
+
+    def set_stipple(gc : X11::C::X::GC, stipple : X11::C::Pixmap) : Int32
+      X.set_stipple @dpy, gc, stipple
+    end
+
+    def set_subwindow_mode(gc : X11::C::X::GC, subwindow_mode : Int32) : Int32
+      X.set_subwindow_mode @dpy, gc, subwindow_mode
+    end
+
+    def set_ts_origin(gc : X11::C::X::GC, ts_x_origin : Int32, ts_y_origin : Int32) : Int32
+      X.set_ts_origin @dpy, gc, ts_x_origin, ts_y_origin
+    end
+
+    def set_tile(gc : X11::C::X::GC, tile : X11::C::Pixmap) : Int32
+      X.set_title @dpy, gc, tile
+    end
+
+    def set_window_background(w : X11::C::Window, background_pixel : UInt64) : Int32
+      X.set_window_background @dpy, w, background_pixel
+    end
+
+    def set_window_background_pixmap(w : X11::C::Window, background_pixmap : X11::C::Pixmap) : Int32
+      X.set_window_background_pixmap @dpy, w, background_pixmap
+    end
+
+    def set_window_border(w : X11::C::Window, border_pixel : UInt64) : Int32
+      X.set_window_border @dpy, w, border_pixel
+    end
+
+    def set_window_border_pixmap(w : X11::C::Window, border_pixmap : X11::C::Pixmap) : Int32
+      X.set_window_border_pixmap @dpy, w, border_pixmap
+    end
+
+    def set_window_border_width(w : X11::C::Window, width : UInt32) : Int32
+      X.set_window_border_width @dpy, w, width
+    end
+
+    def set_window_colormap(w : X11::C::Window, colormap : X11::C::Colormap) : Int32
+      X.set_window_colormap @dpy, w, colormap
+    end
+
+    def store_buffer(bytes  : Bytes, nbytes : Int32, buffer : Int32) : Int32
+      X.store_buffer @dpy, bytes.to_unsafe, nbytes, buffer
+    end
+
+    def store_bytes(bytes : Bytes) : Int32
+      X.store_bytes @dpy, bytes.to_unsafe, bytes.size
+    end
+
+    def store_color(colormap : X11::C::Colormap, color : Color) : Int32
+      X.store_color @dpy, colormap, color.to_unsafe
+    end
+
+    def store_colors(colormap : X11::C::Colormap, color : Array(Color)) : Int32
+      X.store_colors @dpy, colormap, color.to_unsafe
+    end
+
+    def store_name(w : X11::C::Window, window_name : String) : Int32
+      X.store_name @dpy, w, window_name.to_unsafe
+    end
+
+    def store_named_color(colormap : X11::C::Colormap, color : Color, pixel : UInt64, flags : Int32) : Int32
+      X.store_named_color @dpy, colormap, color.to_unsafe, pixel, flags
+    end
+
+    def sync(discard : Bool) : Int32
+      X.sync @dpy, discard ? X::True : X::False
+    end
+
+    def translate_coordinates(src_w : X11::C::Window, dest_w : X11::C::Window, src_x : Int32, src_y : Int32) : NamedTuple(dest_x: Int32, dest_y: Int32, child: X11::C::Window, res: Bool)
+      res = X.translate_coordinates @dpy, src_w, dest_w, src_x, src_y, out dest_x_return, out dest_y_return, out child_return
+      {dest_x: dest_x_return, dest_y: dest_y_return, child: child_return}
+    end
+
+    def undefine_cursor(w : X11::C::Window) : Int32
+      X.undefine_cursor @dpy, w
+    end
+
+    def ungrab_button(button : UInt32, modifiers : UInt32, grab_window : X11::C::Window) : Int32
+      X.ungrab_button @dpy, button, modifiers, grab_window
+    end
+
+    def ungrab_key(keycode : Int32, modifiers : UInt32, grab_window : X11::C::Window) : Int32
+      X.ungrab_key @dpy, keycode, modifiers, grab_window
+    end
+
+    def ungrab_keyboard(time : X11::C::Time) : Int32
+      X.ungrab_keyboard @dpy, time
+    end
+
+    def ungrab_pointer(time : X11::C::Time) : Int32
+      X.ungrab_pointer @dpy, time
+    end
+
+    def ungrab_server : Int32
+      X.ungrab_server @dpy
+    end
+
+    def uninstall_colormap(colormap : X11::C::Colormap) : Int32
+      X.uninstall_colormap @dpy, colormap
+    end
+
+    def unload_font(font : X11::C::Font) : Int32
+      X.unload_font
+    end
+
+    def unmap_subwindows(w : X11::C::Window) : Int32
+      X.unmap_subwindows @dpy, w
+    end
+
+    def unmap_window(w : X11::C::Window) : Int32
+      X.unmap_window @dpy, w
+    end
+
+    def vendor_release : Int32
+      X.vendor_release @dpy
+    end
+
+    def warp_pointer(src_w : X11::C::Window, dest_w : X11::C::Window, src_x : Int32, src_y : Int32, src_width : UInt32, src_height : UInt32, dest_x : Int32, dest_y : Int32) : Int32
+      X.warp_pointer @dpy, src_w, dest_w, src_x, src_y, src_width, src_height, dest_x, dest_y
+    end
+
+    def window_event(w : X11::C::Window, event_mask : Int64) : Event?
+      if X.window_event @dpy, w, event_mask, xevent
+        Event.from_xevent xevent
+      else
+        nil
+      end
+    end
+
+    def write_bitmap_file(filename : String, bitmap : X11::C::Pixmap, width : UInt32, height : UInt32, x_hot : Int32, y_hot : Int32) : Int32
+      X.write_bitmap_file @dpy, filename.to_unsafe, width, height, x_hot, y_hot
+    end
+
+    def open_om(rdb : X11::C::X::PrmHashBucketRec, res_name : String, res_class : String) : X11::C::XOM
+      X.open_om @dpy, rdb, res_name.to_unsafe, res_class.to_unsafe
+    end
+
+    def create_font_set(base_font_name_list : String) : NamedTuple(font_set: X11::C::X::FontSet, missing_charset_list: Array(String), def_string: String)
+      font_set = X.create_font_set @dpy, base_font_name_list.to_unsafe, out missing_charset_list_return, out missing_charset_count_return, def_string_return
+
+      if missing_charset_count_return > 0
+        missing_charset_list = Array(String).new(missing_charset_count_return) do |i|
+          String.new (missing_charset_list_return + i).value
+        end
+        X.free missing_charset_list_return.as(PChar)
+      else
+        missing_charset_list = [] of String
+      end
+
+      if def_string_return.null?
+        def_string = ""
+      else
+        def_string = String.new def_string_return
+        X.free def_string_return
+      end
+
+      {font_set: font_set, missing_charset_list: missing_charset_list, def_string: def_string}
+    end
+
+    def free_font_set(font_set : X11::C::X::FontSet)
+      X.free_font_set @dpy, font_set
+    end
+
+    def mb_draw_text(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, text_items : Array(MbTextItem))
+      X.mb_draw_text @dpy, d, gc, x, y, text_items.to_unsafe.as(X11::C::X::PmbTextItem), text_items.size
+    end
+
+    def wc_draw_text(d : X11::C::Drawable, gc : X11::C::GC, x : Int32, y : Int32, text_items : Array(WcTextItem))
+      X.wc_draw_text @dpy, d, gc, x, y, text_items.to_unsafe.as(X11::C::X::PwcTextItem), text_items.size
+    end
+
+    def utf8_draw_text(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, text_items : Array(MbTextItem))
+      X.utf8_draw_text @dpy, d, gc, x, y, text_items.to_unsafe.as(X11::C::X::PmbTextItem), text_items.size
+    end
+
+    def mb_draw_string(d : X11::C::Drawable, font_set : X11::C::X::FontSet, gc : X11::C::X::GC, x : Int32, y : Int32, text : String)
+      X.mb_draw_string @dpy, s, font_set, gc, x, y, text.to_unsafe, text.size
+    end
+
+    def wc_draw_string(d : X11::C::Drawable, font_set : X11::C::X::FontSet, gc : X11::C::X::GC, x : Int32, y : Int32, text : X11::C::X::PWChar_t, num_wchars : Int32)
+      X.wc_draw_string @dpy, d, font_set, gc, x, y, text, num_wchars
+    end
+
+    def utf8_draw_string(d : X11::C::Drawable, font_set : X11::C::X::FontSet, gc : X11::C::X::GC, x : Int32, y : Int32, text : String)
+      X.utf8_draw_string @dpy, d, font_set, gc, x, y, text.to_unsafe, text.size
+    end
+
+    def mb_draw_image_string(d : X11::C::Drawable, font_set : X11::C::X::FontSet, gc : X11::C::X::GC, x : Int32, y : Int32, text : String)
+      X.mb_draw_image_string @dpy, d, font_set, gc, x, y, text.to_unsafe, text.size
+    end
+
+    def wc_draw_image_string(d : X11::C::Drawable, font_set : X11::C::X::FontSet, gc : X11::C::X::GC, x : Int32, y : Int32, text : X11::C::X::PWChar_t, num_wchars : Int32)
+      X.wc_draw_image_string @dpy, font_set, gc, x, y, text, num_wchars
+    end
+
+    def utf8_draw_image_string(d : X11::C::Drawable, font_set : X11::C::X::FontSet, gc : X11::C::X::GC, x : Int32, y : Int32, text : String)
+      X.utf8_draw_image_string @dpy, d, font_set, gc, x, y, text.to_unsafe, text.size
+    end
+
+    def open_im(rdb : X11::C::X::PrmHashBucketRec, res_name : String, res_class : String) : X11::C::XIM
+      X.open_im @dpy, rdb, res_name.to_unsafe, res_class.to_unsafe
+    end
+
+    def register_im_instantiate_callback(rdb : X11::C::X::PrmHashBucketRec, res_name : String, res_class : String, callback : X11::C::X::IDProc, client_data : X11::C::X::Pointer) : Bool
+      res = X.register_im_instantiate_callback @dpy, rdb, res_name.to_unsafe, res_class.to_unsafe, callback, client_data
+      res == X::True ? true : false
+    end
+
+    def unregister_im_instantiate_callback(rdb : X11::C::X::PrmHashBucketRec, res_name : String, res_class : String, callback : X11::C::X::IDProc, client_data : X11::C::X::Pointer) : Bool
+      res = X.unregister_im_instantiate_callback @dpy, edb, res_name.to_unsafe, res_class.to_unsafe, callback, client_data
+      res == X::True ? true : false
+    end
+
+    def internal_connection_numbers : Array(Int32)
+      X.internal_connection_numbers @dpy, out fd_return, out count_return
+      if count_return > 0
+        fd = Array(Int32).new(count_return) { |i| (fd_return + i).value }
+      else
+        fd = [] of Int32
+      end
+      fd
+    end
+
+    def process_internal_connection(fd : Int32)
+      X.process_internal_connection @dpy, fd
+    end
+
+    def add_connectioin_watch(callback : X11::C::X::ConnectionWatchProc, client_data : X11::C::X::Pointer) : X11::C::X::Status
+      X.add_connectioin_watch @dpy, callback, client_data
+    end
+
+    def remove_connection_watch(callback : X11::C::X::ConnectionWatchProc, client_data : X11::C::X::Pointer)
+      X.remove_connection_watch @dpy, callback, client_data
+    end
+
+    def event_data : GenericEventCookie?
+      if X.get_event_data @dpy, cookie
+        GenericEventCookie.new cookie
+      else
+        nil
+      end
     end
 
     # Pointer to the underlieing XDisplay object.
