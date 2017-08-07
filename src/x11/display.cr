@@ -5088,7 +5088,20 @@ module X11
       X.grab_server @dpy
     end
 
-    def if_event(predicate : X11::C::X::PDisplay, PEvent, Pointer -> Bool, arg : Pointer) : Event?
+    # Returns the matched event's associated structure.
+    #
+    # ###Arguments
+    # - **predicate** Specifies the procedure that is to be called to determine
+    # if the next event in the queue matches what you want.
+    # - **arg** Specifies the user-supplied argument that will be passed to the predicate procedure.
+    #
+    # ###Description
+    # The `if_event` function completes only when the specified predicate procedure.
+    # `if_event` removes the matching event from the queue and returns it.
+    #
+    # ###See also
+    # `check_if_event`, `next_event`, `peek_if_event`, `put_back_event`, `send_event`.
+    def if_event(predicate : X11::C::X::PDisplay, PEvent, Pointer -> Bool, arg : X11::C::X::Pointer) : Event?
       X.if_event @dpy, out pevent, predicate, arg
       if pevent.null?
         nil
@@ -5097,43 +5110,270 @@ module X11
       end
     end
 
+    # Specify the required byte order for images for each scanline unit in XY
+    # format (bitmap) or for each pixel value in Z format.
+    # The function can return either **LSBFirst** or **MSBFirst**.
     def image_byte_order : Int32
       X.image_byte_order @dpy
     end
 
+    # Installs the specified colormap for its associated screen.
+    #
+    # ###Arguments
+    # - **colormap** Specifies the colormap.
+    #
+    # ###Description
+    # The `install_colormap` function installs the specified colormap for its
+    # associated screen. All windows associated with this colormap immediately
+    # display with true colors. You associated the windows with this colormap
+    # when you created them by calling `create_window`, `create_simple_window`,
+    # `change_window_attributes`, or `set_window_colormap`.
+    #
+    # If the specified colormap is not already an installed colormap, the X
+    # server generates a **ColormapNotify** event on each window that has that
+    # colormap. In addition, for every other colormap that is installed as a
+    # result of a call to `install_colormap`, the X server generates a
+    # **ColormapNotify** event on each window that has that colormap.
+    #
+    # `install_colormap` can generate a **BadColor** error.
+    #
+    # ###Diagnostics
+    # - **BadColor** A value for a *Colormap* argument does not name a defined *Colormap*.
+    #
+    # ###See also
+    # `change_window_attributes`, `create_colormap`, `create_window`, `X11::free`,
+    # `installed_colormaps`, `uninstall_colormap`.
     def install_colormap(colormap : X11::C::Colormap) : Int32
       X.install_colormap @dpy, colormap
     end
 
+    # Returns KeyCode for the specified KeySym.
+    #
+    # ###Arguments
+    # - **keysym** Specifies the *KeySym* that is to be searched for or converted.
+    #
+    # ###Description
+    # Standard *KeySym* names are obtained from `c/keysymdef.cr` by removing the
+    # XK_ prefix from each name. *KeySyms* that are not part of the Xlib standard
+    # also may be obtained with this function. The set of *KeySyms* that are
+    # available in this manner and the mechanisms by which Xlib obtains them is implementation-dependent.
+    #
+    # If the *KeySym* name is not in the Host Portable Character Encoding, the result is implementation-dependent.
+    #
+    # ###See also
+    # `KeyEvent::lookup_keysym`.
     def keysym_to_keycode(keysym : X11::C::KeySym) : X11::C::KeyCode
       X.keysym_to_keycode @dpy, keysym
     end
 
+    # Forces a close-down of the client.
+    #
+    # ###Arguments
+    # - **resource** Specifies any resource associated with the client
+    # that you want to destroy or **AllTemporary**.
+    #
+    # ###Description
+    # The `kill_client` function forces a close-down of the client that created
+    # the resource if a valid resource is specified. If the client has already
+    # terminated in either **RetainPermanent** or **RetainTemporary** mode, all
+    # of the client's resources are destroyed. If **AllTemporary** is specified,
+    # the resources of all clients that have terminated in **RetainTemporary**
+    # are destroyed. This permits implementation of window manager facilities
+    # that aid debugging. A client can set its close-down mode to **RetainTemporary**.
+    # If the client then crashes, its windows would not be destroyed. The programmer
+    #can then inspect the application's window tree and use the window manager to destroy the zombie windows.
+    #
+    # `kill_client` can generate a **BadValue** error.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument defined
+    # as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `set_close_down_mode`.
     def kill_client(resource : X11::C::XID) : Int32
       X.kill_client @dpy, resource
     end
 
+    # Looks up the string name of a color with respect
+    # to the screen associated with the specified colormap.
+    #
+    # ###Arguments
+    # - **colormap** Specifies the colormap.
+    # - **color_name** Specifies the color name string (for example, red) whose
+    # color definition structure you want returned.
+    #
+    # ###Return
+    # - **exact_def** Returns the exact RGB values.
+    # - **screen_def** Returns the closest RGB values provided by the hardware.
+    #
+    # ###Description
+    # The `lookup_color` function looks up the string name of a color with respect
+    # to the screen associated with the specified colormap. It returns both the
+    # exact color values and the closest values provided by the screen with respect
+    # to the visual type of the specified colormap. If the color name is not in
+    # the Host Portable Character Encoding, the result is implementation dependent.
+    # Use of uppercase or lowercase does not matter.
+    #
+    # `lookup_color` can generate a **BadColor** error.
+    #
+    # ###Diagnostics
+    # - **BadColor** A value for a *Colormap* argument does not name a defined *Colormap*.
+    #
+    # ###See also
+    # `alloc_color`, `create_colormap`, `lookup_color`, `parse_color`,
+    # `query_color`, `query_colors`, `store_colors`.
     def lookup_color(colormap : X11::C::Colormap, color_name : String) : NamedTuple(exact_def: Color, screen_def: Color, res: X11::C::Status)
       res = X.lookup_color @dpy, colormap, color_name.to_unsafe, out exact_def_return, out screen_def_return
       {exact_def: Color.new(exact_def_return), screen_def: Color.new(screen_def_return), res: res}
     end
 
+    # Lowers the specified window to the bottom of
+    # the stack so that it does not obscure any sibling windows.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `lower_window` function lowers the specified window to the bottom of
+    # the stack so that it does not obscure any sibling windows. If the windows
+    # are regarded as overlapping sheets of paper stacked on a desk, then lowering
+    # a window is analogous to moving the sheet to the bottom of the stack but
+    # leaving its x and y location on the desk constant. Lowering a mapped window
+    # will generate **Expose** events on any windows it formerly obscured.
+    #
+    # If the override-redirect attribute of the window is **false** and some
+    # other client has selected **SubstructureRedirectMask** on the parent, the
+    # X server generates a **ConfigureRequest** event, and no processing is performed.
+    # Otherwise, the window is lowered to the bottom of the stack.
+    #
+    # `lower_window` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `circulate_subwindows`, `circulate_subwindows_down`,
+    # `circulate_subwindows_up`, `configure_window`, `create_window`,
+    # `destroy_window`, `map_window`, `raise_window`, `restack_windows`.
     def lower_window(w : X11::C::Window) : Int32
       X.lower_window @dpy, w
     end
 
+    # Maps the window and all of its subwindows that have had map requests.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `map_raised` function essentially is similar to `map_window` in that
+    # it maps the window and all of its subwindows that have had map requests.
+    # However, it also raises the specified window to the top of the stack.
+    # For additional information, see `map_window`.
+    #
+    # `map_raised` can generate multiple **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`,
+    # `destroy_window`, `map_subwindows`, `map_window`, `unmap_window`.
     def map_raised(w : X11::C::Window) : Int32
       X.map_raised @dpy, w
     end
 
+    # Maps all subwindows for a specified window in top-to-bottom stacking order.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `map_subwindows` function maps all subwindows for a specified window
+    # in top-to-bottom stacking order. The X server generates **Expose** events
+    # on each newly displayed window. This may be much more efficient than mapping
+    # many windows one at a time because the server needs to perform much of the
+    # work only once, for all of the windows, rather than for each window.
+    #
+    # `map_subwindows` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a **Window** argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`,
+    # `destroy_window`, `map_raised`, `map_window`, `unmap_window`.
     def map_subwindows(w : X11::C::Window) : Int32
       X.map_subwindows @dpy, w
     end
 
+    # Maps the window and all of its subwindows that have had map requests.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `map_window` function maps the window and all of its subwindows that
+    # have had map requests. Mapping a window that has an unmapped ancestor does
+    # not display the window but marks it as eligible for display when the ancestor
+    # becomes mapped. Such a window is called unviewable. When all its ancestors
+    # are mapped, the window becomes viewable and will be visible on the screen
+    # if it is not obscured by another window. This function has no effect if
+    # the window is already mapped.
+    #
+    # If the override-redirect of the window is **false** and if some other client
+    # has selected **SubstructureRedirectMask** on the parent window, then the
+    # X server generates a **MapRequest** event, and the `map_window` function
+    # does not map the window. Otherwise, the window is mapped,
+    # and the X server generates a **MapNotify** event.
+    #
+    # If the window becomes viewable and no earlier contents for it are remembered,
+    # the X server tiles the window with its background. If the window's background
+    # is undefined, the existing screen contents are not altered, and the X server
+    # generates zero or more **Expose** events. If backing-store was maintained
+    # while the window was unmapped, no **Expose** events are generated. If
+    # backing-store will now be maintained, a full-window exposure is always
+    # generated. Otherwise, only visible regions may be reported. Similar
+    # tiling and exposure take place for any newly viewable inferiors.
+    #
+    # If the window is an **InputOutput** window, `map_window` generates
+    # **Expose** events on each **InputOutput** window that it causes to be displayed.
+    # If the client maps and paints the window and if the client begins processing
+    # events, the window is painted twice. To avoid this, first ask for **Expose**
+    # events and then map the window, so the client processes input events as usual.
+    # The event list will include Expose for each window that has appeared on the screen.
+    # The client's normal response to an Expose event should be to repaint the window.
+    # This method usually leads to simpler programs and to proper interaction with window managers.
+    #
+    # `map_window` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure`, `create_window`,
+    # `destroy_window`, `map_raised`, `map_subwindows`, `unmap_window`.
     def map_window(w : X11::C::Window) : Int32
       X.map_window @dpy, w
     end
 
+    # Returns the matched event's associated structure.
+    #
+    # ###Arguments
+    # - **event_mask** Specifies the event mask.
+    #
+    # ###Description
+    # The `mask_event` function searches the event queue for the events associated
+    # with the specified mask. When it finds a match, `mask_event` removes that event.
+    # The other events stored in the queue are not discarded. If the event you
+    # requested is not in the queue, `mask_event` flushes the output buffer and blocks until one is received.
+    #
+    # ###See also
+    # `check_mask_event`, `check_typed_event`, `check_typed_window_event`,
+    # `check_window_event`, `if_event`, `next_event`, `peek_event`,
+    # `put_back_event`, `send_event`, `window_event`.
     def mask_event(event_mask : Int64) : Event?
       X.mask_event @dpy, event_mask, out pevent
       if pevent.null?
@@ -5143,14 +5383,83 @@ module X11
       end
     end
 
+    # Changes the size and location of the specified window without raising it.
+    #
+    # ###Arguments
+    # - **w** Specifies the window to be reconfigured.
+    # - **x**, **y** Specify the x and y coordinates, which define the new
+    # position of the window relative to its parent.
+    # - **width**, **height** Specify the width and height, which define the interior size of the window.
+    #
+    # ###Description
+    # The `move_resize_window` function changes the size and location of the
+    # specified window without raising it. Moving and resizing a mapped window
+    # may generate an **Expose** event on the window. Depending on the new size
+    # and location parameters, moving and resizing a window may generate **Expose**
+    # events on windows that the window formerly obscured.
+    #
+    # If the override-redirect flag of the window is **false** and some other
+    # client has selected **SubstructureRedirectMask** on the parent, the X server
+    # generates a **ConfigureRequest** event, and no further processing is performed.
+    # Otherwise, the window size and location are changed.
+    #
+    # `move_resize_window` can generate **BadValue** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument defined
+    # as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`,
+    # `destroy_window`, `map_window`, `move_window`, `raise_window`,
+    # `resize_window`, `set_window_border_width`, `unmap_window`.
     def move_resize_window(w : X11::C::Window, x : Int32, y : Int32, width : UInt32, height : UInt32) : Int32
       X.move_resize_window @dpy, w, x, y, width, height
     end
 
+    # Function moves the specified window to the specified x and y coordinates.
+    #
+    # ###Arguments
+    # - **w** Specifies the window to be moved
+    # - **x**, **y** Specify the x and y coordinates, which define the new
+    # location of the top-left pixel of the window's border or the window itself if it has no border.
+    #
+    # ###Description
+    # The `move_window` function moves the specified window to the specified x
+    # and y coordinates, but it does not change the window's size, raise the window,
+    # or change the mapping state of the window. Moving a mapped window may or may
+    # not lose the window's contents depending on if the window is obscured by
+    # nonchildren and if no backing store exists. If the contents of the window
+    # are lost, the X server generates **Expose** events. Moving a mapped window
+    # generates **Expose** events on any formerly obscured windows.
+    #
+    # If the override-redirect flag of the window is False and some other client
+    # has selected **SubstructureRedirectMask** on the parent, the X server
+    # generates a **ConfigureRequest** event, and no further processing is
+    # performed. Otherwise, the window is moved.
+    #
+    # `move_window` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`,
+    # `destroy_window`, `map_window`, `move_resize_window`, `raise_window`,
+    # `resize_window`, `set_window_border_width`, `unmap_window`.
     def move_window(w : X11::C::Window, x : Int32, y : Int32) : Int32
       X.move_window @dpy, w, x, y
     end
 
+    # Returns the next event in the queue.
+    #
+    # ###See also
+    # `AnyEvent`, `check_mask_event`, `check_typed_event`, `check_typed_window_event`,
+    # `check_window_event`, `if_event`, `mask_event`, `peek_event`,
+    # `put_back_event`, `send_event`, `window_event`.
     def next_event : Event?
       if X.next_event @dpy, out xevent
         Event.from_xevent xevent
@@ -5159,10 +5468,32 @@ module X11
       end
     end
 
+    # sends a **NoOperation** protocol request to the X server, thereby exercising the connection.
     def no_op : Int32
       X.no_op @dpy
     end
 
+    # Returns the exact color value for later use and sets the **DoRed**, **DoGreen**, and **DoBlue** flags.
+    #
+    # ###Arguments
+    # - **colormap** Specifies the colormap.
+    # - **spec** Specifies the color name string; case is ignored.
+    #
+    # ###Description
+    # The `parse_color` function looks up the string name of a color with respect
+    # to the screen associated with the specified colormap. It returns the exact
+    # color value. If the color name is not in the Host Portable Character Encoding,
+    # the result is implementation dependent. Use of uppercase or lowercase does
+    # not matter.
+    #
+    # `parse_color` can generate a **BadColor** error.
+    #
+    # ###Diagnostics
+    # - **BadColor** A value for a *Colormap* argument does not name a defined *Colormap*.
+    #
+    # ###See also
+    # `alloc_color`, `create_colormap`, `lookup_color`,
+    # `query_color`, `query_colors`, `store_colors`.
     def parse_color(colormap : X11::C::Colormap, spec : String) : String
       if X.parse_color @dpy, colormap, out exact_def_return
         str = String.new exact_def_return
@@ -5173,6 +5504,19 @@ module X11
       end
     end
 
+    # Returns a copy of the matched event's associated structure.
+    #
+    # ###Description
+    # The `peek_event` function returns the first event from the event queue,
+    # but it does not remove the event from the queue. If the queue is empty,
+    # `peek_event` flushes the output buffer and blocks until an event is received.
+    # It then copies the event into the client-supplied `Event` structure without
+    # removing it from the event queue.
+    #
+    # ###See also
+    # `check_mask_event`, `check_typed_event`, `check_typed_window_event`,
+    # `check_window_event`, `if_event`, `mask_event`, `next_event`,
+    # `put_back_event`, `send_event`, `window_event`.
     def peek_event : Event?
       if X.peek_event @dpy, xevent
         Event.from_xevent xevent
@@ -5181,7 +5525,7 @@ module X11
       end
     end
 
-    def peek_if_event(predicate : PDisplay, PEvent, Pointer -> Bool, arg : Pointer) : Event?
+    def peek_if_event(predicate : X11::C::X::PDisplay, PEvent, Pointer -> Bool, arg : X11::C::X::Pointer) : Event?
       if X.peek_if_event @dpy, out xevent, predicate, arg
         Event.from_xevent xevent
       else

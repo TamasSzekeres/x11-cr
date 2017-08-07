@@ -183,7 +183,51 @@ module X11
   # alternate function is explicitly specified for the object. A *null* pointer
   # cannot be passed to this function.
   @[AlwaysInline]
-  def free(data : X11::C::PChar) : Int32
+  def self.free(data : X11::C::PChar) : Int32
     X.free data
+  end
+
+  # Allows you to parse the standard window geometry.
+  #
+  # ###Arguments
+  # - **parse_string** Specifies the string you want to parse.
+  #
+  # ###Returns
+  # - **x**, **y** Return the x and y offsets.
+  # - **width**, **height** Return the width and height determined.
+  #
+  # ###Description
+  # By convention, X applications use a standard string to indicate window size
+  # and placement. `parse_geometry` makes it easier to conform to this standard
+  # because it allows you to parse the standard window geometry. Specifically,
+  # this function lets you parse strings of the form:
+  # ```
+  # [=][<width>{xX}<height>][{+-}<xoffset>{+-}<yoffset>]
+  # ```
+  # The fields map into the arguments associated with this function. (Items
+  # enclosed in <> are integers, items in [] are optional, and items enclosed in
+  # {} indicate "choose one of." Note that the brackets should not appear in the
+  # actual string.) If the string is not in the Host Portable Character Encoding,
+  # the result is implementation dependent.
+  #
+  # The `parse_geometry` function returns a bitmask that indicates which of the
+  # four values (width, height, xoffset, and yoffset) were actually found in the
+  # string and whether the x and y values are negative. By convention, -0 is not
+  # equal to +0, because the user needs to be able to say "position the window
+  # relative to the right or bottom edge." For each value found, the
+  # corresponding argument is updated. For each value not found, the argument is
+  # left unchanged. The bits are represented by **XValue**, **YValue**,
+  # **WidthValue**, **HeightValue**, **XNegative**, or **YNegative** and are
+  # defined in `x11/c/Xutil.cr`. They will be set whenever one of the values is
+  # defined or one of the signs is set.
+  #
+  # If the function returns either the **XValue** or **YValue** flag, you should
+  # place the window at the requested position.
+  #
+  # ###See also
+  # `Display::wm_geometry`, `Display::set_wm_properties`.
+  def self.parse_geometry(parse_string : String) : NamedTuple(x: Int32, y: Int32, width: UInt32, height: UInt32, res: Int32)
+    res = X.parse_geometry parse_string.to_unsafe, out x_return, out y_return, out width_return, out height_return
+    {x: x_return, y: y_return, width: width_return, height: height_return, res: res}
   end
 end

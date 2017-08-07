@@ -91,7 +91,7 @@ module X11
     # Returns a `Bool` value indicating whether the screen supports save unders.
     # If `true`, the screen supports save unders. If `false`, the screen does not support save unders
     def does_save_unders : Bool
-      (X.does_save_unders(@screen)) == 0 ? false : true
+      (X.does_save_unders(@screen)) == X11::C::X::True ? true : false
     end
 
     # Returns height of screen in millimeters.
@@ -102,6 +102,16 @@ module X11
     # Returns height of screen in pixels.
     def height : Int32
       X.height_of_screen @screen
+    end
+
+    # Returns the maximum number of installed colormaps supported by the specified screen.
+    def max_cmaps : Int32
+      X.max_cmaps_of_screen @screen
+    end
+
+    # Returns the minimum number of installed colormaps supported by the specified screen.
+    def min_cmaps : Int32
+      X.min_cmaps_of_screen @screen
     end
 
     # Returns the underlieing `X11::C::X::PScreen` pointer
