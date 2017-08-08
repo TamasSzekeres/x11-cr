@@ -114,6 +114,11 @@ module X11
       X.min_cmaps_of_screen @screen
     end
 
+    # Returns the depth of the root window.
+    def plane : Int32
+      X.plane_of_screen @screen
+    end
+
     # Returns the underlieing `X11::C::X::PScreen` pointer
     def to_unsafe : X11::C::X::PScreen
       @screen

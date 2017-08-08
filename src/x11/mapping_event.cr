@@ -24,6 +24,21 @@ module X11
       @event
     end
 
+    # Refreshes the stored modifier and keymap information.
+    #
+    # ###Description
+    # The `refresh_keyboard_mapping` function refreshes the stored modifier and
+    # keymap information. You usually call this function when a **MappingNotify**
+    # event with a request member of **MappingKeyboard** or **MappingModifier**
+    # occurs. The result is to update Xlib's knowledge of the keyboard.
+    #
+    # ###See also
+    # `KeyEvent::lookup_keysym`, `KeyEvent::lookup_string`, `Display::rebind_keysym`,
+    # `X11::string_to_keysym`, `ButtonEvent`, `MapEvent`.
+    def refresh_keyboard_mapping : Int32
+      X.refresh_keyboard_mapping @event
+    end
+
     def type : Int32
       @event.type
     end

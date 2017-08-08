@@ -5525,6 +5525,21 @@ module X11
       end
     end
 
+    # Returns the matched event's structure.
+    #
+    # ###Arguments
+    # - **predicate** Specifies the procedure that is to be called to determine
+    # if the next event in the queue matches what you want.
+    # - **arg** Specifies the user-supplied argument that will be passed to the predicate procedure.
+    #
+    # ###Description
+    # The `peek_if_event` function returns only when the specified predicate
+    # procedure returns **True** for an event. After the predicate procedure finds
+    # a match, `peek_if_event` copies the matched event into the client-supplied `Event`
+    # structure without removing the event from the queue.
+    #
+    # ###See also
+    # `check_if_event`, `if_event`, `next_event`, `put_back_event`, `send_event`.
     def peek_if_event(predicate : X11::C::X::PDisplay, PEvent, Pointer -> Bool, arg : X11::C::X::Pointer) : Event?
       if X.peek_if_event @dpy, out xevent, predicate, arg
         Event.from_xevent xevent
@@ -5533,88 +5548,514 @@ module X11
       end
     end
 
+    # Returns the number of events that have been received from the X server.
+    #
+    # ###Description
+    # The `pending` function returns the number of events that have been received
+    # from the X server but have not been removed from the event queue.
+    # `pending` is identical to `events_queued` with the mode **QueuedAfterFlush** specified.
+    #
+    # ###See also
+    # `events_queued`, `flush`, `if_event`, `next_event`, `put_back_event`, `sync`.
     def pending : Int32
       X.pending @dpy
     end
 
+    # Returns the minor protocol revision number of the X server.
     def protocol_revision : Int32
       X.protocol_revision @dpy
     end
 
+    # Returns the major version number (11) of the X protocol associated with the connected display.
     def protocol_version : Int32
       X.protocol_version @dpy
     end
 
+    # Pushes an event back onto the head of the display's event queue.
+    #
+    # ###Arguments
+    # - **event** Specifies the event.
+    #
+    # ###Description
+    # The `put_back_event` function pushes an event back onto the head of the
+    # display's event queue by copying the event into the queue. This can be
+    # useful if you read an event and then decide that you would rather deal
+    # with it later. There is no limit to the number of times in succession that you can call `put_back_event`.
+    #
+    # ###See also
+    # `if_event`, `next_event`, `send_event`.
     def put_back_event(event : Event) : Int32
       X.put_back_event @dpy, event.to_unsafe
     end
 
+    # Combines an image with a rectangle of the specified drawable.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable.
+    # - **gc** Specifies the GC.
+    # - **image** Specifies the image you want combined with the rectangle.
+    # - **src_x** Specifies the offset in X from the left edge of the image defined by the `Image` object.
+    # - **src_y** Specifies the offset in Y from the top edge of the image defined by the `Image` object.
+    # - **dest_x**, **dest_y** Specify the x and y coordinates, which are relative
+    # to the origin of the drawable and are the coordinates of the subimage.
+    # - **width**, **height** Specify the width and height of the subimage,
+    # which define the dimensions of the rectangle.
+    #
+    # ###Description
+    # The `put_image` function combines an image with a rectangle of the specified
+    # drawable. The section of the image defined by the src_x, src_y, width, and
+    # height arguments is drawn on the specified part of the drawable. If
+    # **XYBitmap** format is used, the depth of the image must be one, or a
+    # **BadMatch** error results. The foreground pixel in the GC defines the
+    # source for the one bits in the image, and the background pixel defines the
+    # source for the zero bits. For **XYPixmap** and **ZPixmap**, the depth of
+    # the image must match the depth of the drawable, or a **BadMatch** error results.
+    #
+    # If the characteristics of the image (for example, byte_order and bitmap_unit)
+    # differ from what the server requires, `put_image` automatically makes the appropriate conversions.
+    #
+    # This function uses these GC components: function, plane-mask, subwindow-mode,
+    # clip-x-origin, clip-y-origin, and clip-mask. It also uses these GC
+    # mode-dependent components: foreground and background.
+    #
+    # `put_image` can generate **BadDrawable**, **BadGC**, **BadMatch**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `add_pixel`, `create_image`, `destroy_image`, `get_pixel`, `init_image`,
+    # `put_pixel`, `get_sub_image`.
     def put_image(d : X11::C::Drawable, gc : X11::C::X::GC, image : Image, src_x : Int32, src_y : Int32, dest_x : Int32, dest_y : Int32, width : UInt32, height : UInt32) : Int32
       X.put_image @dpy, d, gc, image.to_unsafe, src_x, xrc_y, dest_x, dest_y, width, height
     end
 
+    # Returns the length of the event queue for the connected display. Note that
+    # there may be more events that have not been read into the queue yet (see `events_queued`).
     def q_length : Int32
       X.q_length @dpy
     end
 
+    # Provides a way to find out what size cursors are actually possible on the display.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable, which indicates the screen.
+    # - **width**, **height** Specify the width and height of the cursor that you want the size information for.
+    #
+    # ###Returns
+    # - **width**, **height** Returns the best width and height that is closest to the specified width and height.
+    #
+    # ###Description
+    # Some displays allow larger cursors than other displays. The `query_best_cursor`
+    # function provides a way to find out what size cursors are actually possible on
+    # the display. It returns the largest size that can be displayed. Applications
+    # should be prepared to use smaller cursors on displays that cannot support large ones.
+    #
+    # `query_best_cursor` can generate a **BadDrawable** error.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    #
+    # ###See also
+    # `create_colormap`, `create_font_cursor`, `define_cursor`, `free_cursor`, `recolor_cursor`.
     def query_best_cursor(d : X11::C::Drawable, width : UInt32, height : UInt32) : NamedTuple(width: UInt32, height: UInt32, status: X11::C::X::Status)
       status = X.query_best_cursor @dpy, d, width, height, out width_return, out height_return
       {width: width_return, height: height_return, status: status}
     end
 
+    # Returns the best or closest size to the specified size.
+    #
+    # ###Arguments
+    # - **c_class** Specifies the class that you are interested in.
+    # You can pass **TileShape**, **CursorShape**, or **StippleShape**.
+    # - **which_screen** Specifies any drawable on the screen.
+    # - **width**, **height** Specify the width and height.
+    #
+    # ###Returns
+    # - **width**, **height** Return the width and height of the object best supported by the display hardware.
+    #
+    # ###Description
+    # The `query_best_size` function returns the best or closest size to the
+    # specified size. For **CursorShape**, this is the largest size that can be
+    # fully displayed on the screen specified by which_screen. For **TileShape**,
+    # this is the size that can be tiled fastest. For **StippleShape**, this is
+    # the size that can be stippled fastest. For **CursorShape**, the drawable
+    # indicates the desired screen. For **TileShape** and **StippleShape**, the
+    # drawable indicates the screen and possibly the window class and depth.
+    # An **InputOnly** window cannot be used as the drawable for **TileShape** or
+    # **StippleShape**, or a **BadMatch** error results.
+    #
+    # `query_best_size` can generate **BadDrawable**, **BadMatch**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the full
+    # range defined by the argument's type is accepted. Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `create_gc`, `query_best_tile`, `query_best_stipple`, `set_arc_mode`,
+    # `set_clip_origin`, `set_fill_style`, `set_font`, `set_line_attributes`,
+    # `set_state`, `set_tile`.
     def query_best_size(c_class : Int32, which_screen : X11::C::Drawable, width : UInt32, height : UInt32) : NamedTuple(width: UInt32, height: UInt32, status: X11::C::X::Status)
       status = X.query_best_size @dpy, c_class, which_screen, width, height, out width_return, out height_return
       {width: width_return, height: height_return, status: status}
     end
 
+    # Returns the best or closest size.
+    #
+    # ###Arguments
+    # - **which_screen** Specifies any drawable on the screen.
+    # - **width**, **height** Specify the width and height.
+    #
+    # ###Returns
+    # - **width**, **height** Return the width and height of the object best
+    # supported by the display hardware.
+    #
+    # ###Description
+    # The `query_best_stipple` function returns the best or closest size, that
+    # is, the size that can be stippled fastest on the screen specified by
+    # which_screen. The drawable indicates the screen and possibly the window
+    # class and depth. If an **InputOnly** window is used as the drawable, a **BadMatch** error results.
+    # `query_best_stipple` can generate **BadDrawable** and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `create_gc`, `query_best_tile`, `query_best_size`, `set_arc_mode`,
+    # `set_clip_origin`, `set_fill_style`, `set_font`, `set_line_attributes`,
+    # `set_state`, `set_tile`.
     def query_best_stipple(which_screen : X11::C::Drawable, width : UInt32, height : UInt32) : NamedTuple(width: UInt32, height: UInt32, status: X11::C::X::Status)
       status = X.query_best_stipple @dpy, which_screen, width, height, out width_return, out height_return
       {width: width_return, height: height_return, status: status}
     end
 
+    # Returns the best or closest size.
+    #
+    # ###Arguments
+    # - **which** Specifies any drawable on the screen.
+    # - **width**, **height** Specify the width and height.
+    #
+    # ###Returns
+    # - **width**, **height** Return the width and height of the object best
+    # supported by the display hardware.
+    #
+    # ###Description
+    # The `query_best_tile` function returns the best or closest size, that is,
+    # the size that can be tiled fastest on the screen specified by which_screen.
+    # The drawable indicates the screen and possibly the window class and depth.
+    # If an **InputOnly** window is used as the drawable, a **BadMatch** error results.
+    #
+    # `query_best_tile` can generate **BadDrawable** and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `create_gc`, `query_best_size`, `query_best_stipple`, `set_arc_mode`,
+    # `set_clip_origin`, `set_fill_style`, `set_font`,
+    # `set_line_attributes`, `set_state`, `set_tile`.
     def query_best_tile(which_screen : X11::C::Drawable, width : UInt32, height : UInt32) : NamedTuple(width: UInt32, height: UInt32, status: X11::C::X::Status)
       status = X.query_best_tile @dpy, which_screen, width, height, out width_return, out height_return
       {width: width_return, height: height_return, status: status}
     end
 
+    # Returns the current RGB value for the pixel in the `Color` structure.
+    #
+    # ###Arguments
+    # - **colormap** Specifies the colormap.
+    # - **def_in** Specifies and returns the RGB values for the pixel specified in the structure.
+    #
+    # ###Description
+    # The `query_color` function returns the current RGB value for the pixel in
+    # the `Color` structure and sets the **DoRed**, **DoGreen**, and **DoBlue** flags.
+    #
+    # `query_color` can generate **BadColor** and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadColor** A value for a *Colormap* argument does not name a defined *Colormap*.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `alloc_color`, `create_colormap`, `lookup_color`, `parse_color`,
+    # `query_colors`, `store_colors`.
     def query_color(colormap : X11::C::Colormap, def_in : Color) : Color
       xcolor = def_in.to_x
       X.query_color @dpy, colormap, pointerof(xcolor)
       Color.new xcolor
     end
 
+    # Returns the RGB value for each pixel in each `Color` structure.
+    #
+    # ###Arguments
+    # - **colormap** Specifies the colormap.
+    # - **defs_in Specifies and returns an array of color definition structures
+    # for the pixel specified in the structure.
+    #
+    # ###Description
+    # The `query_colors` function returns the RGB value for each pixel in each
+    # `Color` structure and sets the **DoRed**, **DoGreen**, and **DoBlue** flags in each structure.
+    #
+    # `query_colors` can generate **BadColor** and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadColor** A value for a *Colormap* argument does not name a defined *Colormap*.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument,
+    # the full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `alloc_color`, `create_colormap`, `lookup_color`, `parse_color`,
+    # `query_color`, `query_colors`, `store_colors`.
     def query_colors(colormap : X11::C::Colormap, defs_in : Array(Color)) : Array(Color)
       xcolors = defs_in.map(&.to_x)
       X.query_colors @dpy, colormap xcolors.to_unsafe, xcolors.size
       xcolors.map { |xcolor| Color.new xcolor }
     end
 
+    # Determines if the named extension is present.
+    #
+    # ###Arguments
+    # - **name** Specifies the extension name.
+    #
+    # ###Returns
+    # - **major_opcode** Returns the major opcode.
+    # - **first_event** Returns the first event code, if any. Specifies the extension list.
+    #
+    # ###Description
+    # The `query_extension` function determines if the named extension is present.
+    # If the extension is not present, `query_extension` returns **false**;
+    # otherwise, it returns **true**. If the extension is present,
+    # `query_extension` returns the major opcode for the extension to major_opcode;
+    # otherwise, it returns zero. Any minor opcode and the request formats are specific
+    # to the extension. If the extension involves additional event types,
+    # `query_extension` returns the base event type code to first_event;
+    # otherwise, it returns zero. The format of the events is specific to the extension.
+    # If the extension involves additional error codes, `query_extension` returns
+    # the base error code to first_error; otherwise, it returns zero.
+    # The format of additional data in the errors is specific to the extension.
+    #
+    # ###See also
+    # `extensions`.
     def query_extension(name : String) : NamedTuple(major_opcode: Int32, first_event: Int32, first_error: Int32, res: Bool)
       res = X.query_extension @dpy, name.to_unsafe, out major_opcode_return, out first_event_return, out first_error_return
       {major_opcode: major_opcode_return, first_event: first_event_return, first_error: first_error_return, res: res == X::True ? true : false}
     end
 
+    # Returns a bit vector for the logical state of the keyboard.
+    #
+    # ###Description
+    # The `query_keymap` function returns a bit vector for the logical state of
+    # the keyboard, where each bit set to 1 indicates that the corresponding key
+    # is currently pressed down. The vector is represented as 32 bytes.
+    # Byte N (from 0) contains the bits for keys 8N to 8N + 7 with the
+    # least-significant bit in the byte representing key 8N.
+    #
+    # Note that the logical state of a device (as seen by client applications)
+    # may lag the physical state if device event processing is frozen.
+    #
+    # ###See also
+    # `auto_repeat_off`, `auto_repeat_on`, `bell`, `change_keyboard_control`,
+    # `change_keyboard_mapping`, `keyboard_control`, `set_pointer_mapping`.
     def query_keymap : StaticArray(UInt8, 32)
       keys_return = StaticArray(UInt8, 32).new
       X.query_keymap @dpy, keys_return.to_unsafe
       keys_return
     end
 
+    # Returns the root window the pointer is logically
+    # on and the pointer coordinates relative to the root window's origin.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Returns
+    # - **root** Returns the root window that the pointer is in.
+    # - **child** Returns the child window that the pointer is located in, if any.
+    # - **root_x**, **root_y** Return the pointer coordinates relative to the root window's origin.
+    # - **win_x**, **win_y** Return the pointer coordinates relative to the specified window.
+    # - **mask** Returns the current state of the modifier keys and pointer buttons.
+    #
+    # ###Description
+    # The `query_pointer` function returns the root window the pointer is logically
+    # on and the pointer coordinates relative to the root window's origin.
+    # If `query_pointer` returns **false**, the pointer is not on the same screen
+    # as the specified window, and `query_pointer` returns **None** to child
+    # and zero to win_X and win_y. If `query_pointer` returns **true**,
+    # the pointer coordinates returned to win_x and win_y are relative
+    # to the origin of the specified window. In this case, `query_pointer` returns
+    # the child that contains the pointer, if any, or else **None** to child.
+    #
+    # `query_pointer` returns the current logical state of the keyboard buttons
+    # and the modifier keys in mask. It sets mask_return to the bitwise inclusive
+    # OR of one or more of the button or modifier key bitmasks to match the
+    # current state of the mouse buttons and the modifier keys.
+    #
+    # Note that the logical state of a device (as seen through Xlib) may lag the
+    # physical state if device event processing is frozen.
+    #
+    # `query_pointer` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `window_attributes`, `query_tree`.
     def query_pointer(w : X11::C::Window) : NamedTuple(root: X11::C::Window, child: X11::C::Window, root_x: Int32, root_y: Int32, win_x: Int32, win_y: Int32, mask: UInt32, res: Bool)
       res = X.query_pointer @dpy, w, out root_return, out child_return, out root_x_return, out root_y_return, out win_x_return, out win_y_return, out mask_return
       {root: root_return, child: child_return, root_x: root_x_return, root_y: root_y_return, win_x: win_x_return, win_y: win_y_return, mask: mask_return, res: res == X::True ? true : false}
     end
 
+    # Returns the bounding box of the specified 8-bit character string in the
+    # specified font or the font contained in the specified GC.
+    #
+    # ###Arguments
+    # - **font_id** Specifies either the font ID or the `GContext` ID that contains the font.
+    # - **string** Specifies the character string.
+    #
+    # ###Returns
+    # - **direction** Returns the value of the direction hint (**FontLeftToRight** or **FontRightToLeft**).
+    # - **font_ascent** Returns the font ascent.
+    # - **font_descent** Returns the font descent.
+    # - **overall** Returns the overall size in the specified `CharStruct` structure.
+    #
+    # ###Description
+    # The `query_text_extents` function returns the bounding box of the specified 8-bit
+    # character string in the specified font or the font contained in the specified GC.
+    # This function queries the X server and, therefore, suffer the round-trip overhead
+    # that is avoided by `text_extents`. The function returns a `CharStruct` structure,
+    # whose members are set to the values as follows.
+    #
+    # The ascent member is set to the maximum of the ascent metrics of all characters
+    # in the string. The descent member is set to the maximum of the descent metrics.
+    # The width member is set to the sum of the character-width metrics of all characters
+    # in the string. For each character in the string, let W be the sum of the
+    # character-width metrics of all characters preceding it in the string.
+    # Let L be the left-side-bearing metric of the character plus W. Let R be the
+    # right-side-bearing metric of the character plus W. The lbearing member is
+    # set to the minimum L of all characters in the string. The rbearing member
+    # is set to the maximum R.
+    #
+    # For fonts defined with linear indexing rather than 2-byte matrix indexing,
+    # each `X11::C::X::Char2b` structure is interpreted as a 16-bit number with
+    # byte1 as the most-significant byte. If the font has no defined default
+    # character, undefined characters in the string are taken to have all zero metrics.
+    #
+    # Characters with all zero metrics are ignored. If the font has no defined
+    # default_char, the undefined characters in the string are also ignored.
+    #
+    # `query_text_extents` can generate **BadFont** and **BadGC** errors.
+    #
+    # ###Diagnostics
+    # - **BadFont** A value for a font argument does not name a defined font (or, in some cases, `GContext`).
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    #
+    # ###See also
+    # `load_font`, `query_text_extents_16`, `text_extents`, `text_extents_16`, `text_width`.
     def query_text_extents(font_id : X11::C::XID, string : String) : NamedTuple(direction: Int32, font_ascent: Int32, font_descent: Int32, overall: CharStruct, res: Int32)
       res = X.query_text_extents @dpy, font_id, string.to_unsafe, string.size, out direction_return, out font_ascent_return, out font_descent_return, out overall_return
       {direction: direction_return, font_ascent: font_ascent_return, font_descent: font_descent_return, overall: overall_return, res: res}
     end
 
+    # Returns the bounding box of the specified 16-bit character string in the
+    # specified font or the font contained in the specified GC.
+    #
+    # ###Arguments
+    # - **font_id** Specifies either the font ID or the `GContext` ID that contains the font.
+    # - **string** Specifies the character string.
+    #
+    # ###Returns
+    # - **direction** Returns the value of the direction hint (**FontLeftToRight** or **FontRightToLeft**).
+    # - **font_ascent** Returns the font ascent.
+    # - **font_descent** Returns the font descent.
+    # - **overall** Returns the overall size in the specified `CharStruct` structure.
+    #
+    # ###Description
+    # The `query_text_extents_16` function returns the bounding box of the
+    # specified 16-bit character string in the specified font or the font contained
+    # in the specified GC. This function queries the X server and, therefore,
+    # suffer the round-trip overhead that is avoided by `text_extents_16`.
+    # The function returns a `CharStruct` structure, whose members are set to the values as follows.
+    #
+    # The ascent member is set to the maximum of the ascent metrics of all
+    # characters in the string. The descent member is set to the maximum of the
+    # descent metrics. The width member is set to the sum of the character-width
+    # metrics of all characters in the string. For each character in the string,
+    # let W be the sum of the character-width metrics of all characters preceding
+    # it in the string. Let L be the left-side-bearing metric of the character
+    # plus W. Let R be the right-side-bearing metric of the character plus W.
+    # The lbearing member is set to the minimum L of all characters in the string.
+    # The rbearing member is set to the maximum R.
+    #
+    # For fonts defined with linear indexing rather than 2-byte matrix indexing,
+    # each `X11::C::X::Char2b` structure is interpreted as a 16-bit number with
+    # byte1 as the most-significant byte. If the font has no defined default character,
+    # undefined characters in the string are taken to have all zero metrics.
+    #
+    # Characters with all zero metrics are ignored. If the font has no defined
+    # default_char, the undefined characters in the string are also ignored.
+    #
+    # `query_text_extents_16` can generate **BadFont** and **BadGC** errors.
+    #
+    # ###Diagnostics
+    # - **BadFont** A value for a font argument does not name a defined font (or, in some cases, `GContext`).
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    #
+    # ###See also
+    # `load_font`, `query_text_extents`, `text_extents`,
+    # `text_extents_16`, `text_width`.
     def query_text_extents_16(font_id : X11::C::XID, string : Array(X11::C::X::Char2b)) : NamedTuple(direction: Int32, font_ascent: Int32, font_descent: Int32, overall: CharStruct, res: Int32)
       res = X.query_text_extents_16 @dpy, font_id, string.to_unsafe, string.size, out direction_return, out font_ascent_return, out font_descent_return, out overall_return
       {direction: direction_return, font_ascent: font_ascent_return, font_descent: font_descent_return, overall: overall_return, res: res}
     end
 
+    # Returns the root ID, the parent window ID, a the list of children windows.
+    #
+    # ###Arguments
+    # - **w** Specifies the window whose list of children, root, parent, and
+    # number of children you want to obtain.
+    #
+    # ###Returns
+    # - **root** Returns the root window.
+    # - **parent** Returns the parent window.
+    # - **children** Returns the list of children.
+    #
+    # ###Description
+    # - The `query_tree` function returns the root ID, the parent window ID,
+    # a pointer to the list of children windows (empty array when there are no
+    # children), and the number of children in the list for the specified window.
+    # The children are listed in current stacking order, from bottommost (first)
+    # to topmost (last).
+    #
+    # `query_tree` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `window_attributes`, `query_pointer`.
     def query_tree(w : X11::C::Window) : NamedTuple(root: X11::C::Window, parent: X11::C::Window, children: Array(X11::C::Window), status: X11::C::X::Status)
       status = X.query_tree @dpy, w, out root_return, out parent_return, out children_return, out nchildren_return
       if nchildren_return > 0
@@ -5627,116 +6068,841 @@ module X11
       {root: root_return, parent: parent_return, children: children, status: status}
     end
 
+    # Raises the specified window to the top of the
+    # stack so that no sibling window obscures it.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `raise_window` function raises the specified window to the top of the
+    # stack so that no sibling window obscures it. If the windows are regarded as
+    # overlapping sheets of paper stacked on a desk, then raising a window is
+    # analogous to moving the sheet to the top of the stack but leaving its x and
+    # y location on the desk constant. Raising a mapped window may generate
+    # **Expose** events for the window and any mapped subwindows that were formerly obscured.
+    #
+    # If the override-redirect attribute of the window is **false** and some other
+    # client has selected **SubstructureRedirectMask** on the parent, the X
+    # server generates a **ConfigureRequest** event, and no processing is performed.
+    # Otherwise, the window is raised.
+    #
+    # `raise_window` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `circulate_subwindows`, `circulate_subwindows_down`m
+    # `circulate_subwindows_up`, `configure_window`, `create_window`, `destroy_window`,
+    # `lower_window`, `map_window`, `restack_windows`.
     def raise_window(w : X11::C::Window) : Int32
       X.raise_window @dpy, w
     end
 
+    # Reads in a file containing a bitmap.
+    #
+    # ###Arguments
+    # - **d** Specifies the drawable that indicates the screen.
+    # - **filename** Specifies the file name to use.
+    # The format of the file name is operating-system dependent.
+    #
+    # ###Returns
+    # - **width**, **height** Return the width and height values of the read in bitmap file.
+    # - **bitmap** Returns the bitmap that is created.
+    # - **x_hot**, **y_hot** Return the hotspot coordinates.
+    #
+    # ###Description
+    # The `read_bitmap_file` function reads in a file containing a bitmap.
+    # The file is parsed in the encoding of the current locale. The ability to
+    # read other than the standard format is implementation dependent. If the
+    # file cannot be opened, `read_bitmap_file` returns **BitmapOpenFailed**.
+    # If the file can be opened but does not contain valid bitmap data, it
+    # returns **BitmapFileInvalid**. If insufficient working storage is allocated,
+    # it returns **BitmapNoMemory**. If the file is readable and valid, it returns **BitmapSuccess**.
+    #
+    # `read_bitmap_file` returns the bitmap's height and width, as read from the
+    # file, to width and height. It then creates a pixmap of the appropriate size,
+    # reads the bitmap data from the file into the pixmap, and assigns the pixmap
+    # to the caller's variable bitmap. The caller must free the bitmap using
+    # `free_pixmap` when finished. If name_x_hot and name_y_hot exist,
+    # `read_bitmap_file` returns them to x_hot and y_hot; otherwise, it returns -1,-1.
+    #
+    # `read_bitmap_file` can generate **BadAlloc**, **BadDrawable**, and **BadGC** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    #
+    # ###See also
+    # `create_bitmap_from_data`, `create_pixmap`, `create_pixmap_from_bitmap_data`,
+    # `put_image`, `write_bitmap_file`.
     def read_bitmap_file(d : X11::C::Drawable, filename : String) : NamedTuple(width: UInt32, height: UInt32, bitmap: Pixmap, x_hot: Int32, y_hot: Int32, res: Int32)
       res = X.read_bitmap_file @dpy, d, filename.to_unsafe, out width_return, out height_return. out bitmap_return, out x_hot_return, out y_hot_return
       {width: width_return, height: height_return, bitmap: bitmap_return, x_hot: x_hot_return, y_hot: y_hot_return, res: res}
     end
 
+    # Rebind the meaning of a KeySym for the client.
+    #
+    # ###Arguments
+    # - **keysym** Specifies the KeySym that is to be rebound.
+    # - **list** Specifies the KeySyms to be used as modifiers.
+    # - **string** Specifies the string that is copied and will
+    # be returned by `KeyEvent::lookup_string`.
+    #
+    # ###Description
+    # The `rebind_keysym` function can be used to rebind the meaning of a KeySym
+    # for the client. It does not redefine any key in the X server but merely
+    # provides an easy way for long strings to be attached to keys.
+    # `KexEvent::lookup_string` returns this string when the appropriate set of
+    # modifier keys are pressed and when the KeySym would have been used for the
+    # translation. No text conversions are performed; the client is responsible
+    # for supplying appropriately encoded strings. Note that you can rebind a KeySym that may not exist.
+    #
+    # ###See also
+    # `lookup_keysym`, `KeyEvent::lookup_string`, `refresh_keyboard_mapping`,
+    # `string_to_keysym`, `ButtonEvent`, `MapEvent`.
     def rebind_keysym(keysym : KeySym, list : Array(KeySym), string : String) : Int32
       X.rebind_keysym @dpy, keysym, list.to_unsafe, list.size, string.to_unsafe, string.size
     end
 
+    # Changes the color of the specified cursor.
+    #
+    # ###Arguments
+    # - **cursor** Specifies the cursor.
+    # - **foreground_color** Specifies the RGB values for the foreground of the source.
+    # - **background_color** Specifies the RGB values for the background of the source.
+    #
+    # ###Description
+    # The `recolor_cursor` function changes the color of the specified cursor,
+    # and if the cursor is being displayed on a screen, the change is visible
+    # immediately. The pixel members of the `Color` structures are ignored; only the RGB values are used.
+    #
+    # `recolor_cursor` can generate a **BadCursor** error.
+    #
+    # ###See also
+    # `create_colormap`, `create_font_cursor`, `define_cursor`,
+    # `free_cursor`, `query_best_cursor`.
     def recolor_cursor(cursor : X11::C::Cursor, foreground_color : Color, background_color : Color) : Int32
       X.recolor_cursor @dpy, cursor, foreground_color.to_unsafe, background_color.to_unsafe
     end
 
+    # Removes the specified window from the client's save-set.
+    #
+    # ###Arguments
+    # - **w** Specifies the window that you want to delete from the client's save-set.
+    #
+    # ###Description
+    # The `remove_from_save_set` function removes the specified window from the
+    # client's save-set. The specified window must have been created by
+    # some other client, or a **BadMatch** error results.
+    #
+    # `remove_from_save_set` can generate **BadMatch** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type
+    # and range but fails to match in some other way required by the request.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `add_to_save_set`, `change_save_set`, `reparent_window`.
     def remove_from_save_set(w : X11::C::Window) : Int32
       X.remove_from_save_set @dpy, w
     end
 
+    # Removes the specified host from the access control list for that display.
+    #
+    # ###Arguments
+    # - **host** Specifies the host that is to be removed.
+    #
+    # ###Description
+    # The `remove_host` function removes the specified host from the access control
+    # list for that display. The server must be on the same host as the client
+    # process, or a **BadAccess** error results. If you remove your machine from
+    # the access list, you can no longer connect to that server, and this
+    # operation cannot be reversed unless you reset the server.
+    #
+    # `remove_host` can generate **BadAccess** and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAccess** A client attempted to free a color map entry that it did not already allocate.
+    # - **BadAccess** A client attempted to store into a read-only color map entry.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument defined
+    # as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `add_host`, `add_hosts`, `disable_access_control`, `enable_access_control`,
+    # `hosts`, `remove_hosts`, `set_access_control`.
     def remove_host(host : HostAddress) : Int32
       X.remove_host @dpy, host.to_unsafe
     end
 
+    # Removes each specified host from the access control list for that display.
+    #
+    # ###Arguments
+    # - **hosts** Specifies each host that is to be removed.
+    #
+    # ###Description
+    # The `remove_hosts` function removes each specified host from the access
+    # control list for that display. The X server must be on the same host as
+    # the client process, or a **BadAccess** error results. If you remove your
+    # machine from the access list, you can no longer connect to that server,
+    # and this operation cannot be reversed unless you reset the server.
+    #
+    # `remove_hosts` can generate **BadAccess** and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAccess** A client attempted to free a color map entry that it did not already allocate.
+    # - **BadAccess** A client attempted to store into a read-only color map entry.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument defined
+    # as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `add_host`, `add_hosts`, `disable_access_control`, `enable_access_control`,
+    # `hosts`, `remove_host`, `remove_hosts`, `set_access_control`.
     def remove_hosts(hosts : Array(HostAddress)) : Int32
       X.remove_hosts @dpy, hosts.to_unsafe, hosts.size
     end
 
+    # Places the window in the stacking order on top with respect to sibling windows.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **parent** Specifies the parent window.
+    # - **x**, **y** Specify the x and y coordinates of the position in the new parent window.
+    #
+    # ###Description
+    # If the specified window is mapped, `reparent_window` automatically performs
+    # an **UnmapWindow** request on it, removes it from its current position in
+    # the hierarchy, and inserts it as the child of the specified parent. The
+    # window is placed in the stacking order on top with respect to sibling windows.
+    #
+    # After reparenting the specified window, `reparent_window` causes the X server
+    # to generate a **ReparentNotify** event. The override_redirect member returned
+    # in this event is set to the window's corresponding attribute. Window manager
+    # clients usually should ignore this window if this member is set to **true**.
+    # Finally, if the specified window was originally mapped, the X server
+    # automatically performs a **MapWindow** request on it.
+    #
+    # The X server performs normal exposure processing on formerly obscured windows.
+    # The X server might not generate **Expose** events for regions from the initial
+    # **UnmapWindow** request that are immediately obscured by the final
+    # **MapWindow** request. A **BadMatch** error results if:
+    # - The new parent window is not on the same screen as the old parent window.
+    # - The new parent window is the specified window or an inferior of the specified window.
+    # - The new parent is **InputOnly**, and the window is not.
+    # - The specified window has a ParentRelative background, and the
+    # new parent window is not the same depth as the specified window.
+    #
+    # `reparent_window` can generate **BadMatch** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_save_set`.
     def reparent_window(w : X11::C::Window, parent : X11::C::Window, x : Int32, y : Int32) : Int32
       X.reparent_window @dpy, w, parent, x, y
     end
 
+    # Resets the screen saver.
+    #
+    # ###Description
+    # The `reset_screen_saver` function resets the screen saver.
+    #
+    # ###See also
+    # `set_screen_saver`, `force_screen_saver`, `activate_screen_saver`, `screen_saver`.
     def reset_screen_saver : Int32
       X.reset_screen_saver @dpy
     end
 
+    # Changes the inside dimensions of the specified window, not including its borders.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **width**, **height** Specify the width and height, which are the
+    # interior dimensions of the window after the call completes.
+    #
+    # ###Description
+    # The `resize_window` function changes the inside dimensions of the specified
+    # window, not including its borders. This function does not change the
+    # window's upper-left coordinate or the origin and does not restack the window.
+    # Changing the size of a mapped window may lose its contents and generate
+    # **Expose** events. If a mapped window is made smaller, changing its size
+    # generates **Expose** events on windows that the mapped window formerly obscured.
+    #
+    # If the override-redirect flag of the window is **false** and some other client
+    # has selected **SubstructureRedirectMask** on the parent, the X server generates
+    # a **ConfigureRequest** event, and no further processing is performed. If
+    # either width or height is zero, a **BadValue** error results.
+    #
+    # `resize_window` can generate **BadValue** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`,
+    # `destroy_window`, `map_window`, `move_resize_window`, `move_window`,
+    # `raise_window`, `set_window_border_width`, `unmap_window`.
     def resize_window(w : X11::C::Window, width : UInt32, height : UInt32) : Int32
       X.resize_window @dpy, w, width, height
     end
 
+    # Restacks the windows in the order specified, from top to bottom.
+    #
+    # ###Arguments
+    # - **windows** Specifies an array containing the windows to be restacked.
+    #
+    # ###Description
+    # The `restack_windows` function restacks the windows in the order specified,
+    # from top to bottom. The stacking order of the first window in the windows
+    # array is unaffected, but the other windows in the array are stacked
+    # underneath the first window, in the order of the array. The stacking order
+    # of the other windows is not affected. For each window in the window array
+    # that is not a child of the specified window, a **BadMatch** error results.
+    #
+    # If the override-redirect attribute of a window is **false** and some other
+    # client has selected **SubstructureRedirectMask** on the parent, the X server
+    # generates **ConfigureRequest** events for each window whose override-redirect
+    # flag is not set, and no further processing is performed.
+    # Otherwise, the windows will be restacked in top to bottom order.
+    #
+    # `restack_windows` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `circulate_subwindows`,
+    # `circulate_subwindows_down`, `circulate_subwindows_up`, `configure_window`,
+    # `create_window`, `destroy_window`, `lower_window`, `map_window`, `raise_window`.
     def restack_windows(windows : Array(X11::C::Window)) : Int32
       X.restack_windows @dpy, windows.to_unsafe, windows.size
     end
 
+    # Rotates the cut buffers.
+    #
+    # ###Arguments
+    # - **rotate** Specifies how much to rotate the cut buffers.
+    #
+    # ###Description
+    # The `rotate_buffers` function rotates the cut buffers, such that buffer
+    # 0 becomes buffer n, buffer 1 becomes n + 1 mod 8, and so on. This cut
+    # buffer numbering is global to the display. Note that `rotate_buffers`
+    # generates **BadMatch** errors if any of the eight buffers have not been created.
+    #
+    # ###Diagnostics
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    #
+    # ###See also
+    # `fetch_buffer`, `fetch_bytes`, `store_buffer`, `store_bytes`.
     def rotate_buffers(rotate : Int32) : Int32
       X.rotate_buffers @dpy, rotate
     end
 
+    # Allows you to rotate properties on a window.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **properties** Specifies the array of properties that are to be rotated.
+    # - **npositions** Specifies the rotation amount.
+    #
+    # ###Description
+    # The `rotate_window_properties` function allows you to rotate properties on
+    # a window and causes the X server to generate **PropertyNotify** events.
+    # If the property names in the properties array are viewed as being numbered
+    # starting from zero and if there are `properties.size` property names in the list,
+    # then the value associated with property name I becomes the value associated with
+    # property name (I + npositions) mod N for all I from zero to N - 1.
+    # The effect is to rotate the states by npositions places around the virtual
+    # ring of property names (right for positive npositions, left for negative npositions).
+    # If npositions mod N is nonzero, the X server generates a **PropertyNotify**
+    # event for each property in the order that they are listed in the array.
+    # If an atom occurs more than once in the list or no property with that name
+    # is defined for the window, a **BadMatch** error results. If a **BadAtom**
+    # or **BadMatch** error results, no properties are changed.
+    #
+    # `rotate_window_properties` can generate **BadAtom**, **BadMatch**, and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadAtom** A value for an Atom argument does not name a defined Atom.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadPixmap** A value for a *Pixmap* argument does not name a defined *Pixmap*.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_property`, `delete_property`, `window_property`, `properties`.
     def rotate_window_properties(w : X11::C::Window, properties : Array(Atom | X11::C::Atom), npositions : Int32) : Int32
       X.rotate_window_properties @dpy, w, properties.to_unsafe.as(X11::C::Atom*), properties.size, npositions
     end
 
+    # Returns the number of available screens.
     def screen_count : Int32
       X.screen_count @dpy
     end
 
+    # Requests that the X server report the events associated with the specified event mask.
+    #
+    # ###Arguments
+    # - **w** Specifies the window whose events you are interested in.
+    # - **event_mask** Specifies the event mask.
+    #
+    # ###Description
+    # The `select_input` function requests that the X server report the events
+    # associated with the specified event mask. Initially, X will not report any
+    # of these events. Events are reported relative to a window. If a window is
+    # not interested in a device event, it usually propagates to the closest
+    # ancestor that is interested, unless the do_not_propagate mask prohibits it.
+    #
+    # Setting the event-mask attribute of a window overrides any previous call
+    # for the same window but not for other clients. Multiple clients can select
+    # for the same events on the same window with the following restrictions:
+    # - Multiple clients can select events on the same window because their event
+    # masks are disjoint. When the X server generates an event, it reports it to all interested clients.
+    # - Only one client at a time can select **CirculateRequest**,
+    # **ConfigureRequest**, or **MapRequest** events, which are associated with
+    # the event mask **SubstructureRedirectMask**.
+    # - Only one client at a time can select a **ResizeRequest** event,
+    # which is associated with the event mask **ResizeRedirectMask**.
+    # - Only one client at a time can select a **ButtonPress** event, which
+    # is associated with the event mask **ButtonPressMask**.
+    # The server reports the event to all interested clients.
+    #
+    # `select_input` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
     def select_input(w : X11::C::Window, event_mask : Int64) : Int32
       X.select_input @dpy, w, event_mask
     end
 
+    # Identifies the destination window, determines which clients should
+    # receive the specified events, and ignores any active grabs.
+    #
+    # ###Arguments
+    # - **w** Specifies the window the event is to be sent to,
+    # or **PointerWindow**, or **InputFocus**.
+    # - **propagate** Specifies a Boolean value.
+    # - **event_mask** Specifies the event mask.
+    # - **event_send** Specifies the event that is to be sent.
+    #
+    # ###Description
+    # The `send_event` function identifies the destination window, determines
+    # which clients should receive the specified events, and ignores any active
+    # grabs. This function requires you to pass an event mask. For a discussion
+    # of the valid event mask names, see section "Event Masks". This function
+    # uses the w argument to identify the destination window as follows:
+    # - If w is **PointerWindow**, the destination window is the window that contains the pointer.
+    # - If w is **InputFocus** and if the focus window contains the pointer,
+    # the destination window is the window that contains the pointer; otherwise,
+    # the destination window is the focus window.
+    # To determine which clients should receive the specified events,
+    # `send_event` uses the propagate argument as follows:
+    # - If event_mask is the empty set, the event is sent to the client that
+    # created the destination window. If that client no longer exists, no event is sent.
+    # - If propagate is **false**, the event is sent to every client selecting
+    # on destination any of the event types in the event_mask argument.
+    # - If propagate is **true** and no clients have selected on destination any
+    # of the event types in event-mask, the destination is replaced with the closest
+    # ancestor of destination for which some client has selected a type in event-mask
+    # and for which no intervening window has that type in its do-not-propagate-mask.
+    # If no such window exists or if the window is an ancestor of the focus window
+    # and **InputFocus** was originally specified as the destination, the event
+    # is not sent to any clients. Otherwise, the event is reported to every client
+    # selecting on the final destination any of the types specified in event_mask.
+    #
+    # The event in the `Event` object must be one of the core events or one of
+    # the events defined by an extension (or a **BadValue** error results) so that
+    # the X server can correctly byte-swap the contents as necessary. The contents
+    # of the event are otherwise unaltered and unchecked by the X server except to
+    # force send_event to **true** in the forwarded event and to set the serial
+    # number in the event correctly; therefore these fields and the display
+    # field are ignored by `send_event`.
+    #
+    # `send_event` returns zero if the conversion to wire protocol
+    # format failed and returns nonzero otherwise.
+    #
+    # `send_event` can generate **BadValue** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values
+    # accepted by the request. Unless a specific range is specified for an
+    # argument, the full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `motion_buffer_size`, `motion_events`, `if_event`, `next_event`, `put_back_event`.
     def send_event(w : X11::C::Window, propagate : Bool, event_mask : Int64, event_send : Event) : X11::C::X::Status
       X.send_event @dpy, w, propagate ? X::True : X::False, event_mask, event_send.to_unsafe.as(X11::C::X::PEvent)
     end
 
+    # Enables or disables the use of the access control list at each connection setup.
+    #
+    # ###Arguments
+    # - **mode** Specifies the mode. You can pass **EnableAccess** or **DisableAccess**.
+    #
+    # ###Description
+    # The `set_access_control` function either enables or disables the use of
+    # the access control list at each connection setup.
+    #
+    # `set_access_control` can generate **BadAccess** and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAccess** A client attempted to free a color map entry that it did not already allocate.
+    # - **BadAccess** A client attempted to store into a read-only color map entry.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument
+    # defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `add_host`, `add_hosts`, `disable_access_control`, `enable_access_control`,
+    # `hosts`, `remove_host`, `remove_hosts`.
     def set_access_control(mode : Int32) : Int32
       X.set_access_control @dpy, mode
     end
 
+    # Sets the arc mode.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **arc_mode** Specifies the arc mode. You can pass **ArcChord** or **ArcPieSlice**.
+    #
+    # ###Description
+    # `set_arc_mode` can generate **BadAlloc**, **BadGC**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument
+    # defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `copy_area`, `create_gc`, `query_best_size`, `set_clip_origin`,
+    # `set_fill_style`, `set_font`, `set_graphics_exposures`, `set_line_attributes`,
+    # `set_state`, `set_subwindow_mode`, `set_tile`.
     def set_arc_mode(gc : X11::C::X::GC, arc_mode : Int32) : Int32
       X.set_arc_mode @dpy, gc, arc_mode
     end
 
+    # Sets the background.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **background** Specifies the background you want to set for the specified GC.
+    #
+    # ###Description
+    # `set_background` can generate **BadAlloc** and **BadGC** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    #
+    # ###See also
+    # `create_gc`, `query_best_size`, `set_arc_mode`, `set_background`,
+    # `set_clip_origin`, `set_fill_style`, `set_font`, `set_foreground`,
+    # `set_function`, `set_line_attributes`, `set_plane_mask`,
+    # `set_state`, `set_tile`.
     def set_background(gc : X11::C::X::GC, background : UInt64) : Int32
       X.set_background @dpy, gc, background
     end
 
+    # Sets the clip mask.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **pixmap** Specifies the pixmap or **None**.
+    #
+    # ###Description
+    # If the clip-mask is set to **None**, the pixels are are always drawn (regardless of the clip-origin).
+    #
+    # `set_clip_mask` can generate **BadAlloc**, **BadGC**, **BadMatch**, and **BadPixmap** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadPixmap** A value for a *Pixmap* argument does not name a defined *Pixmap*.
+    #
+    # ###See also
+    # `create_gc`, `draw_rectangle`, `query_best_size`, `set_arc_mode`,
+    # `set_clip_origin`, `set_clip_rectangles`, `set_fill_style`, `set_font`,
+    # `set_line_attributes`, `set_state`, `set_tile`.
     def set_clip_mask(gc : X11::C::X::GC, pixmap : X11::C::Pixmap) : Int32
       X.set_clip_mask @dpy, gc, pixmap
     end
 
+    # Sets clip origin.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **clip_x_origin**, **clip_y_origin** Specify the x and y coordinates of the clip-mask origin.
+    #
+    # ###Description
+    # The clip-mask origin is interpreted relative to the origin of whatever
+    # destination drawable is specified in the graphics request.
+    #
+    # `set_clip_origin` can generate **BadAlloc** and **BadGC** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    #
+    # ###See also
+    # `create_gc`, `draw_rectangle`, `query_best_size`, `set_arc_mode`,
+    # `set_clip_mask`, `set_clip_rectangles`, `set_fill_style`, `set_font`,
+    # `set_line_attributes`, `set_state`, `set_tile`.
     def set_clip_origin(gc : X11::C::GC, clip_x_origin : Int32, clip_y_origin : Int32) : Int32
       X.set_clip_origin @dpy, gc, clip_x_origin, clip_y_origin
     end
 
+    # Changes the clip-mask in the specified
+    # GC to the specified list of rectangles and sets the clip origin.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **clip_x_origin**, **clip_y_origin** Specify the x and y coordinates of the clip-mask origin.
+    # - **rectangles** Specifies an array of rectangles that define the clip-mask.
+    # - **ordering** Specifies the ordering relations on the rectangles.
+    # You can pass **Unsorted**, **YSorted**, **YXSorted**, or **YXBanded**.
+    #
+    # ###Description
+    # The `set_clip_rectangles` function changes the clip-mask in the specified
+    # GC to the specified list of rectangles and sets the clip origin. The output
+    # is clipped to remain contained within the rectangles. The clip-origin is
+    # interpreted relative to the origin of whatever destination drawable is specified
+    # in a graphics request. The rectangle coordinates are interpreted relative to
+    # the clip-origin. The rectangles should be nonintersecting, or the graphics
+    # results will be undefined. Note that the list of rectangles can be empty,
+    # which effectively disables output. This is the opposite of passing **None**
+    # as the clip-mask in `create_gc`, `change_gc`, and `set_clip_mask`.
+    #
+    # If known by the client, ordering relations on the rectangles can be specified
+    # with the ordering argument. This may provide faster operation by the server.
+    # If an incorrect ordering is specified, the X server may generate a **BadMatch**
+    # error, but it is not required to do so. If no error is generated, the graphics
+    # results are undefined. Unsorted means the rectangles are in arbitrary order.
+    # **YSorted** means that the rectangles are nondecreasing in their Y origin.
+    # **YXSorted** additionally constrains **YSorted** order in that all rectangles
+    # with an equal Y origin are nondecreasing in their X origin. **YXBanded**
+    # additionally constrains **YXSorted** by requiring that, for every possible
+    # Y scanline, all rectangles that include that scanline have an identical Y origins and Y extents.
+    #
+    # `set_clip_rectangles` can generate **BadAlloc**, **BadGC**, **BadMatch**,
+    # and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument
+    # defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `create_gc`, `draw_rectangle`, `query_best_size`, `set_arc_mode`,
+    # `set_clip_mask`, `set_clip_origin`, `set_fill_style`, `set_font`,
+    # `set_line_attributes`, `set_state`, `set_title`.
     def set_clip_rectangles(gc : X11::C::X::GC, clip_x_origin : Int32, clip_y_origin : Int32, rectangles : Array(Rectangle), ordering : Int32) : Int32
       X.set_clip_rectangles @dpy, gc, clip_x_origin, clip_y_origin, rectangles.to_unsafe, rectangles.size, ordering
     end
 
+    # Defines what will happen to the client's resources at connection close.
+    #
+    # ###Arguments
+    # - **close_mode** Specifies the client close-down mode. You can pass
+    # **DestroyAll**, **RetainPermanent**, or **RetainTemporary**.
+    #
+    # ###Description
+    # The `set_close_down_mode` defines what will happen to the client's resources
+    # at connection close. A connection starts in **DestroyAll** mode.
+    # For information on what happens to the client's resources when the
+    # close_mode argument is **RetainPermanent** or **RetainTemporary**,
+    # see "X Server Connection Close Operations".
+    #
+    # `set_close_down_mode` can generate a **BadValue** error.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values
+    # accepted by the request. Unless a specific range is specified for an
+    # argument, the full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
     def set_close_down_mode(close_mode : Int32) : Int32
       X.set_close_down_mode @dpy, close_mode
     end
 
+    # Sets the command and arguments used to invoke the application.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **argv** Specifies the application's argument list.
+    #
+    # ###Description
+    # The `set_command` function sets the command and arguments used to invoke
+    # the application. (Typically, argv is the argv array of your main program.)
+    # If the strings are not in the Host Portable Character Encoding,
+    # the result is implementation dependent.
+    #
+    # `set_command` can generate **BadAlloc** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `X11::alloc_class_hint`, `X11::alloc_icon_size`, `X11::alloc_size_hints`,
+    # `X11::alloc_wm_hints`, `command`, `set_text_property`,
+    # `set_transient_for_hint`, `set_wm_client_machine`, `set_wm_colormap_windows`,
+    # `set_wm_icon_name`, `set_wm_name`, `set_wm_properties`,
+    # `set_wm_protocols`, `X11::string_list_to_text_property`.
     def set_command(w : X11::C::Window, argv : Array(String)) : Int32
       pargv = argb.map(&.to_unsafe)
       X.set_command @dpy, w, pargv.to_unsafe, pargv.size
     end
 
+    # Sets the dash-offset and dash-list attributes for
+    # dashed line styles in the specified GC.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **dash_offset** Specifies the phase of the pattern for the dashed line-style you want to set for the specified GC.
+    # - **dash_list** Specifies the dash-list for the dashed line-style you want to set for the specified GC.
+    #
+    # ###Description
+    # The `set_dashes` function sets the dash-offset and dash-list attributes for
+    # dashed line styles in the specified GC. There must be at least one element
+    # in the specified dash_list, or a **BadValue** error results. The initial
+    # and alternating elements (second, fourth, and so on) of the dash_list are
+    # the even dashes, and the others are the odd dashes. Each element specifies
+    # a dash length in pixels. All of the elements must be nonzero, or a
+    # **BadValue** error results. Specifying an odd-length list is equivalent to
+    # specifying the same list concatenated with itself to produce an even-length list.
+    #
+    # The dash-offset defines the phase of the pattern, specifying how many
+    # pixels into the dash-list the pattern should actually begin in any single
+    # graphics request. Dashing is continuous through path elements combined with
+    # a join-style but is reset to the dash-offset between each sequence of joined lines.
+    #
+    # The unit of measure for dashes is the same for the ordinary coordinate system.
+    # Ideally, a dash length is measured along the slope of the line, but
+    # implementations are only required to match this ideal for horizontal and
+    # vertical lines. Failing the ideal semantics, it is suggested that the length
+    # be measured along the major axis of the line. The major axis is defined as
+    # the x axis for lines drawn at an angle of between -45 and +45 degrees or
+    # between 135 and 225 degrees from the x axis. For all other lines, the major axis is the y axis.
+    #
+    # `set_dashes` can generate **BadAlloc**, **BadGC**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument
+    # defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `create_gc`, `query_best_size`, `set_arc_mode`, `set_clip_origin`,
+    # `set_fill_style`, `set_font`, `set_line_attributes`, `set_state`, `set_tile`.
     def set_dashes(gc : X11::C::X::GC, dash_offset : Int32, dash_list : String) : Int32
       X.set_dashes @dpy, gc, dash_offset, dash_list.to_unsafe, dash_list.size
     end
 
+    # Sets the fill rule.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **fill_rule** Specifies the fill-rule you want to set for the specified GC.
+    # You can pass **EvenOddRule** or **WindingRule**.
+    #
+    # ###Description
+    # `set_fill_rule` can generate **BadAlloc**, **BadGC**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument
+    # defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `create_gc`, `query_best_size`, `set_arc_mode`, `set_clip_origin`,
+    # `set_fill_rule`, `set_fill_style`, `set_font`, `set_line_attributes`,
+    # `set_state`, `set_tile`.
     def set_fill_rule(gc : X11::C::X::GC, fill_rule : Int32) : Int32
       X.set_fill_rule @dpy, gc, fill_rule
     end
 
+    # Sets the fill style.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **fill_style** Specifies the fill-style you want to set for the
+    # specified GC. You can pass **FillSolid**, **FillTiled**,
+    # **FillStippled**, or **FillOpaqueStippled**.
+    #
+    # ###Description
+    # `set_fill_style` can generate **BadAlloc**, **BadGC**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `create_gc`, `query_best_size`, `set_arc_mode`, `set_clip_origin`,
+    # `set_fill_rule`, `set_font`, `set_line_attributes`, `set_state`, `set_tile`.
     def set_fill_style(gc : X11::C::X::GC, fill_style : Int32) : Int32
       X.set_fill_style @dpy, gc, fill_style
     end
 
+    # Sets the font.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **font** Specifies the font.
+    #
+    # ###Description
+    # `set_font` can generate **BadAlloc**, **BadFont**, and **BadGCs** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadFont** A value for a font argument does not name a defined font (or, in some cases, `GContext`).
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    #
+    # ###See also
+    # `create_gc`, `query_best_size`, `set_arc_mode`, `set_clip_origin`,
+    # `set_fill_style`, `set_line_attributes`, `set_state`, `set_tile`.
     def set_font(gc : X11::C::X::GC, font : X11::C::Font) : Int32
       X.set_font @dpy, gc, font
     end
