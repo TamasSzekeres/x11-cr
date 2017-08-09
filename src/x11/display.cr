@@ -6907,180 +6907,1263 @@ module X11
       X.set_font @dpy, gc, font
     end
 
+    # Defines the directory search path for font lookup.
+    #
+    # ###Arguments
+    # - **directories** Specifies the directory path used to look for a font.
+    # Setting the path to the empty list restores the default path defined for the X server.
+    #
+    # ###Description
+    # The `set_font_path` function defines the directory search path for font lookup.
+    # There is only one search path per X server, not one per client. The encoding
+    # and interpretation of the strings is implementation dependent, but typically
+    # they specify directories or font servers to be searched in the order listed.
+    # An X server is permitted to cache font information internally; for example,
+    # it might cache an entire font from a file and not check on subsequent opens
+    # of that font to see if the underlying font file has changed. However, when
+    # the font path is changed, the X server is guaranteed to flush all cached
+    # information about fonts for which there currently are no explicit resource
+    # IDs allocated. The meaning of an error from this request is implementation dependent.
+    #
+    # `set_font_path`  can generate a **BadValue** error.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument defined
+    # as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `font_path`, `fonts`, `load_font`.
     def set_font_path(directories : Array(String)) : Int32
       pdirs = directories.map(&.to_unsafe)
       X.set_font_path @dpy, pdirst.to_unsafe, pdirs.size
     end
 
+    # Sets foreground.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **foreground** Specifies the foreground you want to set for the specified GC.
+    #
+    # ###Description
+    # `set_foreground` can generate **BadAlloc** and **BadGC** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    #
+    # ###See also
+    # `create_gc`, `query_best_size`, `set_arc_mode`, `set_background`,
+    # `set_clip_origin`, `set_fill_style`, `set_font`, `set_foreground`,
+    # `set_function`, `set_line_attributes`, `set_plane_mask`, `set_state`, `set_tile`.
     def set_foreground(gc : X11::C::X::GC, foreground : UInt64) : Int32
       X.set_foreground = @dpy, gc, foreground
     end
 
+    # Sets the display function.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **function** Specifies the function you want to set for the specified GC.
+    #
+    # ###Description
+    # `set_function` can generate **BadAlloc**, **BadGC**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `create_gc`, `query_best_size`, `set_arc_mode`, `set_background`,
+    # `set_clip_origin`, `set_fill_style`, `set_font`, `set_foreground`,
+    # `set_function`, `set_line_attributes`, `set_plane_mask`, `set_state`, `set_tile`.
     def set_function(gc : X11::C::GC, function : Int32) : Int32
       X.set_function @dpy, gc, function
     end
 
+    # Sets the graphics-exposures flag of a given GC.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **graphics_exposures** Specifies a Boolean value that indicates whether
+    # you want **GraphicsExpose** and **NoExpose** events to be reported when calling
+    # `copy_area` and `copy_plane` with this GC.
+    #
+    # ###Description
+    # `set_graphics_exposures` can generate **BadAlloc**, **BadGC**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `copy_area`, `create_gc`, `query_best_size`, `set_arc_mode`, `set_clip_origin`,
+    # `set_fill_style`, `set_font`, `set_line_attributes`, `set_state`,
+    # `set_subwindow_mode`, `set_tile`.
     def set_graphics_exposures(gc : X11::C::X::GC, graphics_exposures : Bool) : Int32
       X.set_graphics_exposures @dpy, gc, graphics_exposures ? X::True : X::False
     end
 
+    # Set a window's WM_ICON_NAME property.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **icon_name** Specifies the icon name, which should be a null-terminated string.
+    #
+    # ###Description
+    # If the string is not in the Host Portable Character Encoding, the result
+    # is implementation dependent. `set_icon_name` can generate **BadAlloc** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `icon_name`, `wm_icon_name`, `set_command`, `set_text_property`,
+    # `set_transient_for_hint`, `set_wm_client_machine`, `set_wm_colormap_windows`,
+    # `set_wm_icon_name`, `set_wm_name`, `set_wm_properties`, `set_wm_protocols`.
     def set_icon_name(w : X11::C::Window, icon_name : String) : Int32
       X.set_icon_name @dpy, w, icon_name.to_unsafe
     end
 
+    # Changes the input focus and the last-focus-change time.
+    #
+    # ###Arguments
+    # - **focus** Specifies the window, **PointerRoot**, or **None**.
+    # - **revert_to** Specifies where the input focus reverts to if the window
+    # becomes not viewable. You can pass **RevertToParent**,
+    # **RevertToPointerRoot**, or **RevertToNone**.
+    # - **time** Specifies the time. You can pass either a timestamp or **CurrentTime**.
+    #
+    # ###Description
+    # The `set_input_focus` function changes the input focus and the
+    # last-focus-change time. It has no effect if the specified time is earlier
+    # than the current last-focus-change time or is later than the current X
+    # server time. Otherwise, the last-focus-change time is set to the specified
+    # time (**CurrentTime** is replaced by the current X server time).
+    # `set_input_focus` causes the X server to generate **FocusIn** and **FocusOut** events.
+    #
+    # Depending on the focus argument, the following occurs:
+    # - If focus is **None**, all keyboard events are discarded until a new focus
+    # window is set, and the revert_to argument is ignored.
+    # - If focus is a window, it becomes the keyboard's focus window. If a generated
+    # keyboard event would normally be reported to this window or one of its inferiors,
+    # the event is reported as usual. Otherwise, the event is reported relative to the focus window.
+    # - If focus is **PointerRoot**, the focus window is dynamically taken to be
+    # the root window of whatever screen the pointer is on at each keyboard event.
+    # In this case, the revert_to argument is ignored.
+    #
+    # The specified focus window must be viewable at the time `set_input_focus`
+    # is called, or a **BadMatch** error results. If the focus window later
+    # becomes not viewable, the X server evaluates the revert_to argument to
+    # determine the new focus window as follows:
+    # - If revert_to is **RevertToParent**, the focus reverts to the parent
+    # (or the closest viewable ancestor), and the new revert_to value is taken to be **RevertToNone**.
+    # - If revert_to is **RevertToPointerRoot** or **RevertToNone**, the focus
+    # reverts to **PointerRoot** or **None**, respectively. When the focus reverts,
+    # the X server generates **FocusIn** and **FocusOut** events,
+    # but the last-focus-change time is not affected.
+    #
+    # `set_input_focus` can generate **BadMatch**, **BadValue**, and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument
+    # defined as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `input_focus`, `warp_pointer`.
     def set_input_focus(focus : X11::C::Window, revert_to : Int32, time : X11::C::Time) : Int32
       X.set_input_focus @dpy, focus, revert_to, time
     end
 
+    # Sets the line drawing components of a given GC.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **line_width** Specifies the line-width you want to set for the specified GC.
+    # - **line_style** Specifies the line-style you want to set for the specified GC.
+    # You can pass **LineSolid**, **LineOnOffDash**, or **LineDoubleDash**.
+    # - **cap_style** Specifies the line-style and cap-style you want to set for
+    # the specified GC. You can pass **CapNotLast**, **CapButt**, **CapRound**, or **CapProjecting**.
+    # - **join_style** Specifies the line join-style you want to set for the
+    # specified GC. You can pass **JoinMiter**, **JoinRound**, or **JoinBevel**.
+    #
+    # ###Description
+    # `set_line_attributes` can generate **BadAlloc**, **BadGC**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - *BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument
+    # defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `create_gc`, `query_best_size`, `set_arc_mode`, `set_clip_origin`,
+    # `set_dashes`, `set_fill_style`, `set_font`, `set_state`, `set_tile`.
     def set_line_attributes(gc : X11::C::X::GC, line_width : UInt32, line_style : Int32, cap_style : Int32, join_style : Int32) : Int32
       X.set_line_attributes @dpy, gc, line_width, line_style, cap_stype, join_style
     end
 
+    # Specifies the KeyCodes of the keys that are to be used as modifiers.
+    #
+    # ###Arguments
+    # - **modmap** Specifies the `ModifierKeymap` structure.
+    #
+    # ###Description
+    # The `set_modifier_mapping` function specifies the KeyCodes of the keys
+    # (if any) that are to be used as modifiers. If it succeeds, the X server
+    # generates a **MappingNotify** event, and `set_modifier_mapping` returns
+    # **MappingSuccess**. X permits at most eight modifier keys. If more than
+    # eight are specified in the `ModifierKeymap` structure, a **BadLength** error results.
+    #
+    # The modifiermap member of the `ModifierKeymap` structure contains eight sets
+    # of max_keypermod KeyCodes, one for each modifier in the order **Shift**,
+    # **Lock**, **Control**, **Mod1**, **Mod2**, **Mod3**, **Mod4**, and **Mod5**.
+    # Only nonzero KeyCodes have meaning in each set, and zero KeyCodes are ignored.
+    # In addition, all of the nonzero KeyCodes must be in the range specified by
+    # min_keycode and max_keycode in the `Display` object, or a **BadValue** error results.
+    #
+    # An X server can impose restrictions on how modifiers can be changed, for
+    # example, if certain keys do not generate up transitions in hardware, if
+    # auto-repeat cannot be disabled on certain keys, or if multiple modifier keys
+    # are not supported. If some such restriction is violated, the status reply is
+    # **MappingFailed**, and none of the modifiers are changed. If the new KeyCodes
+    # specified for a modifier differ from those currently defined and any
+    # (current or new) keys for that modifier are in the logically down state,
+    # `set_modifier_mapping` returns **MappingBusy**, and none of the modifiers is changed.
+    #
+    # `set_modifier_mapping` can generate **BadAlloc** and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    #
+    # ###See also
+    # `change_keyboard_mapping`, `ModifierKeymap::delete_entry`, `keycodes`,
+    # `keyboard_mapping`, `modifier_mapping`, `ModifierKeymap::insert_entry`,
+    # `ModifierKeymap::new`, `set_pointer_mapping`.
     def set_modifier_mapping(modmap : ModifierKeymap) : Int32
       X.set_modifier_mapping @dpy, modmap.to_unsafe
     end
 
+    # Sets the plane mask of a given GC.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **plane_mask** Specifies the plane mask.
+    #
+    # ###Description
+    # `set_plane_mask` can generate **BadAlloc** and **BadGC** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    #
+    # ###See also
+    # `create_gc`, `query_best_size`, `set_arc_mode`, `set_background`,
+    # `set_clip_origin`, `set_fill_style`, `set_font`, `set_foreground`,
+    # `set_function`, `set_line_attributes`, `set_plane_mask`, `set_state`, `set_tile`.
     def set_plane_mask(gc : X11::C::X::GC, plane_mask : UInt64) : Int32
       X.set_plane_mask @dpy, gc, plane_mask
     end
 
+    # Sets the mapping of the pointer.
+    #
+    # ###Arguments
+    # - **map** Specifies the mapping list.
+    #
+    # ###Description
+    # The `set_pointer_mapping` function sets the mapping of the pointer. If it
+    # succeeds, the X server generates a **MappingNotify** event, and
+    # `set_pointer_mapping` returns **MappingSuccess**. Element map[i] defines
+    # the logical button number for the physical button i+1. The length of the
+    # list must be the same as `pointer_mapping` would return, or a **BadValue**
+    # error results. A zero element disables a button, and elements are not
+    # restricted in value by the number of physical buttons. However, no two
+    # elements can have the same nonzero value, or a **BadValue** error results.
+    # If any of the buttons to be altered are logically in the down state,
+    # `set_pointer_mapping` returns **MappingBusy**, and the mapping is not changed.
+    #
+    # `set_pointer_mapping` can generate a **BadValue** error.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument
+    # defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `change_keyboard_mapping`, `change_keyboard_mapping`, `pointer_mapping`.
     def set_pointer_mapping(map : Array(UInt8)) : Int32
       X.set_pointer_mapping @dpy, map.to_unsafe, map.size
     end
 
+    # Sets the screen saver mode.
+    #
+    # ###Arguments
+    # - **timeout** Specifies the timeout, in seconds, until the screen saver turns on.
+    # - **interval* Specifies the interval, in seconds, between screen saver alterations.
+    # - **prefer_blanking** Specifies how to enable screen blanking. You can pass
+    # **DontPreferBlanking**, **PreferBlanking**, or **DefaultBlanking**.
+    # - **allow_exposures** Specifies the screen save control values. You can pass
+    # **DontAllowExposures**, **AllowExposures**, or **DefaultExposures**.
+    #
+    # ###Description
+    # Timeout and interval are specified in seconds. A timeout of 0 disables the
+    # screen saver (but an activated screen saver is not deactivated), and a
+    # timeout of -1 restores the default. Other negative values generate a
+    # **BadValue** error. If the timeout value is nonzero, `set_screen_saver`
+    # enables the screen saver. An interval of 0 disables the random-pattern motion.
+    # If no input from devices (keyboard, mouse, and so on) is generated for the
+    # specified number of timeout seconds once the screen saver is enabled, the screen saver is activated.
+    #
+    # For each screen, if blanking is preferred and the hardware supports video
+    # blanking, the screen simply goes blank. Otherwise, if either exposures are
+    # allowed or the screen can be regenerated without sending **Expose** events
+    # to clients, the screen is tiled with the root window background tile randomly
+    # re-origined each interval seconds. Otherwise, the screens' state do not change,
+    # and the screen saver is not activated. The screen saver is deactivated, and
+    # all screen states are restored at the next keyboard or pointer input or at the
+    # next call to `force_screen_saver` with mode **ScreenSaverReset**.
+    #
+    # If the server-dependent screen saver method supports periodic change, the
+    # interval argument serves as a hint about how long the change period should
+    # be, and zero hints that no periodic change should be made. Examples of ways
+    # to change the screen include scrambling the colormap periodically, moving an
+    # icon image around the screen periodically, or tiling the screen with the
+    # root window background tile, randomly re-origined periodically.
+    #
+    # `set_screen_saver` can generate a **BadValue** error.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values
+    # accepted by the request. Unless a specific range is specified for an
+    # argument, the full range defined by the argument's type is accepted. Any
+    # argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `force_screen_saver`, `activate_screen_saver`, `reset_screen_saver`, `screen_saver`.
     def set_screen_saver(timeout : Int32, interval : Int32, prefer_blanking : Int32, allow_exposures : Int32) : Int32
       X.set_screen_saver @dpy, timeout, interval, prefer_blanking, allow_exposures
     end
 
+    # Changes the owner and last-change time for the specified selection.
+    #
+    # ###Arguments
+    # - **selection** Specifies the selection atom.
+    # - **owner** Specifies the owner of the specified selection atom. You can pass a window or **None**.
+    # - **time** Specifies the time. You can pass either a timestamp or **CurrentTime**.
+    #
+    # ###Description
+    # The `set_selection_owner` function changes the owner and last-change time
+    # for the specified selection and has no effect if the specified time is
+    # earlier than the current last-change time of the specified selection or is
+    # later than the current X server time. Otherwise, the last-change time is
+    # set to the specified time, with **CurrentTime** replaced by the current
+    # server time. If the owner window is specified as **None**, then the owner
+    # of the selection becomes **None** (that is, no owner). Otherwise, the
+    # owner of the selection becomes the client executing the request.
+    #
+    # If the new owner (whether a client or **None**) is not the same as the
+    # current owner of the selection and the current owner is not **None**,
+    # the current owner is sent a **SelectionClear** event. If the client that
+    # is the owner of a selection is later terminated (that is, its connection
+    # is closed) or if the owner window it has specified in the request is later
+    # destroyed, the owner of the selection automatically reverts to **None**,
+    # but the last-change time is not affected. The selection atom is
+    # uninterpreted by the X server. `selection_owner` returns the owner window,
+    # which is reported in **SelectionRequest** and **SelectionClear** events.
+    # Selections are global to the X server.
+    #
+    # `set_selection_owner` can generate **BadAtom** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadAtom** A value for an *Atom* argument does not name a defined *Atom*.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `convert_selection`, `selection_owner`.
     def set_selection_owner(selection : Atom | X11::C::Atom, owner : X11::C::Window, time : X11::C::Time) : Int32
       X.set_selection_owner @dpy, selection.to_u64, owner, time
     end
 
+    # Sets the foreground, background, plane mask, and function components for a given GC.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **foreground** Specifies the foreground you want to set for the specified GC.
+    # - **background** Specifies the background you want to set for the specified GC.
+    # - **function** Specifies the function you want to set for the specified GC.
+    # - **plane_mask** Specifies the plane mask.
+    #
+    # ###Description
+    # `set_state` can generate **BadAlloc**, **BadGC**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument defined
+    # as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `create_gc`, `query_best_size`, `set_arc_mode`, `set_background`,
+    # `set_clip_origin`, `set_fill_style`, `set_font`, `set_foreground`,
+    # `set_function`, `set_line_attributes`, `set_plane_mask`, `set_tile`.
     def set_state(gc : X11::C::X::GC, foreground : UInt64, background : UInt64, function : Int32, plane_mask : UInt64) : Int32
       X.set_state @dpy, gc, foreground, background, function, plane_mask
     end
 
+    # Sets the stipple of a given GC.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **stipple** Specifies the stipple you want to set for the specified GC.
+    #
+    # ###Description
+    # The stipple must have a depth of one, or a **BadMatch** error results.
+    # `set_stipple` can generate **BadAlloc**, **BadGC**, **BadMatch**, and **BadPixmap** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadPixmap** A value for a *Pixmap* argument does not name a defined *Pixmap*.
+    #
+    # ###See also
+    # `create_gc`, `query_best_size`, `set_arc_mode`, `set_clip_origin`,
+    # `set_fill_style`, `set_font`, `set_line_attributes`, `set_state`,
+    # `set_tile`, `set_ts_origin`.
     def set_stipple(gc : X11::C::X::GC, stipple : X11::C::Pixmap) : Int32
       X.set_stipple @dpy, gc, stipple
     end
 
+    # Sets the subwindow mode of a given GC.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **subwindow_mode** Specifies the subwindow mode.
+    # You can pass **ClipByChildren** or **IncludeInferiors**.
+    #
+    # ###Description
+    # `set_subwindow_mode` can generate **BadAlloc**, **BadGC**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument defined
+    # as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `copy_area`, `create_gc`, `query_best_size`, `set_arc_mode`,
+    # `set_clip_origin`, `set_fill_style`, `set_font`, `set_graphics_exposures`,
+    # `set_line_attributes`, `set_state`, `set_tile`.
     def set_subwindow_mode(gc : X11::C::X::GC, subwindow_mode : Int32) : Int32
       X.set_subwindow_mode @dpy, gc, subwindow_mode
     end
 
+    # Sets the tile or stipple origin of a given GC.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **ts_x_origin**, **ts_y_origin** Specify the x and y coordinates of the tile and stipple origin.
+    #
+    # ###Description
+    # When graphics requests call for tiling or stippling, the parent's origin
+    # will be interpreted relative to whatever destination drawable is specified in the graphics request.
+    #
+    # `set_ts_origin` can generate **BadAlloc** and **BadGC** error.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    #
+    # ###See also
+    # `create_gc`, `query_best_size`, `set_arc_mode`, `set_clip_origin`,
+    # `set_fill_style`, `set_font`, `set_line_attributes`, `set_state`,
+    # `set_stipple`, `set_tile`.
     def set_ts_origin(gc : X11::C::X::GC, ts_x_origin : Int32, ts_y_origin : Int32) : Int32
       X.set_ts_origin @dpy, gc, ts_x_origin, ts_y_origin
     end
 
+    # Sets the tile or stipple origin of a given GC.
+    #
+    # ###Arguments
+    # - **gc** Specifies the GC.
+    # - **tile** Specifies the fill tile you want to set for the specified GC.
+    #
+    # ###Description
+    # The tile and GC must have the same depth, or a **BadMatch** error results.
+    #
+    # `set_tile` can generate **BadAlloc**, **BadGC**, **BadMatch**, and **BadPixmap** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadGC** A value for a `GContext` argument does not name a defined `GContext`.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadPixmap** A value for a *Pixmap* argument does not name a defined *Pixmap*.
+    #
+    # ###See also
+    # `create_gc`, `query_best_size`, `set_arc_mode`, `set_clip_origin`,
+    # `set_fill_style`, `set_font`, `set_line_attributes`, `set_state`,
+    # `set_stipple`, `set_ts_origin`.
     def set_tile(gc : X11::C::X::GC, tile : X11::C::Pixmap) : Int32
       X.set_title @dpy, gc, tile
     end
 
+    # Sets the background of the window to the specified pixel value.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **background_pixel** Specifies the pixel that is to be used for the background.
+    #
+    # ###Description
+    # The `set_window_background` function sets the background of the window to
+    # the specified pixel value. Changing the background does not cause the window
+    # contents to be changed. `set_window_background` uses a pixmap of undefined
+    # size filled with the pixel value you passed. If you try to change the
+    # background of an **InputOnly** window, a **BadMatch** error results.
+    #
+    # `set_window_background` can generate **BadMatch** and **BadWindow** errors.
+    #
+    # Note `set_window_background` and `set_window_background_pixmap` do not
+    # change the current contents of the window.
+    #
+    # ###Diagnostics
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`,
+    # `destroy_window`, `install_colormap`, `map_window`, `raise_window`,
+    # `set_window_background_pixmap`, `set_window_border`,
+    # `set_window_border_pixmap`, `set_window_colormap`, `unmap_window`.
     def set_window_background(w : X11::C::Window, background_pixel : UInt64) : Int32
       X.set_window_background @dpy, w, background_pixel
     end
 
+    # Sets the background pixmap of the window to the specified pixmap.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **background_pixmap** Specifies the background pixmap, **ParentRelative**, or **None**.
+    #
+    # ###Description
+    # The `set_window_background_pixmap` function sets the background pixmap of
+    # the window to the specified pixmap. The background pixmap can immediately
+    # be freed if no further explicit references to it are to be made. If
+    # **ParentRelative** is specified, the background pixmap of the window's
+    # parent is used, or on the root window, the default background is restored.
+    # If you try to change the background of an **InputOnly** window, a **BadMatch**
+    # error results. If the background is set to **None**, the window has no defined background.
+    #
+    # `set_window_background_pixmap` can generate **BadMatch**, **BadPixmap**, and **BadWindow** errors.
+    #
+    # Note `set_window_background` and `set_window_background_pixmap` do
+    # not change the current contents of the window.
+    #
+    # ###Diagnostics
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadPixmap** A value for a *Pixmap* argument does not name a defined *Pixmap*.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`,
+    # `destroy_window`, `install_colormap`, `map_window`, `raise_window`,
+    # `set_window_background`, `set_window_border`, `set_window_border_pixmap`,
+    # `set_window_colormap`, `unmap_window`.
     def set_window_background_pixmap(w : X11::C::Window, background_pixmap : X11::C::Pixmap) : Int32
       X.set_window_background_pixmap @dpy, w, background_pixmap
     end
 
+    # Sets the border of the window to the pixel value you specify.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **border_pixel** Specifies the entry in the colormap.
+    #
+    # ###Description
+    # The `set_window_border` function sets the border of the window to the
+    # pixel value you specify. If you attempt to perform this on an
+    # **InputOnly** window, a **BadMatch** error results.
+    #
+    # `set_window_border` can generate **BadMatch** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`,
+    # `destroy_window`, `install_colormap`, `map_window`, `raise_window`,
+    # `set_window_background`, `set_window_background_pixmap`,
+    # `set_window_border_pixmap`, `set_window_colormap`, `unmap_window`.
     def set_window_border(w : X11::C::Window, border_pixel : UInt64) : Int32
       X.set_window_border @dpy, w, border_pixel
     end
 
+    # Sets the border pixmap of the window to the pixmap you specify.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    # - **border_pixmap** Specifies the border pixmap or **CopyFromParent**.
+    #
+    # ###Description
+    # - The `set_window_border_pixmap` function sets the border pixmap of the
+    # window to the pixmap you specify. The border pixmap can be freed immediately
+    # if no further explicit references to it are to be made. If you specify
+    # **CopyFromParent**, a copy of the parent window's border pixmap is used.
+    # If you attempt to perform this on an **InputOnly** window, a **BadMatch** error results.
+    #
+    # `set_window_border_pixmap` can generate **BadMatch**, **BadPixmap**, and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadPixmap** A value for a *Pixmap* argument does not name a defined *Pixmap*.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`,
+    # `destroy_window`, `installed_colormap`, `map_window`, `raise_window`,
+    # `set_window_background`, `set_window_background_pixmap`, `set_window_border`,
+    # `set_window_colormap`, `unmap_window`.
     def set_window_border_pixmap(w : X11::C::Window, border_pixmap : X11::C::Pixmap) : Int32
       X.set_window_border_pixmap @dpy, w, border_pixmap
     end
 
+    # Sets the specified window's border width to the specified width.
+    #
+    # ###Arguments
+    # **w** Specifies the window.
+    # - **width** Specifies the width of the window border.
+    #
+    # ###Description
+    # The `set_window_border_width` function sets the specified window's border width to the specified width.
+    #
+    # `set_window_border_width` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`,
+    # `destroy_window`, `map_window`, `move_resize_window`, `move_window`,
+    # `raise_window`, `resize_window`, `unmap_window`.
     def set_window_border_width(w : X11::C::Window, width : UInt32) : Int32
       X.set_window_border_width @dpy, w, width
     end
 
+    # Sets the specified colormap of the specified window.
+    #
+    # ###Arguments
+    # **w** Specifies the window.
+    # - **colormap** Specifies the colormap.
+    #
+    # ###Description
+    # The `set_window_colormap` function sets the specified colormap of the
+    # specified window. The colormap must have the same visual type as the
+    # window, or a **BadMatch** error results.
+    #
+    # `set_window_colormap` can generate **BadColor**, **BadMatch**, and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadColor** A value for a *Colormap* argument does not name a defined *Colormap*.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*.
+    # - **BadMatch** Some argument or pair of arguments has the correct type and
+    # range but fails to match in some other way required by the request.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`,
+    # `destroy_window`, `installed_colormap`, `map_window`, `raise_window`,
+    # `set_window_background`, `set_window_background_pixmap`,
+    # `set_window_border`, `set_window_border_pixmap`, `unmap_window`.
     def set_window_colormap(w : X11::C::Window, colormap : X11::C::Colormap) : Int32
       X.set_window_colormap @dpy, w, colormap
     end
 
+    # Stores data in a specified cut buffer.
+    #
+    # ###Arguments
+    # - **bytes** Specifies the bytes, which are not necessarily ASCII or null-terminated.
+    # - **nbytes** Specifies the number of bytes to be stored.
+    # - **buffer** Specifies the buffer in which you want to store the bytes.
+    #
+    # ###Description
+    # If an invalid buffer is specified, the call has no effect.
+    # The data can have embedded null characters and need not be null-terminated.
+    #
+    # `store_buffer` can generate a **BadAlloc** error.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    #
+    # ###See also
+    # `fetch_buffer`, `fetch_bytes`, `rotate_buffers`, `store_buffer`, `store_bytes`.
     def store_buffer(bytes  : Bytes, nbytes : Int32, buffer : Int32) : Int32
       X.store_buffer @dpy, bytes.to_unsafe, nbytes, buffer
     end
 
+    # Stores data in cut buffer 0.
+    #
+    # ###Arguments
+    # - **bytes** Specifies the bytes, which are not necessarily ASCII or null-terminated.
+    # - **nbytes** Specifies the number of bytes to be stored.
+    #
+    # ###Description
+    # The data can have embedded null characters and need not be null-terminated.
+    # The cut buffer's contents can be retrieved later by any client calling `fetch_bytes`.
+    #
+    # `store_bytes` can generate a **BadAlloc** error.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    #
+    # ###See also
+    # `fetch_buffer`, `fetch_bytes`, `rotate_buffers`, `store_buffer`.
     def store_bytes(bytes : Bytes) : Int32
       X.store_bytes @dpy, bytes.to_unsafe, bytes.size
     end
 
+    # Changes the colormap entry of the pixel value
+    # specified in the pixel member of the `Color` structure.
+    #
+    # ###Arguments
+    # - **colormap** Specifies the colormap.
+    # - **color** Specifies the pixel and RGB values.
+    #
+    # ###Description
+    # The `store_color` function changes the colormap entry of the pixel value
+    # specified in the pixel member of the `Color` structure. You specified this
+    # value in the pixel member of the `Color` structure. This pixel value must
+    # be a read/write cell and a valid index into the colormap. If a specified
+    # pixel is not a valid index into the colormap, a **BadValue** error results.
+    # `store_color` also changes the red, green, and/or blue color components.
+    # You specify which color components are to be changed by setting
+    # **DoRed**, **DoGreen**, and/or **DoBlue** in the flags member of the
+    # `Color` structure. If the colormap is an installed map for its screen,
+    # the changes are visible immediately.
+    #
+    # `store_color` can generate **BadAccess**, **BadColor**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAccess** A client attempted to free a color map entry that it did not already allocate.
+    # - **BadAccess** A client attempted to store into a read-only color map entry.
+    # - **BadColor** A value for a *Colormap* argument does not name a defined *Colormap*.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `alloc_color`, `create_colormap`, `query_color`, `store_colors`, `store_named_color`.
     def store_color(colormap : X11::C::Colormap, color : Color) : Int32
       X.store_color @dpy, colormap, color.to_unsafe
     end
 
+    # Changes the colormap entries of the pixel values
+    # specified in the pixel members of the `Color` structures.
+    #
+    # ###Arguments
+    # - **colormap** Specifies the colormap.
+    # - **color** Specifies an array of color definition structures to be stored.
+    #
+    # ###Description
+    # The `store_colors` function changes the colormap entries of the pixel values
+    # specified in the pixel members of the `Color` structures. You specify which
+    # color components are to be changed by setting **DoRed**, **DoGreen**,
+    # and/or **DoBlue** in the flags member of the `Color` structures. If the
+    # colormap is an installed map for its screen, the changes are visible
+    # immediately. `store_colors` changes the specified pixels if they are
+    # allocated writable in the colormap by any client, even if one or more
+    # pixels generates an error. If a specified pixel is not a valid index into
+    # the colormap, a **BadValue** error results. If a specified pixel either is
+    # unallocated or is allocated read-only, a **BadAccess** error results. If
+    # more than one pixel is in error, the one that gets reported is arbitrary.
+    #
+    # `store_colors` can generate **BadAccess**, **BadColor**, and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAccess** A client attempted to free a color map entry that it did not already allocate.
+    # - **BadAccess** A client attempted to store into a read-only color map entry.
+    # - **BadColor** A value for a *Colormap* argument does not name a defined *Colormap*.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument
+    # defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `alloc_color`, `create_colormap`, `query_color`, `store_color`,
+    # `store_colors`, `store_named_color`.
     def store_colors(colormap : X11::C::Colormap, color : Array(Color)) : Int32
       X.store_colors @dpy, colormap, color.to_unsafe
     end
 
+    # Assigns the name passed to window_name to the specified window.
+    #
+    # ###Arguments
+    # **w** Specifies the window.
+    # - **window_name** Specifies the window name, which should be a null-terminated string.
+    #
+    # ###Description
+    # The `store_name` function assigns the name passed to window_name to the
+    # specified window. A window manager can display the window name in some
+    # prominent place, such as the title bar, to allow users to identify windows
+    # easily. Some window managers may display a window's name in the window's
+    # icon, although they are encouraged to use the window's icon name if one is
+    # provided by the application. If the string is not in the Host Portable
+    # Character Encoding, the result is implementation dependent.
+    #
+    # `store_name` can generate **BadAlloc** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadAlloc** The server failed to allocate the requested source or server memory.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `fetch_name`, `wm_name`, `set_command`, `set_text_property`,
+    # `set_transient_for_hint`, `set_wm_client_machine`, `set_wm_colormap_windows`,
+    # `set_wm_colormap_windows`, `set_wm_icon_name`, `set_wm_icon_name`,
+    # `set_wm_name`, `set_wm_properties`, `set_wm_protocols`.
     def store_name(w : X11::C::Window, window_name : String) : Int32
       X.store_name @dpy, w, window_name.to_unsafe
     end
 
+    # Looks up the named color with respect to the screen associated with the
+    # colormap and stores the result in the specified colormap.
+    #
+    # ###Arguments
+    # **colormap** Specifies the colormap.
+    # - **color** Specifies the color name string (for example, red).
+    # - **pixel** Specifies the entry in the colormap.
+    # - **flags** Specifies which red, green, and blue components are set.
+    #
+    # ###Description
+    # The `store_named_color` function looks up the named color with respect to
+    # the screen associated with the colormap and stores the result in the
+    # specified colormap. The pixel argument determines the entry in the colormap.
+    # The flags argument determines which of the red, green, and blue components are set.
+    # You can set this member to the bitwise inclusive OR of the bits **DoRed**,
+    # **DoGreen**, and **DoBlue**. If the color name is not in the Host Portable
+    # Character Encoding, the result is implementation dependent. Use of uppercase
+    # or lowercase does not matter. If the specified pixel is not a valid index
+    # into the colormap, a **BadValue** error results. If the specified pixel
+    # either is unallocated or is allocated read-only, a **BadAccess** error results.
+    #
+    # `store_named_color` can generate **BadAccess**, **BadColor**, **BadName**,
+    # and **BadValue** errors.
+    #
+    # ###Diagnostics
+    # - **BadAccess** A client attempted to free a color map entry that it did not already allocate.
+    # - **BadAccess** A client attempted to store into a read-only color map entry.
+    # - **BadColor** A value for a *Colormap* argument does not name a defined *Colormap*.
+    # - **BadName** A font or color of the specified name does not exist.
+    # - **BadValue** Some numeric value falls outside the range of values accepted
+    # by the request. Unless a specific range is specified for an argument, the
+    # full range defined by the argument's type is accepted. Any argument
+    # defined as a set of alternatives can generate this error.
+    #
+    # ###See also
+    # `alloc_color`, `create_colormap`, `query_color`, `store_color`, `store_colors`.
     def store_named_color(colormap : X11::C::Colormap, color : Color, pixel : UInt64, flags : Int32) : Int32
       X.store_named_color @dpy, colormap, color.to_unsafe, pixel, flags
     end
 
+    # Flushes the output buffer and then waits until all
+    # requests have been received and processed by the X server.
+    #
+    # ###Arguments
+    # - **discard** Specifies a Boolean value that indicates whether
+    # `sync` discards all events on the event queue.
+    #
+    # ###Description
+    # The `sync` function flushes the output buffer and then waits until all
+    # requests have been received and processed by the X server. Any errors
+    # generated must be handled by the error handler. For each protocol error
+    # received by Xlib, `sync` calls the client application's error handling
+    # routine (see "Using the Default Error Handlers"). Any events generated by
+    # the server are enqueued into the library's event queue.
+    #
+    # Finally, if you passed **false**, `sync` does not discard the events in
+    # the queue. If you passed **true**, `sync` discards all events in the queue,
+    # including those events that were on the queue before `sync` was called.
+    # Client applications seldom need to call `sync`.
+    #
+    # ###See also
+    # `events_queued`, `flush`, `pending`.
     def sync(discard : Bool) : Int32
       X.sync @dpy, discard ? X::True : X::False
     end
 
+    # Transforms coordinates from the coordinate space of one window to another window.
+    #
+    # ###Arguments
+    # - **src_w** Specifies the source window.
+    # - **dest_w** Specifies the destination window.
+    # - **src_x**, **src_y** Specify the x and y coordinates within the source window.
+    #
+    # ###Returns
+    # - **dest_x**, **dest_y** Return the x and y coordinates within the destination window.
+    # - **child_return** Returns the child if the coordinates are contained in a mapped child of the destination window.
+    #
+    # ###Description
+    # If `translate_coordinates` returns **true**, it takes the src_x and src_y
+    # coordinates relative to the source window's origin and returns these
+    # coordinates to dest_x and dest_y relative to the destination window's origin.
+    # If `translate_coordinates` returns **false**, src_w and dest_w are on
+    # different screens, and dest_x and dest_y are zero. If the coordinates are
+    # contained in a mapped child of dest_w, that child is returned to
+    # child. Otherwise, child is set to **None**.
+    #
+    # `translate_coordinates` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
     def translate_coordinates(src_w : X11::C::Window, dest_w : X11::C::Window, src_x : Int32, src_y : Int32) : NamedTuple(dest_x: Int32, dest_y: Int32, child: X11::C::Window, res: Bool)
       res = X.translate_coordinates @dpy, src_w, dest_w, src_x, src_y, out dest_x_return, out dest_y_return, out child_return
       {dest_x: dest_x_return, dest_y: dest_y_return, child: child_return}
     end
 
+    # Undoes the effect of a previous `define_cursor` for this window.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `undefine_cursor` function undoes the effect of a previous
+    # `define_cursor` for this window. When the pointer is in the window,
+    # the parent's cursor will now be used. On the root window, the default cursor is restored.
+    #
+    # `undefine_cursor` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `create_font_cursor`, `define_cursor`, `recolor_cursor`.
     def undefine_cursor(w : X11::C::Window) : Int32
       X.undefine_cursor @dpy, w
     end
 
+    # Releases the passive button/key combination
+    # on the specified window if it was grabbed by this client.
+    #
+    # ###Arguments
+    # - **button** Specifies the pointer button that is to be released or **AnyButton**.
+    # - **modifiers** Specifies the set of keymasks or **AnyModifier**. The mask
+    # is the bitwise inclusive OR of the valid keymask bits.
+    # - **grab_window** Specifies the grab window.
+    #
+    # ###Description
+    # The `ungrab_button` function releases the passive button/key combination
+    # on the specified window if it was grabbed by this client. A modifiers of
+    # **AnyModifier** is equivalent to issuing the ungrab request for all
+    # possible modifier combinations, including the combination of no modifiers.
+    # A button of **AnyButton** is equivalent to issuing the request for all
+    # possible buttons. `ungrab_button` has no effect on an active grab.
+    #
+    # `ungrab_button` can generate **BadValue** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values
+    # accepted by the request. Unless a specific range is specified for an
+    # argument, the full range defined by the argument's type is accepted.
+    # Any argument defined as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `allow_events`, `change_active_pointer_grab`, `grab_button`,
+    # `grab_key`, `grab_keyboard`, `grab_pointer`, `ungrab_pointer`.
     def ungrab_button(button : UInt32, modifiers : UInt32, grab_window : X11::C::Window) : Int32
       X.ungrab_button @dpy, button, modifiers, grab_window
     end
 
+    # Releases the key combination on the specified window if it was grabbed by this client.
+    #
+    # ###Arguments
+    # - **keycode** Specifies the KeyCode or **AnyKey**.
+    # - **modifiers** Specifies the set of keymasks or **AnyModifier**.
+    # The mask is the bitwise inclusive OR of the valid keymask bits.
+    # - **grab_window** Specifies the grab window.
+    #
+    # ###Description
+    # The `ungrab_key` function releases the key combination on the specified
+    # window if it was grabbed by this client. It has no effect on an active grab.
+    # A modifiers of **AnyModifier** is equivalent to issuing the request for all
+    # possible modifier combinations (including the combination of no modifiers).
+    # A keycode argument of **AnyKey** is equivalent to issuing the request for all possible key codes.
+    #
+    # `ungrab_key` can generate **BadValue** and **BadWindow** errors.
+    #
+    # ###Diagnostics
+    # - **BadValue** Some numeric value falls outside the range of values
+    # accepted by the request. Unless a specific range is specified for an argument,
+    # the full range defined by the argument's type is accepted. Any argument
+    # defined as a set of alternatives can generate this error.
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `grab_key`, `allow_events`, `grab_button`, `grab_keyboard`, `grab_pointer`.
     def ungrab_key(keycode : Int32, modifiers : UInt32, grab_window : X11::C::Window) : Int32
       X.ungrab_key @dpy, keycode, modifiers, grab_window
     end
 
+    # Releases the keyboard and any queued events if this client has it
+    # actively grabbed from either `grab_keyboard` or `grab_key`.
+    #
+    # ###Arguments
+    # - **time** Specifies the time. You can pass either a timestamp or **CurrentTime**.
+    #
+    # ###Description
+    # The `ungrab_keyboard` function releases the keyboard and any queued events
+    # if this client has it actively grabbed from either `grab_keyboard` or
+    # `grab_key`. `ungrab_keyboard` does not release the keyboard and any queued
+    # events if the specified time is earlier than the last-keyboard-grab time
+    # or is later than the current X server time. It also generates **FocusIn**
+    # and **FocusOut** events. The X server automatically performs an
+    # **UngrabKeyboard** request if the event window for an active keyboard grab becomes not viewable.
+    #
+    # ###See also
+    # `allow_events`, `grab_button`, `grab_key`, `grab_keyboard`, `grab_pointer`.
     def ungrab_keyboard(time : X11::C::Time) : Int32
       X.ungrab_keyboard @dpy, time
     end
 
+    # Releases the pointer and any queued events.
+    #
+    # ###Arguments
+    # - **time** Specifies the time. You can pass either a timestamp or **CurrentTime**.
+    #
+    # ###Description
+    # The `ungrab_pointer` function releases the pointer and any queued events
+    # if this client has actively grabbed the pointer from `grab_pointer`,
+    # `grab_button`, or from a normal button press. `ungrab_pointer` does not
+    # release the pointer if the specified time is earlier than the
+    # last-pointer-grab time or is later than the current X server time. It also
+    # generates **EnterNotify** and **LeaveNotify** events. The X server performs
+    # an **UngrabPointer** request automatically if the event window or confine_to
+    # window for an active pointer grab becomes not viewable or if window
+    # reconfiguration causes the confine_to window to lie completely outside
+    # the boundaries of the root window.
+    #
+    # ###See also
+    # `allow_events`, `change_active_pointer_grab`, `grab_button`,
+    # `grab_key`, `grab_keyboard`, `grab_pointer`.
     def ungrab_pointer(time : X11::C::Time) : Int32
       X.ungrab_pointer @dpy, time
     end
 
+    # Restarts processing of requests and close downs on other connections.
+    #
+    # ###Description
+    # The `ungrab_server` function restarts processing of requests and close
+    # downs on other connections. You should avoid grabbing the X server as much as possible.
+    #
+    # ###See also
+    # `grab_server`, `grab_key`, `grab_keyboard`, `grab_pointer`.
     def ungrab_server : Int32
       X.ungrab_server @dpy
     end
 
+    # Removes the specified colormap from the required list for its screen.
+    #
+    # ###Arguments
+    # - **colormap** Specifies the colormap.
+    #
+    # ###Description
+    # The `uninstall_colormap` function removes the specified colormap from the
+    # required list for its screen. As a result, the specified colormap might be
+    # uninstalled, and the X server might implicitly install or uninstall
+    # additional colormaps. Which colormaps get installed or uninstalled is
+    # server-dependent except that the required list must remain installed.
+    #
+    # If the specified colormap becomes uninstalled, the X server generates a
+    # **ColormapNotify** event on each window that has that colormap. In
+    # addition, for every other colormap that is installed or uninstalled as a
+    # result of a call to `uninstall_colormap`, the X server generates a
+    # **ColormapNotify** event on each window that has that colormap.
+    #
+    # `uninstall_colormap` can generate a **BadColor** error.
+    #
+    # ###Diagnostics
+    # - **BadColor** A value for a *Colormap* argument does not name a defined *Colormap*.
+    #
+    # ###See also
+    # `change_window_attributes`, `create_colormap`, `create_window`,
+    # `install_colormap`, `installed_colormap`.
     def uninstall_colormap(colormap : X11::C::Colormap) : Int32
       X.uninstall_colormap @dpy, colormap
     end
 
+    # Deletes the association between the font resource ID and the specified font.
+    #
+    # ###Arguments
+    # - **font** Specifies the font.
+    #
+    # ###Description
+    # The `unload_font` function deletes the association between the font
+    # resource ID and the specified font. The font itself will be freed when no
+    # other resource references it. The font should not be referenced again.
+    #
+    # `unload_font` can generate a **BadFont** error.
+    #
+    # ###Diagnostics
+    # - **BadFont** A value for a font argument does not name a defined
+    # font (or, in some cases, `GContext`).
+    #
+    # ###See also
+    # `create_gc`, `free_font`, `FontStruct::property`, `fonts`, `load_font`,
+    # `load_query_font`, `query_font`, `set_font_path`.
     def unload_font(font : X11::C::Font) : Int32
       X.unload_font
     end
 
+    # Unmaps all subwindows for the specified window in bottom-to-top stacking order.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `unmap_subwindows` function unmaps all subwindows for the specified
+    # window in bottom-to-top stacking order. It causes the X server to generate
+    # an **UnmapNotify** event on each subwindow and **Expose** events on formerly
+    # obscured windows. Using this function is much more efficient than unmapping
+    # multiple windows one at a time because the server needs to perform much of
+    # the work only once, for all of the windows, rather than for each window.
+    #
+    # `unmap_subwindows` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`,
+    # `destroy_window`, `map_window`, `raise_window`, `unmap_window`.
     def unmap_subwindows(w : X11::C::Window) : Int32
       X.unmap_subwindows @dpy, w
     end
 
+    # Unmaps the specified window and causes the X server to generate an **UnmapNotify** event.
+    #
+    # ###Arguments
+    # - **w** Specifies the window.
+    #
+    # ###Description
+    # The `unmap_window` function unmaps the specified window and causes the X
+    # server to generate an **UnmapNotify** event. If the specified window is
+    # already unmapped, `unmap_window` has no effect. Normal exposure processing
+    # on formerly obscured windows is performed. Any child window will no longer
+    # be visible until another map call is made on the parent. In other words,
+    # the subwindows are still mapped but are not visible until the parent is
+    # mapped. Unmapping a window will generate **Expose** events on windows that were formerly obscured by it.
+    #
+    # `unmap_window` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # `change_window_attributes`, `configure_window`, `create_window`,
+    # `destroy_window`, `map_window`, `raise_window`, `unmap_subwindows`.
     def unmap_window(w : X11::C::Window) : Int32
       X.unmap_window @dpy, w
     end
 
+    # Returns a number related to a vendor's release of the X server.
     def vendor_release : Int32
       X.vendor_release @dpy
     end
 
+    # Moves the pointer by the offsets relative to the current position of the pointer.
+    #
+    # ###Arguments
+    # - **src_w** Specifies the source window or **None**.
+    # - **dest_w** Specifies the destination window or **None**.
+    # - **src_x**, **src_y**, **src_width**, **src_height** Specify a rectangle in the source window.
+    # - **dest_x**, **dest_y** Specify the x and y coordinates within the destination window.
+    #
+    # ###Description
+    # If dest_w is **None**, `warp_pointer` moves the pointer by the offsets
+    # (dest_x, dest_y) relative to the current position of the pointer.
+    # If dest_w is a window, `warp_pointer` moves the pointer to the offsets
+    # (dest_x, dest_y) relative to the origin of dest_w. However, if src_w is a
+    # window, the move only takes place if the window src_w contains the pointer
+    # and if the specified rectangle of src_w contains the pointer.
+    #
+    # The src_x and src_y coordinates are relative to the origin of src_w. If
+    # src_height is zero, it is replaced with the current height of src_w minus
+    # src_y. If src_width is zero, it is replaced with the current width of src_w minus src_x.
+    #
+    # There is seldom any reason for calling this function. The pointer should
+    # normally be left to the user. If you do use this function, however, it
+    # generates events just as if the user had instantaneously moved the
+    # pointer from one position to another. Note that you cannot use `warp_pointer`
+    # to move the pointer outside the confine_to window of an active pointer grab.
+    # An attempt to do so will only move the pointer as far as the closest edge of the confine_to window.
+    #
+    # `warp_pointer` can generate a **BadWindow** error.
+    #
+    # ###Diagnostics
+    # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
+    #
+    # ###See also
+    # - `set_input_focus`.
     def warp_pointer(src_w : X11::C::Window, dest_w : X11::C::Window, src_x : Int32, src_y : Int32, src_width : UInt32, src_height : UInt32, dest_x : Int32, dest_y : Int32) : Int32
       X.warp_pointer @dpy, src_w, dest_w, src_x, src_y, src_width, src_height, dest_x, dest_y
     end
 
+    # Returns the matched event's associated object.
+    #
+    # ###Arguments
+    # - **w** Specifies the window whose events you are interested in.
+    # - **event_mask** Specifies the event mask.
+    #
+    # ###Description
+    # The `window_event` function searches the event queue for an event that
+    # matches both the specified window and event mask. When it finds a match,
+    # `window_event` removes that event from the queue and copies it into the
+    # specified `Event` object. The other events stored in the queue are not
+    # discarded. If a matching event is not in the queue, `window_event`
+    # flushes the output buffer and blocks until one is received.
+    #
+    # ###See also
+    # `check_mask_event`, `check_typed_event`, `check_typed_window_event`,
+    # `check_window_event`, `if_event`, `mask_event`, `next_event`,
+    # `peek_event`, `put_back_event`, `send_event`.
     def window_event(w : X11::C::Window, event_mask : Int64) : Event?
       if X.window_event @dpy, w, event_mask, xevent
         Event.from_xevent xevent
@@ -7089,6 +8172,36 @@ module X11
       end
     end
 
+    # Writes a bitmap out to a file in the X Version 11 format.
+    #
+    # ###Arguments
+    # - **filename** Specifies the file name to use. The format of the file name is operating-system dependent.
+    # - **bitmap** Specifies the bitmap.
+    # - **width**, **height** Specify the width and height.
+    # - **x_hot**, **y_hot** Specify where to place the hotspot coordinates
+    # (or -1, -1 if none are present) in the file.
+    #
+    # ###Description
+    # The `write_bitmap_file` function writes a bitmap out to a file in the X
+    # Version 11 format. The name used in the output file is derived from the
+    # file name by deleting the directory prefix. The file is written in the
+    # encoding of the current locale. If the file cannot be opened for writing,
+    # it returns **BitmapOpenFailed**. If insufficient memory is allocated,
+    # `write_bitmap_file` returns **BitmapNoMemory**; otherwise, on no error,
+    # it returns **BitmapSuccess**. If x_hot and y_hot are not -1, -1,
+    # `write_bitmap_file` writes them out as the hotspot coordinates for the bitmap.
+    #
+    # `write_bitmap_file` can generate **BadDrawable** and **BadMatch** errors.
+    #
+    # ###Diagnostics
+    # - **BadDrawable** A value for a *Drawable* argument does not name a defined *Window* or *Pixmap*.
+    # - **BadMatch** An **InputOnly** window is used as a *Drawable*. **BadMatch**.
+    # Some argument or pair of arguments has the correct type and range but fails
+    # to match in some other way required by the request.
+    #
+    # ###See also
+    # `create_bitmap_from_data`, `create_pixmap`, `create_pixmap_from_bitmap_data`,
+    # `put_image`, `read_bitmap_file`.
     def write_bitmap_file(filename : String, bitmap : X11::C::Pixmap, width : UInt32, height : UInt32, x_hot : Int32, y_hot : Int32) : Int32
       X.write_bitmap_file @dpy, filename.to_unsafe, width, height, x_hot, y_hot
     end

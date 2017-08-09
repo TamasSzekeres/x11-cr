@@ -3456,7 +3456,7 @@ module X11::C
       y_hot : Int32
     ) : Int32
 
-    fun supports_locale = XSupportsLocale() : NoReturn
+    fun supports_locale = XSupportsLocale() : Bool
 
     fun set_locale_modifiers = XSetLocaleModifiers(
       modifier_list : PChar

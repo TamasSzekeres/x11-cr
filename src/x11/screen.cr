@@ -119,6 +119,16 @@ module X11
       X.plane_of_screen @screen
     end
 
+    # Returns the width of the specified screen in millimeters.
+    def width_mm : Int32
+      X.width_mm_of_screen @screen
+    end
+
+    # Returns the width of the specified screen in pixels.
+    def width : Int32
+      X.width_of_screen @screen
+    end
+
     # Returns the underlieing `X11::C::X::PScreen` pointer
     def to_unsafe : X11::C::X::PScreen
       @screen
