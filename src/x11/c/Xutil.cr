@@ -1,4 +1,4 @@
-module X11
+module X11::C
   @[Link("X11")]
   lib X
     # Bitmask returned by XParseGeometry().  Each bit tells if the corresponding

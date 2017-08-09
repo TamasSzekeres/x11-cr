@@ -1,4 +1,4 @@
-module X11
+module X11::C
   XK_VoidSymbol = 0xffffff # Void symbol
 
   {% if XK_MISCELLANY %}

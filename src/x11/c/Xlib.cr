@@ -1,4 +1,6 @@
-module X11
+require "./X"
+
+module X11::C
   @[Link("X11")]
   lib X
     alias Pointer = UInt8*
@@ -15,6 +17,7 @@ module X11
 
     $_Xdebug : Int32
 
+    # Returns the number of characters pointed to by "str". Only "len" bytes in "str" are used in determining the character count returned. "Str" may point at characters from any valid codeset in the current locale.
     fun mblen = _Xmblen(
       str : PChar,
       len : Int32
@@ -1426,7 +1429,7 @@ module X11
     fun create_colormap = XCreateColormap(
       display : PDisplay,
       w : Window,
-      vusial : PVisual,
+      visual : PVisual,
       alloc : Int32
     ) : Colormap
 
@@ -1440,7 +1443,7 @@ module X11
       y : UInt32
     ) : Cursor
 
-    fun create_glyph_curso = XCreateGlyphCursor(
+    fun create_glyph_cursor = XCreateGlyphCursor(
       display : PDisplay,
       source_font : Font,
       mask_font : Font,
@@ -1467,9 +1470,9 @@ module X11
       values : PGCValues
     ) : GC
 
-    fun gc_context_from_gc = XGContextFromGC(
+    fun g_context_from_gc = XGContextFromGC(
       gc : GC
-    ) : GC
+    ) : GContext
 
     fun flush_gc = XFlushGC(
       display : PDisplay,
@@ -1604,7 +1607,7 @@ module X11
       display : PDisplay
     ) : Int64
 
-    fun extended_map_request_size = XExtendedMaxRequestSize(
+    fun extended_max_request_size = XExtendedMaxRequestSize(
       display : PDisplay
     ) : Int64
 
@@ -1770,7 +1773,7 @@ module X11
 
     fun list_pixmap_formats = XListPixmapFormats(
       display : PDisplay,
-      count_return : Int32
+      count_return : PInt32
     ) : PPixmapFormatValues
 
     fun list_depths = XListDepths(
@@ -1840,7 +1843,7 @@ module X11
       list : PPChar
     ) : NoReturn
 
-     fun set_transient_for_hint = XSetTransientForHint(
+    fun set_transient_for_hint = XSetTransientForHint(
       display : PDisplay,
       w : Window,
       prop_window : Window
@@ -1911,7 +1914,7 @@ module X11
       exact_def_return : PColor
     ) : Status
 
-    fun alloc_events = XAllowEvents(
+    fun allow_events = XAllowEvents(
       display : PDisplay,
       event_mode : Int32,
       time : Time
@@ -1992,7 +1995,7 @@ module X11
       mode : Int32,
       data : PChar,
       nelements : Int32
-    ) : Int32;
+    ) : Int32
 
     fun change_save_set = XChangeSaveSet(
       display : PDisplay,
@@ -2020,7 +2023,7 @@ module X11
       event_return : PEvent
     ) : Bool
 
-    fun check_types_event = XCheckTypedEvent(
+    fun check_typed_event = XCheckTypedEvent(
       display : PDisplay,
       event_type : Int32,
       event_return : PEvent
@@ -2925,7 +2928,7 @@ module X11
       root_return : PWindow,
       parent_return : PWindow,
       children_return : PWindow*,
-      nchildren_return : UInt32
+      nchildren_return : PUInt32
     ) : Status
 
     fun raise_window = XRaiseWindow(
@@ -3229,7 +3232,7 @@ module X11
       ts_y_origin : Int32
     ) : Int32
 
-    fun set_title = XSetTile(
+    fun set_tile = XSetTile(
       display : PDisplay,
       gc : GC,
       tile : Pixmap
@@ -3453,7 +3456,7 @@ module X11
       y_hot : Int32
     ) : Int32
 
-    fun supports_locale = XSupportsLocale() : NoReturn
+    fun supports_locale = XSupportsLocale() : Bool
 
     fun set_locale_modifiers = XSetLocaleModifiers(
       modifier_list : PChar
@@ -3514,9 +3517,9 @@ module X11
     fun create_font_set = XCreateFontSet(
       display : PDisplay,
       base_font_name_list : PChar,
-      missing_charset_list : PPChar*,
-      missing_charset_count : PInt32,
-      def_string : PPChar
+      missing_charset_list_return : PPChar*,
+      missing_charset_count_return : PInt32,
+      def_string_return : PPChar
     ) : FontSet
 
     fun free_font_set = XFreeFontSet(

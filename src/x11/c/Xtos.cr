@@ -1,4 +1,4 @@
-module X11
+module X11::C
   WORLD64 = false
 
   {% if flag?(:x86_64) %}

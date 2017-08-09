@@ -1,7 +1,7 @@
 require "x11"
 
 module X11Sample
-  include X11
+  include X11::C
   WM_DELETE_WINDOW_STR = "WM_DELETE_WINDOW"
 
   def self.main
@@ -13,10 +13,10 @@ module X11Sample
       return 1
     end
 
-    s = X11.default_screen d
-    root_win = X11.root_window d, s
-    black_pix = X11.black_pixel d, s
-    white_pix = X11.white_pixel d, s
+    s = X11::C.default_screen d
+    root_win = X11::C.root_window d, s
+    black_pix = X11::C.black_pixel d, s
+    white_pix = X11::C.white_pixel d, s
     win = X.create_simple_window d, root_win, 10, 10, 400, 300, 1, black_pix, white_pix
     X.select_input d, win,
       ButtonPressMask | ButtonReleaseMask |

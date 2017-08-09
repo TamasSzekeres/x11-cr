@@ -1,6 +1,6 @@
 require "./Xtos"
 
-module X11
+module X11::C
   # Xmd.cr: MACHINE DEPENDENT DECLARATIONS.
 
   # Special per-machine configuration flags.

@@ -33,19 +33,37 @@ module YourModule
 end
 ```
 
-For more details see the sample in [/examples/sample_window](/examples/sample_window) folder.
+For more details see the examples in [/examples](/examples) folder.
 
-## Sample
+## Samples
 
-Build and run the sample:
-```bash
+Build and run the low-level sample:
+```shell
   cd examples/sample_window
-  make install
+  crystal deps
   make
   ./sample_window
-
 ```
 ![Simple Window](https://raw.githubusercontent.com/TamasSzekeres/x11-cr/master/examples/sample_window/screenshot/sample_window.png)
+
+
+Build and run the high-level sample:
+```shell
+  cd examples/sample_window_hl
+  crystal deps
+  make
+  ./sample_window_hl
+```
+
+## Documentation
+
+You can generate documentation for yourself:
+```shell
+crystal doc
+```
+Then you can open `/doc/index.html` in your browser.
+
+Or you can view last commited documentation online at: [https://tamasszekeres.github.io/x11-cr/](https://tamasszekeres.github.io/x11-cr/).
 
 ## Contributing
 
