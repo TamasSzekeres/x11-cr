@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.0] - 2017-08-09
+### Added
+- High level classes and structs
+- [Example](/examples/sample_window_hl) for using high level x11
+### Changed
+- Low level binding moved to **C** namespace
+### Fixed
+- Some writing mistakes in `/c/Xlib.cr`
+
 ## [0.2.1] - 2017-07-13
 ### Added
 - Crystal app structure for sample
