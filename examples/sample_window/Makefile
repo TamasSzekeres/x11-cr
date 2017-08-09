@@ -3,6 +3,3 @@ all:
 
 clean:
 	rm sample_window
-
-install:
-	crystal deps
