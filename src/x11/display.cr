@@ -1372,7 +1372,7 @@ module X11
     # ###Arguments
     # - **screen_number** Specifies the appropriate screen number on the host server.
     def default_visual(screen_number : Int32) : Visual
-      Visual.new(self, X.default_visual(@dpy, screen_number))
+      Visual.new(X.default_visual(@dpy, screen_number))
     end
 
     # Returns the default graphics context for the root window of the specified screen.
