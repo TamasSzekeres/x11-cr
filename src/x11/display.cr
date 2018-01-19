@@ -6958,7 +6958,7 @@ module X11
     # `set_clip_origin`, `set_fill_style`, `set_font`, `set_foreground`,
     # `set_function`, `set_line_attributes`, `set_plane_mask`, `set_state`, `set_tile`.
     def set_foreground(gc : X11::C::X::GC, foreground : UInt64) : Int32
-      X.set_foreground = @dpy, gc, foreground
+      X.set_foreground @dpy, gc, foreground
     end
 
     # Sets the display function.
