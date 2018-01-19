@@ -1,5 +1,5 @@
 require "./spec_helper"
-require "../x11/c/X"
+require "../src/x11"
 
 describe X11 do
   # TODO: Write tests
