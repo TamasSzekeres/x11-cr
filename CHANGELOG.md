@@ -6,8 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [0.3.1] - 2018-01-20
 ### Fixed
--`Display::default_visual` wrong arguments.
--`Display::set_foreground` erroneous assignment statement. (#5, thanks @t-richards)
+- `Display::default_visual` wrong arguments.
+- `Display::set_foreground` erroneous assignment statement. (#5, thanks @t-richards)
 
 ## [0.3.0] - 2017-08-09
 ### Added
