@@ -44,7 +44,7 @@ Build and run the low-level sample:
   make
   ./sample_window
 ```
-![Simple Window](https://raw.githubusercontent.com/TamasSzekeres/x11-cr/master/examples/sample_window/screenshot/sample_window.png)
+![Sample Window](https://raw.githubusercontent.com/TamasSzekeres/x11-cr/master/examples/sample_window/screenshot/sample_window.png)
 
 
 Build and run the high-level sample:
