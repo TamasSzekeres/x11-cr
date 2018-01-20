@@ -4,12 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.3.1] - 2018-01-20
+### Fixed
+-`Display::default_visual` wrong arguments.
+-`Display::set_foreground` erroneous assignment statement. (#5, thanks @t-richards)
+
 ## [0.3.0] - 2017-08-09
 ### Added
 - High level classes and structs
 - [Example](/examples/sample_window_hl) for using high level x11
 ### Changed
-- Low level binding moved to **C** namespace
+- **(breaking change)** Low level binding moved to **C** namespace
 ### Fixed
 - Some writing mistakes in `/c/Xlib.cr`
 
