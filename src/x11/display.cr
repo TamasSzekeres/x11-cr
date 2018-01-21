@@ -479,7 +479,7 @@ module X11
     #
     # ###See also
     # `atom_name`, `window_property`, `intern_atoms`.
-    def intern_atom(atom_name : String, only_if_exists : Bool)
+    def intern_atom(atom_name : String, only_if_exists : Bool) : X11::C::Atom
       X.intern_atom @dpy, atom_name.to_unsafe, only_if_exists ? X::True : X::False
     end
 

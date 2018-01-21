@@ -323,13 +323,13 @@ module X11::C
 
   # ConfigureWindow structure
 
-  CWX           = (1 << 0)
-  CWY           = (1 << 1)
-  CWWidth       = (1 << 2)
-  CWHeight      = (1 << 3)
-  CWBorderWidth = (1 << 4)
-  CWSibling     = (1 << 5)
-  CWStackMode   = (1 << 6)
+  CWX           = (1_u32 << 0)
+  CWY           = (1_u32 << 1)
+  CWWidth       = (1_u32 << 2)
+  CWHeight      = (1_u32 << 3)
+  CWBorderWidth = (1_u32 << 4)
+  CWSibling     = (1_u32 << 5)
+  CWStackMode   = (1_u32 << 6)
 
   # Bit Gravity
 

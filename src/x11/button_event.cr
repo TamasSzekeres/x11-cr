@@ -1,9 +1,9 @@
 require "./c/Xlib"
-require "./event"
+require "./window_event"
 
 module X11
   # Wrapper for `X11::C::X::ButtonEvent` structure.
-  class ButtonEvent < Event
+  class ButtonEvent < WindowEvent
     def initialize
       @event = X11::C::X::ButtonEvent.new
     end

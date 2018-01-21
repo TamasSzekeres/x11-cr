@@ -1,9 +1,9 @@
 require "./c/Xlib"
-require "./event"
+require "./window_event"
 
 module X11
   # Wrapper from `X11::C::X::CirculateRequestEvent` structure.
-  class CirculateRequestEvent < Event
+  class CirculateRequestEvent < WindowEvent
     def initialize
       @event = X11::C::X::CirculateRequestEvent.new
     end

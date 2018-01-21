@@ -1,9 +1,9 @@
 require "./c/Xlib"
-require "./event"
+require "./window_event"
 
 module X11
   # Wrapper for `X11::C::X::UnmapEvent` structure.
-  class UnmapEvent < Event
+  class UnmapEvent < WindowEvent
     def initialize
       @event = X11::C::X::UnmapEvent.new
     end

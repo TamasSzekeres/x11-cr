@@ -1,9 +1,9 @@
 require "./c/Xlib"
-require "./event"
+require "./window_event"
 
 module X11
   # Wrapper for `X11::C::X::KeymapEvent` structure.
-  class KeymapEvent < Event
+  class KeymapEvent < WindowEvent
     def initialize
       @event = X11::C::X::KeymapEvent.new
     end

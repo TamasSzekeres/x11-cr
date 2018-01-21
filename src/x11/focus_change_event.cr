@@ -1,9 +1,9 @@
 require "./c/Xlib"
-require "./event"
+require "./window_event"
 
 module X11
   # Wrapper from `X11::C::X::FocusChangeEvent` structure.
-  class FocusChangeEvent < Event
+  class FocusChangeEvent < WindowEvent
     def initialize
       @event = X11::C::X::FocusChangeEvent.new
     end

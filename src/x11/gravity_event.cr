@@ -1,8 +1,9 @@
 require "./c/Xlib"
+require "./window_event"
 
 module X11
   # Wrapper from `X11::C::X::GravityEvent` structure.
-  class GravityEvent < Event
+  class GravityEvent < WindowEvent
     def initialize
       @event = X11::C::X::GravityEvent.new
     end

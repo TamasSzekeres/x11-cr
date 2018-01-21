@@ -1,9 +1,9 @@
 require "./c/Xlib"
-require "./event"
+require "./window_event"
 
 module X11
   # Wrapper from `X11::C::X::ResizeRequestEvent` structure.
-  class ResizeRequestEvent < Event
+  class ResizeRequestEvent < WindowEvent
     def initialize
       @event = X11::C::X::ResizeRequestEvent.new
     end
