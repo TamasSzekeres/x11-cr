@@ -5518,7 +5518,7 @@ module X11
     # `check_window_event`, `if_event`, `mask_event`, `next_event`,
     # `put_back_event`, `send_event`, `window_event`.
     def peek_event : Event?
-      if X.peek_event @dpy, xevent
+      if X.peek_event @dpy, out xevent
         Event.from_xevent xevent
       else
         nil
