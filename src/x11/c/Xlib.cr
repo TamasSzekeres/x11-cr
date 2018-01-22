@@ -400,7 +400,7 @@ module X11::C
     alias PButtonEvent = ButtonEvent*
     struct ButtonEvent
       type : Int32 # of event
-      serial : UInt32 # # of last request processed by server
+      serial : UInt64 # # of last request processed by server
       send_event : Bool # true if this came from a SendEvent request
       display : PDisplay # Display the event was read from
       window : Window # "event" window it is reported relative to
