@@ -60,7 +60,7 @@ module X11::C
   AnyKey          = 0_i64 # special Key Code, passed to GrabKey
   AnyButton       = 0_i64 # special Button Code, passed to GrabButton
   AllTemporary    = 0_i64 # special Resource ID passed to KillClient
-  CurrentTime     = 0_i64 # special Time
+  CurrentTime     = 0_u64 # special Time
   NoSymbol        = 0_i64 # special KeySym
 
   # *****************************************************************
