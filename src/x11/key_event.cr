@@ -34,6 +34,13 @@ module X11
       X.lookup_keysym to_unsafe, index
     end
 
+    # Translates key event to a string.
+    def lookup_string : String
+      buffer = StaticArray(UInt8, 10).new(0)
+      len = X.lookup_string(to_unsafe, buffer.to_unsafe, 10, out keysym, nil)
+      String.new(buffer.to_unsafe)
+    end
+
     def to_unsafe : X11::C::X::PKeyEvent
       return pointerof(@event)
     end
