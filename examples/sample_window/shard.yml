@@ -1,5 +1,5 @@
 name: sample_window
-version: 0.1.0
+version: 0.1.1
 
 authors:
   - Wes <me@wmoxam.com>
@@ -12,6 +12,6 @@ dependencies:
   x11:
     path: ../../.
 
-crystal: 0.22.0
+crystal: 0.35.1
 
 license: MIT

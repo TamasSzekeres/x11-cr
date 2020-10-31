@@ -1,5 +1,7 @@
 require "x11"
 
+at_exit { GC.collect }
+
 module X11Sample
   include X11::C
   WM_DELETE_WINDOW_STR = "WM_DELETE_WINDOW"
