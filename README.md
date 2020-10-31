@@ -60,7 +60,7 @@ crystal doc
 ```
 Then you can open `/doc/index.html` in your browser.
 
-Or you can view last commited documentation online at: [https://tamasszekeres.github.io/x11-cr/](https://tamasszekeres.github.io/x11-cr/).
+Or you can view last commited documentation online at: [https://tamasszekeres.github.io/x11-cr/docs/](https://tamasszekeres.github.io/x11-cr/).
 
 ## Contributing
 
