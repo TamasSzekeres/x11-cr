@@ -18,7 +18,7 @@ dependencies:
 
 Then run in terminal:
 ```bash
-crystal deps
+shards install
 ```
 
 ## Usage
@@ -39,9 +39,8 @@ For more details see the examples in [/examples](/examples) folder.
 Build and run the low-level sample:
 ```shell
   cd examples/sample_window
-  crystal deps
-  make
-  ./sample_window
+  shards build
+  ./bin/sample_window
 ```
 ![Sample Window](https://raw.githubusercontent.com/TamasSzekeres/x11-cr/master/examples/sample_window/screenshot/sample_window.png)
 
@@ -49,9 +48,8 @@ Build and run the low-level sample:
 Build and run the high-level sample:
 ```shell
   cd examples/sample_window_hl
-  crystal deps
-  make
-  ./sample_window_hl
+  shards build
+  ./bin/sample_window_hl
 ```
 
 ## Documentation

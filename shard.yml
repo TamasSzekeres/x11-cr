@@ -1,10 +1,12 @@
 name: x11
-version: 0.3.1
+version: 0.3.2
 
 authors:
   - Tamás Szekeres <szektam2@gmail.com>
 
 description: |
   X11 bindings for Crystal language.
+
+crystal: 0.35.1
 
 license: MIT
