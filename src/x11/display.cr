@@ -77,6 +77,8 @@ module X11
     # ###See also
     # `flush`, `set_close_down_mode`.
     def close : Int32
+      return 0 if @closed
+
       res = 0
       if @initialization == DisplayInitialization::Name
         res = X.close_display @dpy
