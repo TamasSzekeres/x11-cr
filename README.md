@@ -3,7 +3,7 @@
 X11 bindings for Crystal language.
 
 [![Build Status](https://travis-ci.org/TamasSzekeres/x11-cr.svg?branch=master)](https://travis-ci.org/TamasSzekeres/x11-cr)
-[![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://tamasszekeres.github.io/x11-cr/)
+[![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://tamasszekeres.github.io/x11-cr/docs/)
 
 ## Installation
 
