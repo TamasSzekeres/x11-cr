@@ -49,7 +49,7 @@ Build and run the high-level sample:
 ```shell
   cd examples/sample_window_hl
   shards build
-  ./bin/sample_window_hl
+  ./bin/sample_window
 ```
 
 ## Documentation
