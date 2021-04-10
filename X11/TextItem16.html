@@ -13,7 +13,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="x11">
-  <title>X11::FontStruct - x11 master</title>
+  <title>X11::TextItem16 - x11 master</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -406,7 +406,7 @@
       
     </li>
   
-  <li class=" current" data-id="x11/X11/FontStruct" data-name="x11::fontstruct">
+  <li class=" " data-id="x11/X11/FontStruct" data-name="x11::fontstruct">
       <a href="../X11/FontStruct.html">FontStruct</a>
       
     </li>
@@ -571,7 +571,7 @@
       
     </li>
   
-  <li class=" " data-id="x11/X11/TextItem16" data-name="x11::textitem16">
+  <li class=" current" data-id="x11/X11/TextItem16" data-name="x11::textitem16">
       <a href="../X11/TextItem16.html">TextItem16</a>
       
     </li>
@@ -625,12 +625,12 @@
 <div class="main-content">
 <h1 class="type-name">
 
-  <span class="kind">class</span> X11::FontStruct
+  <span class="kind">struct</span> X11::TextItem16
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../X11/FontStruct.html">X11::FontStruct</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../X11/TextItem16.html">X11::TextItem16</a></li><li class="superclass">Struct</li><li class="superclass">Value</li><li class="superclass">Object</li></ul>
 
 
 
@@ -658,8 +658,8 @@
   </h2>
   
     
-      <a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/font_struct.cr#L7" target="_blank">
-        x11/font_struct.cr
+      <a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/text_item 16.cr#L4" target="_blank">
+        x11/text_item 16.cr
       </a>
     
     <br/>
@@ -680,7 +680,22 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#new(display:Display,font_struct:X::PFontStruct)-class-method" class="signature"><strong>.new</strong>(display : Display, font_struct : X::PFontStruct)</a>
+        <a href="#new(chars:Array(X11::C::X::Char2b),delta:Int32,font:X11::C::Font)-class-method" class="signature"><strong>.new</strong>(chars : Array(X11::C::X::Char2b), delta : Int32, font : X11::C::Font)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new(text_item:X11::C::X::TextItem16)-class-method" class="signature"><strong>.new</strong>(text_item : X11::C::X::TextItem16)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new(text_item:X11::C::X::PTextItem16)-class-method" class="signature"><strong>.new</strong>(text_item : X11::C::X::PTextItem16)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#new-class-method" class="signature"><strong>.new</strong></a>
         
       </li>
     
@@ -701,74 +716,47 @@
   <ul class="list-summary">
     
       <li class="entry-summary">
-        <a href="#display:Display-instance-method" class="signature"><strong>#display</strong> : Display</a>
+        <a href="#chars:Array(X11::C::X::Char2b)-instance-method" class="signature"><strong>#chars</strong> : Array(X11::C::X::Char2b)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#finalize-instance-method" class="signature"><strong>#finalize</strong></a>
+        <a href="#chars=(chars:Array(X11::C::X::Char2b))-instance-method" class="signature"><strong>#chars=</strong>(chars : Array(X11::C::X::Char2b))</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#font_struct:X::PFontStruct-instance-method" class="signature"><strong>#font_struct</strong> : X::PFontStruct</a>
+        <a href="#delta:Int32-instance-method" class="signature"><strong>#delta</strong> : Int32</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#name:String-instance-method" class="signature"><strong>#name</strong> : String</a>
-        
-          <div class="summary"><p>Returns the font's name.</p></div>
+        <a href="#delta=(delta:Int32)-instance-method" class="signature"><strong>#delta=</strong>(delta : Int32)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#property(atom:Atom%7CX11::C::Atom):Atom%7CX11::C::Atom%7CBool-instance-method" class="signature"><strong>#property</strong>(atom : Atom | X11::C::Atom) : Atom | X11::C::Atom | Bool</a>
-        
-          <div class="summary"><p>Returns the value of the specified font property.</p></div>
+        <a href="#font:X11::C::Font-instance-method" class="signature"><strong>#font</strong> : X11::C::Font</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#property_name(atom:Atom%7CX11::C::Atom)-instance-method" class="signature"><strong>#property_name</strong>(atom : Atom | X11::C::Atom)</a>
+        <a href="#font=(font:X11::C::Font)-instance-method" class="signature"><strong>#font=</strong>(font : X11::C::Font)</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#text_extents(string:String):NamedTuple()-instance-method" class="signature"><strong>#text_extents</strong>(string : String) : NamedTuple()</a>
-        
-          <div class="summary"><p>Performs the size computation locally.</p></div>
+        <a href="#nchars:Int32-instance-method" class="signature"><strong>#nchars</strong> : Int32</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#text_extents_16(string:Array(X11::C::X::Char2b)):NamedTuple()-instance-method" class="signature"><strong>#text_extents_16</strong>(string : Array(X11::C::X::Char2b)) : NamedTuple()</a>
-        
-          <div class="summary"><p>Performs the size computation locally.</p></div>
+        <a href="#to_unsafe:X11::C::X::PTextItem16-instance-method" class="signature"><strong>#to_unsafe</strong> : X11::C::X::PTextItem16</a>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#text_width(string:String):Int32-instance-method" class="signature"><strong>#text_width</strong>(string : String) : Int32</a>
-        
-          <div class="summary"><p>Determines the width of an 8-bit character string.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#text_width_16(string:Array(X11::C::X::Char2b)):Int32-instance-method" class="signature"><strong>#text_width_16</strong>(string : Array(X11::C::X::Char2b)) : Int32</a>
-        
-          <div class="summary"><p>Determines the width of an 16-bit character string.</p></div>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#to_unsafe:X11::C::X::PFontStruct-instance-method" class="signature"><strong>#to_unsafe</strong> : X11::C::X::PFontStruct</a>
-        
-      </li>
-    
-      <li class="entry-summary">
-        <a href="#to_x:X11::C::X::FontStruct-instance-method" class="signature"><strong>#to_x</strong> : X11::C::X::FontStruct</a>
+        <a href="#to_x:X11::C::X::TextItem16-instance-method" class="signature"><strong>#to_x</strong> : X11::C::X::TextItem16</a>
         
       </li>
     
@@ -779,6 +767,16 @@
 
 
 <div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
   
     
 
@@ -812,18 +810,66 @@
     Constructor Detail
   </h2>
   
-    <div class="entry-detail" id="new(display:Display,font_struct:X::PFontStruct)-class-method">
+    <div class="entry-detail" id="new(chars:Array(X11::C::X::Char2b),delta:Int32,font:X11::C::Font)-class-method">
       <div class="signature">
         
-        def self.<strong>new</strong>(display : <a href="../X11/Display.html">Display</a>, font_struct : X::PFontStruct)
+        def self.<strong>new</strong>(chars : Array(X11::C::X::Char2b), delta : Int32, font : <a href="../X11/C/Font.html">X11::C::Font</a>)
 
-        <a class="method-permalink" href="#new(display:Display,font_struct:X::PFontStruct)-class-method">#</a>
+        <a class="method-permalink" href="#new(chars:Array(X11::C::X::Char2b),delta:Int32,font:X11::C::Font)-class-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/font_struct.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/text_item 16.cr#L17" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(text_item:X11::C::X::TextItem16)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(text_item : X11::C::X::TextItem16)
+
+        <a class="method-permalink" href="#new(text_item:X11::C::X::TextItem16)-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/text_item 16.cr#L5" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new(text_item:X11::C::X::PTextItem16)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(text_item : X11::C::X::PTextItem16)
+
+        <a class="method-permalink" href="#new(text_item:X11::C::X::PTextItem16)-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/text_item 16.cr#L8" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="new-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>
+
+        <a class="method-permalink" href="#new-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/text_item 16.cr#L13" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -842,388 +888,146 @@
     Instance Method Detail
   </h2>
   
-    <div class="entry-detail" id="display:Display-instance-method">
+    <div class="entry-detail" id="chars:Array(X11::C::X::Char2b)-instance-method">
       <div class="signature">
         
-        def <strong>display</strong> : <a href="../X11/Display.html">Display</a>
+        def <strong>chars</strong> : Array(X11::C::X::Char2b)
 
-        <a class="method-permalink" href="#display:Display-instance-method">#</a>
+        <a class="method-permalink" href="#chars:Array(X11::C::X::Char2b)-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/font_struct.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/text_item 16.cr#L25" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="finalize-instance-method">
+    <div class="entry-detail" id="chars=(chars:Array(X11::C::X::Char2b))-instance-method">
       <div class="signature">
         
-        def <strong>finalize</strong>
+        def <strong>chars=</strong>(chars : Array(X11::C::X::Char2b))
 
-        <a class="method-permalink" href="#finalize-instance-method">#</a>
+        <a class="method-permalink" href="#chars=(chars:Array(X11::C::X::Char2b))-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/font_struct.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/text_item 16.cr#L29" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="font_struct:X::PFontStruct-instance-method">
+    <div class="entry-detail" id="delta:Int32-instance-method">
       <div class="signature">
         
-        def <strong>font_struct</strong> : X::PFontStruct
+        def <strong>delta</strong> : Int32
 
-        <a class="method-permalink" href="#font_struct:X::PFontStruct-instance-method">#</a>
+        <a class="method-permalink" href="#delta:Int32-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/font_struct.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/text_item 16.cr#L38" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="name:String-instance-method">
+    <div class="entry-detail" id="delta=(delta:Int32)-instance-method">
       <div class="signature">
         
-        def <strong>name</strong> : String
+        def <strong>delta=</strong>(delta : Int32)
 
-        <a class="method-permalink" href="#name:String-instance-method">#</a>
+        <a class="method-permalink" href="#delta=(delta:Int32)-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Returns the font's name.</p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/font_struct.cr#L20" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/text_item 16.cr#L42" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="property(atom:Atom|X11::C::Atom):Atom|X11::C::Atom|Bool-instance-method">
+    <div class="entry-detail" id="font:X11::C::Font-instance-method">
       <div class="signature">
         
-        def <strong>property</strong>(atom : <a href="../X11/Atom.html">Atom</a> | <a href="../X11/C/Atom.html">X11::C::Atom</a>) : <a href="../X11/Atom.html">Atom</a> | <a href="../X11/C/Atom.html">X11::C::Atom</a> | Bool
+        def <strong>font</strong> : <a href="../X11/C/Font.html">X11::C::Font</a>
 
-        <a class="method-permalink" href="#property(atom:Atom%7CX11::C::Atom):Atom%7CX11::C::Atom%7CBool-instance-method">#</a>
+        <a class="method-permalink" href="#font:X11::C::Font-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Returns the value of the specified font property.</p>
-
-<h3><a id="arguments" class="anchor" href="#arguments">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Arguments</h3>
-
-<ul><li><strong>atom</strong> Specifies the atom for the property name you want returned.</li></ul>
-
-<h3><a id="description" class="anchor" href="#description">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Description</h3>
-
-<p>Given the atom for that property, the property() function returns the value of the specified font property.
-property() also returns false if the property was not defined or true if it was defined.
-A set of predefined atoms exists for font properties, which can be found in x11/atom.cr .
-This set contains the standard properties associated with a font.
-Although it is not guaranteed, it is likely that the predefined font properties will be present.</p>
-
-<h3><a id="see-also" class="anchor" href="#see-also">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>See also</h3>
-
-<p><code><a href="../X11/Display.html">Display</a>::create_gc</code>, <code><a href="../X11/FontStruct.html#finalize-instance-method">#finalize</a></code>, <code><a href="../X11/Display.html">Display</a>::fonts</code>, <code><a href="../X11/Display.html">Display</a>::load_font</code>,
-<code><a href="../X11/Display.html">Display</a>::load_query_font</code>, <code><a href="../X11/Display.html">Display</a>::query_font</code>,
-<code><a href="../X11/Display.html">Display</a>::set_font_path</code>, <code><a href="../X11/Display.html">Display</a>::unload_font</code>.</p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/font_struct.cr#L40" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/text_item 16.cr#L46" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="property_name(atom:Atom|X11::C::Atom)-instance-method">
+    <div class="entry-detail" id="font=(font:X11::C::Font)-instance-method">
       <div class="signature">
         
-        def <strong>property_name</strong>(atom : <a href="../X11/Atom.html">Atom</a> | <a href="../X11/C/Atom.html">X11::C::Atom</a>)
+        def <strong>font=</strong>(font : <a href="../X11/C/Font.html">X11::C::Font</a>)
 
-        <a class="method-permalink" href="#property_name(atom:Atom%7CX11::C::Atom)-instance-method">#</a>
+        <a class="method-permalink" href="#font=(font:X11::C::Font)-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/font_struct.cr#L45" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/text_item 16.cr#L50" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="text_extents(string:String):NamedTuple()-instance-method">
+    <div class="entry-detail" id="nchars:Int32-instance-method">
       <div class="signature">
         
-        def <strong>text_extents</strong>(string : String) : NamedTuple()
+        def <strong>nchars</strong> : Int32
 
-        <a class="method-permalink" href="#text_extents(string:String):NamedTuple()-instance-method">#</a>
+        <a class="method-permalink" href="#nchars:Int32-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Performs the size computation locally.</p>
-
-<h3><a id="arguments" class="anchor" href="#arguments">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Arguments</h3>
-
-<ul><li><strong>string</strong> Specifies the character string.</li></ul>
-
-<h3><a id="returns" class="anchor" href="#returns">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Returns</h3>
-
-<ul><li><strong>direction</strong> Returns the value of the direction hint
-(<strong>FontLeftToRight</strong> or <strong>FontRightToLeft</strong>).</li><li><strong>font_ascent</strong> Returns the font ascent.</li><li><strong>font_descent</strong> Returns the font descent.</li><li><strong>overall</strong> Returns the overall size in the specified <code><a href="../X11/CharStruct.html">CharStruct</a></code> structure.</li></ul>
-
-<h3><a id="description" class="anchor" href="#description">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Description</h3>
-
-<p>The <code><a href="../X11/FontStruct.html#text_extents(string:String):NamedTuple()-instance-method">#text_extents</a></code> function performs the size computation locally and,
-thereby, avoid the round-trip overhead of <code>query_text_extents</code> and
-<code>query_text_extents_16</code>. The function returns an <code><a href="../X11/CharStruct.html">CharStruct</a></code> structure,
-whose members are set to the values as follows.</p>
-
-<p>The ascent member is set to the maximum of the ascent metrics of all
-characters in the string. The descent member is set to the maximum of the
-descent metrics. The width member is set to the sum of the character-width
-metrics of all characters in the string. For each character in the string,
-let W be the sum of the character-width metrics of all characters preceding
-it in the string. Let L be the left-side-bearing metric of the character
-plus W. Let R be the right-side-bearing metric of the character plus W.
-The lbearing member is set to the minimum L of all characters in the string.
-The rbearing member is set to the maximum R.</p>
-
-<p>For fonts defined with linear indexing rather than 2-byte matrix indexing,
-each <code><a href="../X11.html">X11</a>::C::X::Char2b</code> structure is interpreted as a 16-bit number with
-byte1 as the most-significant byte. If the font has no defined default
-character, undefined characters in the string are taken to have all zero metrics.</p>
-
-<h3><a id="see-also" class="anchor" href="#see-also">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>See also</h3>
-
-<p><code><a href="../X11/Display.html">Display</a>::query_text_extents</code>, <code><a href="../X11/Display.html">Display</a>::query_text_extents_16</code>, <code><a href="../X11/FontStruct.html#text_extents_16(string:Array(X11::C::X::Char2b)):NamedTuple()-instance-method">#text_extents_16</a></code>.</p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/font_struct.cr#L88" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/text_item 16.cr#L34" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="text_extents_16(string:Array(X11::C::X::Char2b)):NamedTuple()-instance-method">
+    <div class="entry-detail" id="to_unsafe:X11::C::X::PTextItem16-instance-method">
       <div class="signature">
         
-        def <strong>text_extents_16</strong>(string : Array(X11::C::X::Char2b)) : NamedTuple()
+        def <strong>to_unsafe</strong> : X11::C::X::PTextItem16
 
-        <a class="method-permalink" href="#text_extents_16(string:Array(X11::C::X::Char2b)):NamedTuple()-instance-method">#</a>
+        <a class="method-permalink" href="#to_unsafe:X11::C::X::PTextItem16-instance-method">#</a>
       </div>
-      
-        <div class="doc">
-          
-          <p>Performs the size computation locally.</p>
-
-<h3><a id="arguments" class="anchor" href="#arguments">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Arguments</h3>
-
-<ul><li><strong>string</strong> Specifies the character string.</li></ul>
-
-<h3><a id="returns" class="anchor" href="#returns">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Returns</h3>
-
-<ul><li><strong>direction</strong> Returns the value of the direction hint
-(<strong>FontLeftToRight</strong> or <strong>FontRightToLeft</strong>).</li><li><strong>font_ascent</strong> Returns the font ascent.</li><li><strong>font_descent</strong> Returns the font descent.</li><li><strong>overall</strong> Returns the overall size in the specified <code><a href="../X11/CharStruct.html">CharStruct</a></code> structure.</li></ul>
-
-<h3><a id="description" class="anchor" href="#description">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Description</h3>
-
-<p>The <code><a href="../X11/FontStruct.html#text_extents_16(string:Array(X11::C::X::Char2b)):NamedTuple()-instance-method">#text_extents_16</a></code> function performs the size computation locally and,
-thereby, avoid the round-trip overhead of <code>query_text_extents</code> and
-<code>query_text_extents_16</code>. The function returns an <code><a href="../X11/CharStruct.html">CharStruct</a></code> structure,
-whose members are set to the values as follows.</p>
-
-<p>The ascent member is set to the maximum of the ascent metrics of all
-characters in the string. The descent member is set to the maximum of the
-descent metrics. The width member is set to the sum of the character-width
-metrics of all characters in the string. For each character in the string,
-let W be the sum of the character-width metrics of all characters
-preceding it in the string. Let L be the left-side-bearing metric of the
-character plus W. Let R be the right-side-bearing metric of the character
-plus W. The lbearing member is set to the minimum L of all characters in
-the string. The rbearing member is set to the maximum R.</p>
-
-<p>For fonts defined with linear indexing rather than 2-byte matrix indexing,
-each <code>X1::C::X::Char2b</code> structure is interpreted as a 16-bit number with
-byte1 as the most-significant byte. If the font has no defined default
-character, undefined characters in the string are taken to have all zero metrics.</p>
-
-<h3><a id="see-also" class="anchor" href="#see-also">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>See also</h3>
-
-<p><code><a href="../X11/Display.html">Display</a>::query_text_extents</code>, <code><a href="../X11/Display.html">Display</a>::query_text_extents_16</code>, <code><a href="../X11/FontStruct.html#text_extents(string:String):NamedTuple()-instance-method">#text_extents</a></code>.</p>
-        </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/font_struct.cr#L128" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/text_item 16.cr#L58" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="text_width(string:String):Int32-instance-method">
+    <div class="entry-detail" id="to_x:X11::C::X::TextItem16-instance-method">
       <div class="signature">
         
-        def <strong>text_width</strong>(string : String) : Int32
+        def <strong>to_x</strong> : X11::C::X::TextItem16
 
-        <a class="method-permalink" href="#text_width(string:String):Int32-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Determines the width of an 8-bit character string.</p>
-
-<h3><a id="arguments" class="anchor" href="#arguments">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Arguments</h3>
-
-<ul><li><strong>string</strong> Specifies the character string.</li></ul>
-
-<h3><a id="see-also" class="anchor" href="#see-also">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>See also</h3>
-
-<p><code><a href="../X11/FontStruct.html#text_width_16(string:Array(X11::C::X::Char2b)):Int32-instance-method">#text_width_16</a></code>, <code><a href="../X11/Display.html">Display</a>::load_font</code>, <code><a href="../X11/FontStruct.html#text_extents(string:String):NamedTuple()-instance-method">#text_extents</a></code>.</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/font_struct.cr#L140" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="text_width_16(string:Array(X11::C::X::Char2b)):Int32-instance-method">
-      <div class="signature">
-        
-        def <strong>text_width_16</strong>(string : Array(X11::C::X::Char2b)) : Int32
-
-        <a class="method-permalink" href="#text_width_16(string:Array(X11::C::X::Char2b)):Int32-instance-method">#</a>
-      </div>
-      
-        <div class="doc">
-          
-          <p>Determines the width of an 16-bit character string.</p>
-
-<h3><a id="arguments" class="anchor" href="#arguments">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>Arguments</h3>
-
-<ul><li><strong>string</strong> Specifies the character string.</li></ul>
-
-<h3><a id="see-also" class="anchor" href="#see-also">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>See also</h3>
-
-<p><code><a href="../X11/FontStruct.html#text_width(string:String):Int32-instance-method">#text_width</a></code>, <code><a href="../X11/Display.html">Display</a>::load_font</code>, <code><a href="../X11/FontStruct.html#text_extents(string:String):NamedTuple()-instance-method">#text_extents</a></code>.</p>
-        </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/font_struct.cr#L151" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="to_unsafe:X11::C::X::PFontStruct-instance-method">
-      <div class="signature">
-        
-        def <strong>to_unsafe</strong> : X11::C::X::PFontStruct
-
-        <a class="method-permalink" href="#to_unsafe:X11::C::X::PFontStruct-instance-method">#</a>
+        <a class="method-permalink" href="#to_x:X11::C::X::TextItem16-instance-method">#</a>
       </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/font_struct.cr#L155" target="_blank">View source</a>]
-        
-      </div>
-    </div>
-  
-    <div class="entry-detail" id="to_x:X11::C::X::FontStruct-instance-method">
-      <div class="signature">
-        
-        def <strong>to_x</strong> : X11::C::X::FontStruct
-
-        <a class="method-permalink" href="#to_x:X11::C::X::FontStruct-instance-method">#</a>
-      </div>
-      
-      <br/>
-      <div>
-        
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/font_struct.cr#L159" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/d2948bac4bf19267d853a45c17feec6b5362b70d/src/x11/text_item 16.cr#L54" target="_blank">View source</a>]
         
       </div>
     </div>
