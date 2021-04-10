@@ -8,4 +8,4 @@
 
 # Contributors
 
-- [TamasSzekeres](https://github.com/TamasSzekeres) Tamás Szekeres - creator, maintainer
+- [Tamás Szekeres](https://github.com/TamasSzekeres) - creator, maintainer

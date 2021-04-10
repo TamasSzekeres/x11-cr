@@ -2,8 +2,8 @@
 
 X11 bindings for Crystal language.
 
-[![Build Status](https://travis-ci.org/TamasSzekeres/x11-cr.svg?branch=master)](https://travis-ci.org/TamasSzekeres/x11-cr)
-[![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://tamasszekeres.github.io/x11-cr/docs/)
+[![GitHub release](https://img.shields.io/github/release/TamasSzekeres/x11-cr.svg)](https://github.com/TamasSzekeres/x11-cr/releases)
+[![Docs](https://img.shields.io/badge/docs-available-brightgreen.svg)](https://tamasszekeres.github.io/x11-cr/)
 
 ## Installation
 
@@ -60,7 +60,7 @@ crystal doc
 ```
 Then you can open `/doc/index.html` in your browser.
 
-Or you can view last commited documentation online at: [https://tamasszekeres.github.io/x11-cr/docs/](https://tamasszekeres.github.io/x11-cr/docs/).
+Or you can view last commited documentation online at: [https://tamasszekeres.github.io/x11-cr/](https://tamasszekeres.github.io/x11-cr/).
 
 ## Contributing
 
@@ -72,4 +72,4 @@ Or you can view last commited documentation online at: [https://tamasszekeres.gi
 
 ## Contributors
 
-- [TamasSzekeres](https://github.com/TamasSzekeres) Tamás Szekeres - creator, maintainer
+- [Tamás Szekeres](https://github.com/TamasSzekeres) - creator, maintainer
