@@ -1,0 +1,2597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Crystal Docs 0.36.1">
+<meta name="crystal_docs.project_version" content="master">
+<meta name="crystal_docs.project_name" content="x11">
+
+
+
+<link href="../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../js/doc.js"></script>
+
+  <meta name="repository-name" content="x11">
+  <title>X11::Atom - x11 master</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../index.html">
+          x11
+        </a>
+      </h1>
+
+      <span class="project-version">
+        master
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="x11/X11" data-name="x11">
+      <a href="../X11.html">X11</a>
+      
+        <ul>
+  
+  <li class=" " data-id="x11/X11/AnyEvent" data-name="x11::anyevent">
+      <a href="../X11/AnyEvent.html">AnyEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/Arc" data-name="x11::arc">
+      <a href="../X11/Arc.html">Arc</a>
+      
+    </li>
+  
+  <li class=" current" data-id="x11/X11/Atom" data-name="x11::atom">
+      <a href="../X11/Atom.html">Atom</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/BadAllocException" data-name="x11::badallocexception">
+      <a href="../X11/BadAllocException.html">BadAllocException</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/ButtonEvent" data-name="x11::buttonevent">
+      <a href="../X11/ButtonEvent.html">ButtonEvent</a>
+      
+    </li>
+  
+  <li class="parent " data-id="x11/X11/C" data-name="x11::c">
+      <a href="../X11/C.html">C</a>
+      
+        <ul>
+  
+  <li class=" " data-id="x11/X11/C/Atom" data-name="x11::c::atom">
+      <a href="../X11/C/Atom.html">Atom</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/BITS16" data-name="x11::c::bits16">
+      <a href="../X11/C/BITS16.html">BITS16</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/BITS32" data-name="x11::c::bits32">
+      <a href="../X11/C/BITS32.html">BITS32</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/BOOL" data-name="x11::c::bool">
+      <a href="../X11/C/BOOL.html">BOOL</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/BYTE" data-name="x11::c::byte">
+      <a href="../X11/C/BYTE.html">BYTE</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/CARD16" data-name="x11::c::card16">
+      <a href="../X11/C/CARD16.html">CARD16</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/CARD32" data-name="x11::c::card32">
+      <a href="../X11/C/CARD32.html">CARD32</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/CARD64" data-name="x11::c::card64">
+      <a href="../X11/C/CARD64.html">CARD64</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/CARD8" data-name="x11::c::card8">
+      <a href="../X11/C/CARD8.html">CARD8</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/Char" data-name="x11::c::char">
+      <a href="../X11/C/Char.html">Char</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/Colormap" data-name="x11::c::colormap">
+      <a href="../X11/C/Colormap.html">Colormap</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/Cursor" data-name="x11::c::cursor">
+      <a href="../X11/C/Cursor.html">Cursor</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/Drawable" data-name="x11::c::drawable">
+      <a href="../X11/C/Drawable.html">Drawable</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/Font" data-name="x11::c::font">
+      <a href="../X11/C/Font.html">Font</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/GContext" data-name="x11::c::gcontext">
+      <a href="../X11/C/GContext.html">GContext</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/INT32" data-name="x11::c::int32">
+      <a href="../X11/C/INT32.html">INT32</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/INT64" data-name="x11::c::int64">
+      <a href="../X11/C/INT64.html">INT64</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/INT8" data-name="x11::c::int8">
+      <a href="../X11/C/INT8.html">INT8</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/KeyCode" data-name="x11::c::keycode">
+      <a href="../X11/C/KeyCode.html">KeyCode</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/KeySym" data-name="x11::c::keysym">
+      <a href="../X11/C/KeySym.html">KeySym</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/Mask" data-name="x11::c::mask">
+      <a href="../X11/C/Mask.html">Mask</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PAtom" data-name="x11::c::patom">
+      <a href="../X11/C/PAtom.html">PAtom</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PChar" data-name="x11::c::pchar">
+      <a href="../X11/C/PChar.html">PChar</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PColormap" data-name="x11::c::pcolormap">
+      <a href="../X11/C/PColormap.html">PColormap</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PCursor" data-name="x11::c::pcursor">
+      <a href="../X11/C/PCursor.html">PCursor</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PDrawable" data-name="x11::c::pdrawable">
+      <a href="../X11/C/PDrawable.html">PDrawable</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PFont" data-name="x11::c::pfont">
+      <a href="../X11/C/PFont.html">PFont</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PGContext" data-name="x11::c::pgcontext">
+      <a href="../X11/C/PGContext.html">PGContext</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PInt32" data-name="x11::c::pint32">
+      <a href="../X11/C/PInt32.html">PInt32</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PInt64" data-name="x11::c::pint64">
+      <a href="../X11/C/PInt64.html">PInt64</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PInt8" data-name="x11::c::pint8">
+      <a href="../X11/C/PInt8.html">PInt8</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/Pixmap" data-name="x11::c::pixmap">
+      <a href="../X11/C/Pixmap.html">Pixmap</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PKeyCode" data-name="x11::c::pkeycode">
+      <a href="../X11/C/PKeyCode.html">PKeyCode</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PKeySym" data-name="x11::c::pkeysym">
+      <a href="../X11/C/PKeySym.html">PKeySym</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PPChar" data-name="x11::c::ppchar">
+      <a href="../X11/C/PPChar.html">PPChar</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PPixmap" data-name="x11::c::ppixmap">
+      <a href="../X11/C/PPixmap.html">PPixmap</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PUInt32" data-name="x11::c::puint32">
+      <a href="../X11/C/PUInt32.html">PUInt32</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PUInt64" data-name="x11::c::puint64">
+      <a href="../X11/C/PUInt64.html">PUInt64</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PUInt8" data-name="x11::c::puint8">
+      <a href="../X11/C/PUInt8.html">PUInt8</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/PWindow" data-name="x11::c::pwindow">
+      <a href="../X11/C/PWindow.html">PWindow</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/Time" data-name="x11::c::time">
+      <a href="../X11/C/Time.html">Time</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/VisualID" data-name="x11::c::visualid">
+      <a href="../X11/C/VisualID.html">VisualID</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/Window" data-name="x11::c::window">
+      <a href="../X11/C/Window.html">Window</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/C/XID" data-name="x11::c::xid">
+      <a href="../X11/C/XID.html">XID</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/CharStruct" data-name="x11::charstruct">
+      <a href="../X11/CharStruct.html">CharStruct</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/CirculateEvent" data-name="x11::circulateevent">
+      <a href="../X11/CirculateEvent.html">CirculateEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/CirculateRequestEvent" data-name="x11::circulaterequestevent">
+      <a href="../X11/CirculateRequestEvent.html">CirculateRequestEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/ClientMessageEvent" data-name="x11::clientmessageevent">
+      <a href="../X11/ClientMessageEvent.html">ClientMessageEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/Color" data-name="x11::color">
+      <a href="../X11/Color.html">Color</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/ColormapEvent" data-name="x11::colormapevent">
+      <a href="../X11/ColormapEvent.html">ColormapEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/ConfigureEvent" data-name="x11::configureevent">
+      <a href="../X11/ConfigureEvent.html">ConfigureEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/ConfigureRequestEvent" data-name="x11::configurerequestevent">
+      <a href="../X11/ConfigureRequestEvent.html">ConfigureRequestEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/CreateWindowEvent" data-name="x11::createwindowevent">
+      <a href="../X11/CreateWindowEvent.html">CreateWindowEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/CrossingEvent" data-name="x11::crossingevent">
+      <a href="../X11/CrossingEvent.html">CrossingEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/DestroyWindowEvent" data-name="x11::destroywindowevent">
+      <a href="../X11/DestroyWindowEvent.html">DestroyWindowEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/Display" data-name="x11::display">
+      <a href="../X11/Display.html">Display</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/DisplayInitialization" data-name="x11::displayinitialization">
+      <a href="../X11/DisplayInitialization.html">DisplayInitialization</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/ErrorEvent" data-name="x11::errorevent">
+      <a href="../X11/ErrorEvent.html">ErrorEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/Event" data-name="x11::event">
+      <a href="../X11/Event.html">Event</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/ExposeEvent" data-name="x11::exposeevent">
+      <a href="../X11/ExposeEvent.html">ExposeEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/ExtCodes" data-name="x11::extcodes">
+      <a href="../X11/ExtCodes.html">ExtCodes</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/ExtData" data-name="x11::extdata">
+      <a href="../X11/ExtData.html">ExtData</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/FocusChangeEvent" data-name="x11::focuschangeevent">
+      <a href="../X11/FocusChangeEvent.html">FocusChangeEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/FontStruct" data-name="x11::fontstruct">
+      <a href="../X11/FontStruct.html">FontStruct</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/GCValues" data-name="x11::gcvalues">
+      <a href="../X11/GCValues.html">GCValues</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/GenericEvent" data-name="x11::genericevent">
+      <a href="../X11/GenericEvent.html">GenericEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/GenericEventCookie" data-name="x11::genericeventcookie">
+      <a href="../X11/GenericEventCookie.html">GenericEventCookie</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/GraphicsExposeEvent" data-name="x11::graphicsexposeevent">
+      <a href="../X11/GraphicsExposeEvent.html">GraphicsExposeEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/GravityEvent" data-name="x11::gravityevent">
+      <a href="../X11/GravityEvent.html">GravityEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/HostAddress" data-name="x11::hostaddress">
+      <a href="../X11/HostAddress.html">HostAddress</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/Image" data-name="x11::image">
+      <a href="../X11/Image.html">Image</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/KeyboardControl" data-name="x11::keyboardcontrol">
+      <a href="../X11/KeyboardControl.html">KeyboardControl</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/KeyboardState" data-name="x11::keyboardstate">
+      <a href="../X11/KeyboardState.html">KeyboardState</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/KeyEvent" data-name="x11::keyevent">
+      <a href="../X11/KeyEvent.html">KeyEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/KeymapEvent" data-name="x11::keymapevent">
+      <a href="../X11/KeymapEvent.html">KeymapEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/MapEvent" data-name="x11::mapevent">
+      <a href="../X11/MapEvent.html">MapEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/MappingEvent" data-name="x11::mappingevent">
+      <a href="../X11/MappingEvent.html">MappingEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/MapRequestEvent" data-name="x11::maprequestevent">
+      <a href="../X11/MapRequestEvent.html">MapRequestEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/MbTextItem" data-name="x11::mbtextitem">
+      <a href="../X11/MbTextItem.html">MbTextItem</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/ModifierKeymap" data-name="x11::modifierkeymap">
+      <a href="../X11/ModifierKeymap.html">ModifierKeymap</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/MotionEvent" data-name="x11::motionevent">
+      <a href="../X11/MotionEvent.html">MotionEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/NoExposeEvent" data-name="x11::noexposeevent">
+      <a href="../X11/NoExposeEvent.html">NoExposeEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/PixmapFormatValues" data-name="x11::pixmapformatvalues">
+      <a href="../X11/PixmapFormatValues.html">PixmapFormatValues</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/Point" data-name="x11::point">
+      <a href="../X11/Point.html">Point</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/PropertyEvent" data-name="x11::propertyevent">
+      <a href="../X11/PropertyEvent.html">PropertyEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/Rectangle" data-name="x11::rectangle">
+      <a href="../X11/Rectangle.html">Rectangle</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/ReparentEvent" data-name="x11::reparentevent">
+      <a href="../X11/ReparentEvent.html">ReparentEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/ResizeRequestEvent" data-name="x11::resizerequestevent">
+      <a href="../X11/ResizeRequestEvent.html">ResizeRequestEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/Screen" data-name="x11::screen">
+      <a href="../X11/Screen.html">Screen</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/Segment" data-name="x11::segment">
+      <a href="../X11/Segment.html">Segment</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/SelectionClearEvent" data-name="x11::selectionclearevent">
+      <a href="../X11/SelectionClearEvent.html">SelectionClearEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/SelectionEvent" data-name="x11::selectionevent">
+      <a href="../X11/SelectionEvent.html">SelectionEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/SelectionRequestEvent" data-name="x11::selectionrequestevent">
+      <a href="../X11/SelectionRequestEvent.html">SelectionRequestEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/ServerInterpretedAddress" data-name="x11::serverinterpretedaddress">
+      <a href="../X11/ServerInterpretedAddress.html">ServerInterpretedAddress</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/SetWindowAttributes" data-name="x11::setwindowattributes">
+      <a href="../X11/SetWindowAttributes.html">SetWindowAttributes</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/TextItem" data-name="x11::textitem">
+      <a href="../X11/TextItem.html">TextItem</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/TimeCoord" data-name="x11::timecoord">
+      <a href="../X11/TimeCoord.html">TimeCoord</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/UnmapEvent" data-name="x11::unmapevent">
+      <a href="../X11/UnmapEvent.html">UnmapEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/VisibilityEvent" data-name="x11::visibilityevent">
+      <a href="../X11/VisibilityEvent.html">VisibilityEvent</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/Visual" data-name="x11::visual">
+      <a href="../X11/Visual.html">Visual</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/WcTextItem" data-name="x11::wctextitem">
+      <a href="../X11/WcTextItem.html">WcTextItem</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/WindowChanges" data-name="x11::windowchanges">
+      <a href="../X11/WindowChanges.html">WindowChanges</a>
+      
+    </li>
+  
+  <li class=" " data-id="x11/X11/WindowEvent" data-name="x11::windowevent">
+      <a href="../X11/WindowEvent.html">WindowEvent</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">enum</span> X11::Atom
+
+</h1>
+
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Predefined atoms.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L7" target="_blank">
+        x11/atom.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+  
+    <h2>
+      <a id="enum-members" class="anchor" href="#enum-members">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+      Enum Members
+    </h2>
+  
+  <dl>
+    
+      <dt class="entry-const" id="Primary">
+        <strong>Primary</strong> = <code><span class="n">1_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Secondary">
+        <strong>Secondary</strong> = <code><span class="n">2_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Arc">
+        <strong>Arc</strong> = <code><span class="n">3_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Atom">
+        <strong>Atom</strong> = <code><span class="n">4_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Bitmap">
+        <strong>Bitmap</strong> = <code><span class="n">5_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Cardinal">
+        <strong>Cardinal</strong> = <code><span class="n">6_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Colormap">
+        <strong>Colormap</strong> = <code><span class="n">7_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Cursor">
+        <strong>Cursor</strong> = <code><span class="n">8_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="CutBuffer0">
+        <strong>CutBuffer0</strong> = <code><span class="n">9_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="CutBuffer1">
+        <strong>CutBuffer1</strong> = <code><span class="n">10_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="CutBuffer2">
+        <strong>CutBuffer2</strong> = <code><span class="n">11_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="CutBuffer3">
+        <strong>CutBuffer3</strong> = <code><span class="n">12_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="CutBuffer4">
+        <strong>CutBuffer4</strong> = <code><span class="n">13_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="CutBuffer5">
+        <strong>CutBuffer5</strong> = <code><span class="n">14_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="CutBuffer6">
+        <strong>CutBuffer6</strong> = <code><span class="n">15_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="CutBuffer7">
+        <strong>CutBuffer7</strong> = <code><span class="n">16_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Drawable">
+        <strong>Drawable</strong> = <code><span class="n">17_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Font">
+        <strong>Font</strong> = <code><span class="n">18_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Integer">
+        <strong>Integer</strong> = <code><span class="n">19_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Pixmap">
+        <strong>Pixmap</strong> = <code><span class="n">20_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Point">
+        <strong>Point</strong> = <code><span class="n">21_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Rectangle">
+        <strong>Rectangle</strong> = <code><span class="n">22_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="ResourceManager">
+        <strong>ResourceManager</strong> = <code><span class="n">23_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="RgbColorMap">
+        <strong>RgbColorMap</strong> = <code><span class="n">24_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="RgbBestMap">
+        <strong>RgbBestMap</strong> = <code><span class="n">25_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="RgbBlueMap">
+        <strong>RgbBlueMap</strong> = <code><span class="n">26_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="RgbDefaultMap">
+        <strong>RgbDefaultMap</strong> = <code><span class="n">27_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="RgbGrayMap">
+        <strong>RgbGrayMap</strong> = <code><span class="n">28_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="RgbGreenMap">
+        <strong>RgbGreenMap</strong> = <code><span class="n">29_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="RgbRedMap">
+        <strong>RgbRedMap</strong> = <code><span class="n">30_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="String">
+        <strong>String</strong> = <code><span class="n">31_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="VisualID">
+        <strong>VisualID</strong> = <code><span class="n">32_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Window">
+        <strong>Window</strong> = <code><span class="n">33_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WmCommand">
+        <strong>WmCommand</strong> = <code><span class="n">34_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WmHints">
+        <strong>WmHints</strong> = <code><span class="n">35_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WmClientMachine">
+        <strong>WmClientMachine</strong> = <code><span class="n">36_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WmIconName">
+        <strong>WmIconName</strong> = <code><span class="n">37_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WmIconSize">
+        <strong>WmIconSize</strong> = <code><span class="n">38_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WmName">
+        <strong>WmName</strong> = <code><span class="n">39_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WmNormalHints">
+        <strong>WmNormalHints</strong> = <code><span class="n">40_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WmSizeHints">
+        <strong>WmSizeHints</strong> = <code><span class="n">41_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WmZomHints">
+        <strong>WmZomHints</strong> = <code><span class="n">42_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="MinSpace">
+        <strong>MinSpace</strong> = <code><span class="n">43_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="NormSpace">
+        <strong>NormSpace</strong> = <code><span class="n">44_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="MaxSpace">
+        <strong>MaxSpace</strong> = <code><span class="n">45_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="EndSpace">
+        <strong>EndSpace</strong> = <code><span class="n">46_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="SuperscriptX">
+        <strong>SuperscriptX</strong> = <code><span class="n">47_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="SuperscriptY">
+        <strong>SuperscriptY</strong> = <code><span class="n">48_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="SubscriptX">
+        <strong>SubscriptX</strong> = <code><span class="n">49_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="SubscriptY">
+        <strong>SubscriptY</strong> = <code><span class="n">50_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="UnderlinePosition">
+        <strong>UnderlinePosition</strong> = <code><span class="n">51_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="UnderlineThickness">
+        <strong>UnderlineThickness</strong> = <code><span class="n">52_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="StrikeoutAscent">
+        <strong>StrikeoutAscent</strong> = <code><span class="n">53_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="StrikeoutDescent">
+        <strong>StrikeoutDescent</strong> = <code><span class="n">54_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="ItalicAngle">
+        <strong>ItalicAngle</strong> = <code><span class="n">55_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="XHeight">
+        <strong>XHeight</strong> = <code><span class="n">56_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="QuadWidth">
+        <strong>QuadWidth</strong> = <code><span class="n">57_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Weight">
+        <strong>Weight</strong> = <code><span class="n">58_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="PointSize">
+        <strong>PointSize</strong> = <code><span class="n">59_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Resolution">
+        <strong>Resolution</strong> = <code><span class="n">60_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Copyright">
+        <strong>Copyright</strong> = <code><span class="n">61_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="Notice">
+        <strong>Notice</strong> = <code><span class="n">62_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="FontName">
+        <strong>FontName</strong> = <code><span class="n">63_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="FamilyName">
+        <strong>FamilyName</strong> = <code><span class="n">64_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="FullName">
+        <strong>FullName</strong> = <code><span class="n">65_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="CapHeight">
+        <strong>CapHeight</strong> = <code><span class="n">66_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WmClass">
+        <strong>WmClass</strong> = <code><span class="n">67_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="WmTransientFor">
+        <strong>WmTransientFor</strong> = <code><span class="n">68_u64</span></code>
+      </dt>
+      
+    
+      <dt class="entry-const" id="LastPredefined">
+        <strong>LastPredefined</strong> = <code><span class="n">68_u64</span></code>
+      </dt>
+      
+    
+  </dl>
+
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#arc?-instance-method" class="signature"><strong>#arc?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#atom?-instance-method" class="signature"><strong>#atom?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#bitmap?-instance-method" class="signature"><strong>#bitmap?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cap_height?-instance-method" class="signature"><strong>#cap_height?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cardinal?-instance-method" class="signature"><strong>#cardinal?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#colormap?-instance-method" class="signature"><strong>#colormap?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#copyright?-instance-method" class="signature"><strong>#copyright?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cursor?-instance-method" class="signature"><strong>#cursor?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cut_buffer0?-instance-method" class="signature"><strong>#cut_buffer0?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cut_buffer1?-instance-method" class="signature"><strong>#cut_buffer1?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cut_buffer2?-instance-method" class="signature"><strong>#cut_buffer2?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cut_buffer3?-instance-method" class="signature"><strong>#cut_buffer3?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cut_buffer4?-instance-method" class="signature"><strong>#cut_buffer4?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cut_buffer5?-instance-method" class="signature"><strong>#cut_buffer5?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cut_buffer6?-instance-method" class="signature"><strong>#cut_buffer6?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#cut_buffer7?-instance-method" class="signature"><strong>#cut_buffer7?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#drawable?-instance-method" class="signature"><strong>#drawable?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#end_space?-instance-method" class="signature"><strong>#end_space?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#family_name?-instance-method" class="signature"><strong>#family_name?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#font?-instance-method" class="signature"><strong>#font?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#font_name?-instance-method" class="signature"><strong>#font_name?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#full_name?-instance-method" class="signature"><strong>#full_name?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#integer?-instance-method" class="signature"><strong>#integer?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#italic_angle?-instance-method" class="signature"><strong>#italic_angle?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#last_predefined?-instance-method" class="signature"><strong>#last_predefined?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#max_space?-instance-method" class="signature"><strong>#max_space?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#min_space?-instance-method" class="signature"><strong>#min_space?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#norm_space?-instance-method" class="signature"><strong>#norm_space?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#notice?-instance-method" class="signature"><strong>#notice?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#pixmap?-instance-method" class="signature"><strong>#pixmap?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#point?-instance-method" class="signature"><strong>#point?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#point_size?-instance-method" class="signature"><strong>#point_size?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#primary?-instance-method" class="signature"><strong>#primary?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#quad_width?-instance-method" class="signature"><strong>#quad_width?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rectangle?-instance-method" class="signature"><strong>#rectangle?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#resolution?-instance-method" class="signature"><strong>#resolution?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#resource_manager?-instance-method" class="signature"><strong>#resource_manager?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rgb_best_map?-instance-method" class="signature"><strong>#rgb_best_map?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rgb_blue_map?-instance-method" class="signature"><strong>#rgb_blue_map?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rgb_color_map?-instance-method" class="signature"><strong>#rgb_color_map?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rgb_default_map?-instance-method" class="signature"><strong>#rgb_default_map?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rgb_gray_map?-instance-method" class="signature"><strong>#rgb_gray_map?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rgb_green_map?-instance-method" class="signature"><strong>#rgb_green_map?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#rgb_red_map?-instance-method" class="signature"><strong>#rgb_red_map?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#secondary?-instance-method" class="signature"><strong>#secondary?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#strikeout_ascent?-instance-method" class="signature"><strong>#strikeout_ascent?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#strikeout_descent?-instance-method" class="signature"><strong>#strikeout_descent?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#string?-instance-method" class="signature"><strong>#string?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#subscript_x?-instance-method" class="signature"><strong>#subscript_x?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#subscript_y?-instance-method" class="signature"><strong>#subscript_y?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#superscript_x?-instance-method" class="signature"><strong>#superscript_x?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#superscript_y?-instance-method" class="signature"><strong>#superscript_y?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#to_u64:UInt64-instance-method" class="signature"><strong>#to_u64</strong> : UInt64</a>
+        
+          <div class="summary"><p>Returns self converted to UInt64.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#underline_position?-instance-method" class="signature"><strong>#underline_position?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#underline_thickness?-instance-method" class="signature"><strong>#underline_thickness?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#visual_id?-instance-method" class="signature"><strong>#visual_id?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#weight?-instance-method" class="signature"><strong>#weight?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#window?-instance-method" class="signature"><strong>#window?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#wm_class?-instance-method" class="signature"><strong>#wm_class?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#wm_client_machine?-instance-method" class="signature"><strong>#wm_client_machine?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#wm_command?-instance-method" class="signature"><strong>#wm_command?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#wm_hints?-instance-method" class="signature"><strong>#wm_hints?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#wm_icon_name?-instance-method" class="signature"><strong>#wm_icon_name?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#wm_icon_size?-instance-method" class="signature"><strong>#wm_icon_size?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#wm_name?-instance-method" class="signature"><strong>#wm_name?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#wm_normal_hints?-instance-method" class="signature"><strong>#wm_normal_hints?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#wm_size_hints?-instance-method" class="signature"><strong>#wm_size_hints?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#wm_transient_for?-instance-method" class="signature"><strong>#wm_transient_for?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#wm_zom_hints?-instance-method" class="signature"><strong>#wm_zom_hints?</strong></a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#x_height?-instance-method" class="signature"><strong>#x_height?</strong></a>
+        
+      </li>
+    
+  </ul>
+
+
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+
+
+
+
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="arc?-instance-method">
+      <div class="signature">
+        
+        def <strong>arc?</strong>
+
+        <a class="method-permalink" href="#arc?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="atom?-instance-method">
+      <div class="signature">
+        
+        def <strong>atom?</strong>
+
+        <a class="method-permalink" href="#atom?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L11" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="bitmap?-instance-method">
+      <div class="signature">
+        
+        def <strong>bitmap?</strong>
+
+        <a class="method-permalink" href="#bitmap?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L12" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cap_height?-instance-method">
+      <div class="signature">
+        
+        def <strong>cap_height?</strong>
+
+        <a class="method-permalink" href="#cap_height?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L73" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cardinal?-instance-method">
+      <div class="signature">
+        
+        def <strong>cardinal?</strong>
+
+        <a class="method-permalink" href="#cardinal?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L13" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="colormap?-instance-method">
+      <div class="signature">
+        
+        def <strong>colormap?</strong>
+
+        <a class="method-permalink" href="#colormap?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L14" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="copyright?-instance-method">
+      <div class="signature">
+        
+        def <strong>copyright?</strong>
+
+        <a class="method-permalink" href="#copyright?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L68" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cursor?-instance-method">
+      <div class="signature">
+        
+        def <strong>cursor?</strong>
+
+        <a class="method-permalink" href="#cursor?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L15" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cut_buffer0?-instance-method">
+      <div class="signature">
+        
+        def <strong>cut_buffer0?</strong>
+
+        <a class="method-permalink" href="#cut_buffer0?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L16" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cut_buffer1?-instance-method">
+      <div class="signature">
+        
+        def <strong>cut_buffer1?</strong>
+
+        <a class="method-permalink" href="#cut_buffer1?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L17" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cut_buffer2?-instance-method">
+      <div class="signature">
+        
+        def <strong>cut_buffer2?</strong>
+
+        <a class="method-permalink" href="#cut_buffer2?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L18" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cut_buffer3?-instance-method">
+      <div class="signature">
+        
+        def <strong>cut_buffer3?</strong>
+
+        <a class="method-permalink" href="#cut_buffer3?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L19" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cut_buffer4?-instance-method">
+      <div class="signature">
+        
+        def <strong>cut_buffer4?</strong>
+
+        <a class="method-permalink" href="#cut_buffer4?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L20" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cut_buffer5?-instance-method">
+      <div class="signature">
+        
+        def <strong>cut_buffer5?</strong>
+
+        <a class="method-permalink" href="#cut_buffer5?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L21" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cut_buffer6?-instance-method">
+      <div class="signature">
+        
+        def <strong>cut_buffer6?</strong>
+
+        <a class="method-permalink" href="#cut_buffer6?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L22" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="cut_buffer7?-instance-method">
+      <div class="signature">
+        
+        def <strong>cut_buffer7?</strong>
+
+        <a class="method-permalink" href="#cut_buffer7?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L23" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="drawable?-instance-method">
+      <div class="signature">
+        
+        def <strong>drawable?</strong>
+
+        <a class="method-permalink" href="#drawable?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L24" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="end_space?-instance-method">
+      <div class="signature">
+        
+        def <strong>end_space?</strong>
+
+        <a class="method-permalink" href="#end_space?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L53" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="family_name?-instance-method">
+      <div class="signature">
+        
+        def <strong>family_name?</strong>
+
+        <a class="method-permalink" href="#family_name?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L71" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="font?-instance-method">
+      <div class="signature">
+        
+        def <strong>font?</strong>
+
+        <a class="method-permalink" href="#font?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L25" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="font_name?-instance-method">
+      <div class="signature">
+        
+        def <strong>font_name?</strong>
+
+        <a class="method-permalink" href="#font_name?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L70" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="full_name?-instance-method">
+      <div class="signature">
+        
+        def <strong>full_name?</strong>
+
+        <a class="method-permalink" href="#full_name?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L72" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="integer?-instance-method">
+      <div class="signature">
+        
+        def <strong>integer?</strong>
+
+        <a class="method-permalink" href="#integer?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L26" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="italic_angle?-instance-method">
+      <div class="signature">
+        
+        def <strong>italic_angle?</strong>
+
+        <a class="method-permalink" href="#italic_angle?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L62" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="last_predefined?-instance-method">
+      <div class="signature">
+        
+        def <strong>last_predefined?</strong>
+
+        <a class="method-permalink" href="#last_predefined?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L77" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="max_space?-instance-method">
+      <div class="signature">
+        
+        def <strong>max_space?</strong>
+
+        <a class="method-permalink" href="#max_space?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L52" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="min_space?-instance-method">
+      <div class="signature">
+        
+        def <strong>min_space?</strong>
+
+        <a class="method-permalink" href="#min_space?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L50" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="norm_space?-instance-method">
+      <div class="signature">
+        
+        def <strong>norm_space?</strong>
+
+        <a class="method-permalink" href="#norm_space?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L51" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="notice?-instance-method">
+      <div class="signature">
+        
+        def <strong>notice?</strong>
+
+        <a class="method-permalink" href="#notice?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L69" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="pixmap?-instance-method">
+      <div class="signature">
+        
+        def <strong>pixmap?</strong>
+
+        <a class="method-permalink" href="#pixmap?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L27" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="point?-instance-method">
+      <div class="signature">
+        
+        def <strong>point?</strong>
+
+        <a class="method-permalink" href="#point?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L28" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="point_size?-instance-method">
+      <div class="signature">
+        
+        def <strong>point_size?</strong>
+
+        <a class="method-permalink" href="#point_size?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L66" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="primary?-instance-method">
+      <div class="signature">
+        
+        def <strong>primary?</strong>
+
+        <a class="method-permalink" href="#primary?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L8" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="quad_width?-instance-method">
+      <div class="signature">
+        
+        def <strong>quad_width?</strong>
+
+        <a class="method-permalink" href="#quad_width?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L64" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rectangle?-instance-method">
+      <div class="signature">
+        
+        def <strong>rectangle?</strong>
+
+        <a class="method-permalink" href="#rectangle?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L29" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="resolution?-instance-method">
+      <div class="signature">
+        
+        def <strong>resolution?</strong>
+
+        <a class="method-permalink" href="#resolution?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L67" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="resource_manager?-instance-method">
+      <div class="signature">
+        
+        def <strong>resource_manager?</strong>
+
+        <a class="method-permalink" href="#resource_manager?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L30" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rgb_best_map?-instance-method">
+      <div class="signature">
+        
+        def <strong>rgb_best_map?</strong>
+
+        <a class="method-permalink" href="#rgb_best_map?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L32" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rgb_blue_map?-instance-method">
+      <div class="signature">
+        
+        def <strong>rgb_blue_map?</strong>
+
+        <a class="method-permalink" href="#rgb_blue_map?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L33" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rgb_color_map?-instance-method">
+      <div class="signature">
+        
+        def <strong>rgb_color_map?</strong>
+
+        <a class="method-permalink" href="#rgb_color_map?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L31" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rgb_default_map?-instance-method">
+      <div class="signature">
+        
+        def <strong>rgb_default_map?</strong>
+
+        <a class="method-permalink" href="#rgb_default_map?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L34" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rgb_gray_map?-instance-method">
+      <div class="signature">
+        
+        def <strong>rgb_gray_map?</strong>
+
+        <a class="method-permalink" href="#rgb_gray_map?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L35" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rgb_green_map?-instance-method">
+      <div class="signature">
+        
+        def <strong>rgb_green_map?</strong>
+
+        <a class="method-permalink" href="#rgb_green_map?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L36" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="rgb_red_map?-instance-method">
+      <div class="signature">
+        
+        def <strong>rgb_red_map?</strong>
+
+        <a class="method-permalink" href="#rgb_red_map?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L37" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="secondary?-instance-method">
+      <div class="signature">
+        
+        def <strong>secondary?</strong>
+
+        <a class="method-permalink" href="#secondary?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L9" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="strikeout_ascent?-instance-method">
+      <div class="signature">
+        
+        def <strong>strikeout_ascent?</strong>
+
+        <a class="method-permalink" href="#strikeout_ascent?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L60" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="strikeout_descent?-instance-method">
+      <div class="signature">
+        
+        def <strong>strikeout_descent?</strong>
+
+        <a class="method-permalink" href="#strikeout_descent?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L61" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="string?-instance-method">
+      <div class="signature">
+        
+        def <strong>string?</strong>
+
+        <a class="method-permalink" href="#string?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L38" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="subscript_x?-instance-method">
+      <div class="signature">
+        
+        def <strong>subscript_x?</strong>
+
+        <a class="method-permalink" href="#subscript_x?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L56" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="subscript_y?-instance-method">
+      <div class="signature">
+        
+        def <strong>subscript_y?</strong>
+
+        <a class="method-permalink" href="#subscript_y?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L57" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="superscript_x?-instance-method">
+      <div class="signature">
+        
+        def <strong>superscript_x?</strong>
+
+        <a class="method-permalink" href="#superscript_x?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L54" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="superscript_y?-instance-method">
+      <div class="signature">
+        
+        def <strong>superscript_y?</strong>
+
+        <a class="method-permalink" href="#superscript_y?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L55" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="to_u64:UInt64-instance-method">
+      <div class="signature">
+        
+        def <strong>to_u64</strong> : UInt64
+
+        <a class="method-permalink" href="#to_u64:UInt64-instance-method">#</a>
+      </div>
+      
+        <div class="doc">
+          
+          <p>Returns self converted to UInt64.</p>
+        </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L80" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="underline_position?-instance-method">
+      <div class="signature">
+        
+        def <strong>underline_position?</strong>
+
+        <a class="method-permalink" href="#underline_position?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L58" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="underline_thickness?-instance-method">
+      <div class="signature">
+        
+        def <strong>underline_thickness?</strong>
+
+        <a class="method-permalink" href="#underline_thickness?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L59" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="visual_id?-instance-method">
+      <div class="signature">
+        
+        def <strong>visual_id?</strong>
+
+        <a class="method-permalink" href="#visual_id?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L39" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="weight?-instance-method">
+      <div class="signature">
+        
+        def <strong>weight?</strong>
+
+        <a class="method-permalink" href="#weight?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L65" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="window?-instance-method">
+      <div class="signature">
+        
+        def <strong>window?</strong>
+
+        <a class="method-permalink" href="#window?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L40" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="wm_class?-instance-method">
+      <div class="signature">
+        
+        def <strong>wm_class?</strong>
+
+        <a class="method-permalink" href="#wm_class?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L74" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="wm_client_machine?-instance-method">
+      <div class="signature">
+        
+        def <strong>wm_client_machine?</strong>
+
+        <a class="method-permalink" href="#wm_client_machine?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L43" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="wm_command?-instance-method">
+      <div class="signature">
+        
+        def <strong>wm_command?</strong>
+
+        <a class="method-permalink" href="#wm_command?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L41" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="wm_hints?-instance-method">
+      <div class="signature">
+        
+        def <strong>wm_hints?</strong>
+
+        <a class="method-permalink" href="#wm_hints?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L42" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="wm_icon_name?-instance-method">
+      <div class="signature">
+        
+        def <strong>wm_icon_name?</strong>
+
+        <a class="method-permalink" href="#wm_icon_name?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L44" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="wm_icon_size?-instance-method">
+      <div class="signature">
+        
+        def <strong>wm_icon_size?</strong>
+
+        <a class="method-permalink" href="#wm_icon_size?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L45" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="wm_name?-instance-method">
+      <div class="signature">
+        
+        def <strong>wm_name?</strong>
+
+        <a class="method-permalink" href="#wm_name?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L46" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="wm_normal_hints?-instance-method">
+      <div class="signature">
+        
+        def <strong>wm_normal_hints?</strong>
+
+        <a class="method-permalink" href="#wm_normal_hints?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L47" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="wm_size_hints?-instance-method">
+      <div class="signature">
+        
+        def <strong>wm_size_hints?</strong>
+
+        <a class="method-permalink" href="#wm_size_hints?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L48" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="wm_transient_for?-instance-method">
+      <div class="signature">
+        
+        def <strong>wm_transient_for?</strong>
+
+        <a class="method-permalink" href="#wm_transient_for?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L75" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="wm_zom_hints?-instance-method">
+      <div class="signature">
+        
+        def <strong>wm_zom_hints?</strong>
+
+        <a class="method-permalink" href="#wm_zom_hints?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L49" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="x_height?-instance-method">
+      <div class="signature">
+        
+        def <strong>x_height?</strong>
+
+        <a class="method-permalink" href="#x_height?-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/c77c1eb953856090ed443408fbe5367fe5404965/src/x11/atom.cr#L63" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+
+</div>
+
+</body>
+</html>
