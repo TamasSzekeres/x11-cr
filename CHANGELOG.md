@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.0.0] - 2021-04-10
 - Updated to Crystal 1.0.0
+### Fixed
+- Drawing functions
 
 ## [0.3.2] - 2020-10-30
 ### Fixed

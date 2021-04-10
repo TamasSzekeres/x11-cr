@@ -4,7 +4,7 @@ module X11
   struct Arc
     property x : Int16
     property y : Int16
-    property width : Int16
+    property width : UInt16
     property height : UInt16
     property angle1 : Int16
     property angle2 : Int16

@@ -1135,7 +1135,7 @@ module X11
       return [] of HostAddress if phosts.null? || count <= 0
       addresses = Array(HostAddress).new
       (0...count).each do |i|
-        addresses << HostAddress.new (phosts + i)
+        addresses << HostAddress.new(phosts + i)
       end
       X.free phosts.as(PChar)
       addresses
@@ -3302,7 +3302,7 @@ module X11
     # ###See also
     # `draw_arc`, `draw_rectangle`, `draw_point`.
     def draw_arcs(d : X11::C::Drawable, gc : X11::C::X::GC, arcs : Array(Arc)) : Int32
-      X.draw_arcs @dpy, d, gc, arcs.to_unsafe, arcs.size
+      X.draw_arcs @dpy, d, gc, arcs.to_unsafe.as(X11::C::X::PArc), arcs.size
     end
 
     # Paints text with the foreground pixel.
@@ -3483,7 +3483,7 @@ module X11
     # ###See also
     # `draw_arc`, `draw_line`, `draw_point`, `draw_rectangle`, `draw_segments`.
     def draw_lines(d : X11::C::Drawable, gc : X11::C::X::GC, points : Array(Point), mode : Int32) : Int32
-      X.draw_lines @dpy, d, gc, point.to_unsafe, points.size, mode
+      X.draw_lines @dpy, d, gc, points.to_unsafe.as(X11::C::X::PPoint), points.size, mode
     end
 
     # Draws a single point into the specified drawable
@@ -3547,7 +3547,7 @@ module X11
     # ###See also
     # `draw_arc`, `draw_line`, `draw_point`, `draw_rectangle`.
     def draw_points(d : X11::Drawable, gc : X11::C::X::GC, points : Array(Point), mode : Int32) : Int32
-      X.draw_points @dpy, d, gc, points.to_unsafe, point.size, mode
+      X.draw_points @dpy, d, gc, points.to_unsafe.as(X11::C::X::PPoint), points.size, mode
     end
 
     # Draws the outlines of the specified rectangle.
@@ -3620,7 +3620,7 @@ module X11
     # ###See also
     # `draw_arc`, `draw_rectangle`, `draw_point`.
     def draw_rectangles(d : X11::C::Drawable, gc : X11::C::X::GC, rectangles : Array(Rectangle)) : Int32
-      X.draw_rectangles @dpy, d, gc, rectangles.to_unsafe, rectangles.size
+      X.draw_rectangles @dpy, d, gc, rectangles.to_unsafe.as(X11::C::X::PRectangle), rectangles.size
     end
 
     # Draws multiple, unconnected lines.
@@ -3655,7 +3655,7 @@ module X11
     # ###See also
     # `draw_arc`, `draw_line`, `draw_lines`, `draw_point`, `draw_rectangle`.
     def draw_segments(d : X11::C::Drawable, gc : X11::C::X::GC, segments : Array(Segment)) : Int32
-      X.draw_segments @dpy, d, gc, segments.to_unsafe, segments.size
+      X.draw_segments @dpy, d, gc, segments.to_unsafe.as(X11::C::X::PSegment), segments.size
     end
 
     # Draws a string.
@@ -3771,7 +3771,7 @@ module X11
     # ###See also
     # `draw_image_string`, `load_font`, `draw_string`, `draw_text_16`.
     def draw_text(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, items : Array(TextItem)) : Int32
-      X.draw_text @dpy, d, gc, x, y, items.to_unsafe, items.size
+      X.draw_text @dpy, d, gc, x, y, items.to_unsafe.as(X11::C::X::PTextItem), items.size
     end
 
     # Similar to `draw_text` except that it uses 2-byte or 16-bit characters.
@@ -3820,7 +3820,7 @@ module X11
     # ###See also
     # `draw_text`, `draw_image_string`, `load_font`, `draw_string`.
     def draw_text_16(d : X11::C::Drawable, gc : X11::C::X::GC, x : Int32, y : Int32, items : Array(TextItem16)) : Int32
-      X.draw_text_16 @dpy, d, gc, x, y, items.to_unsafe, items.size
+      X.draw_text_16 @dpy, d, gc, x, y, items.to_unsafe.as(X11::C::X::PTextItem16), items.size
     end
 
     # Enables the use of the access control list at each connection setup.
@@ -3977,7 +3977,7 @@ module X11
     # `draw_arc`, `draw_point`, `draw_rectangle`, `fill_arcs`, `fill_polygon`,
     # `fill_rectangle`, `fill_rectangles`.
     def fill_arcs(d : X11::C::Drawable, gc : X11::C::X::GC, arcs : Array(Arc)) : Int32
-      X.fill_arcs @dpy, d, gc, arcs.to_unsafe, arcs.size
+      X.fill_arcs @dpy, d, gc, arcs.to_unsafe.as(X11::C::X::PArc), arcs.size
     end
 
     # Fills the region closed by the specified path.
@@ -4035,7 +4035,7 @@ module X11
     # `draw_arc`, `draw_point`, `draw_rectangle`, `fill_arc`, `fill_arcs`,
     # `fill_rectangle`, `fill_rectangles`.
     def fill_polygon(d : X11::C::Drawable, gc : X11::C::X::GC, points : Array(Point), shape : Int32, mode : Int32) : Int32
-      X.fill_polygon @dpy, d, gc, points.to_unsafe, points.size, shape, mode
+      X.fill_polygon @dpy, d, gc, points.to_unsafe.as(X11::C::X::PPoint), points.size, shape, mode
     end
 
     # Fills the specified rectangle.
@@ -4117,7 +4117,7 @@ module X11
     # `draw_arc`, `draw_point`, `draw_rectangles`, `fill_arcs`, `fill_arcs`,
     # `fill_polygon`, `fill_rectangles`.
     def fill_rectangles(d : X11::C::Drawable, gc : X11::C::X::GC, rectangles : Array(Rectangle)) : Int32
-      X.fill_rectangles @dpy, d, gc, rectangles.to_unsafe, rectangles.size
+      X.fill_rectangles @dpy, d, gc, rectangles.to_unsafe.as(X11::C::X::PRectangle), rectangles.size
     end
 
     # Flushes the output buffer.
@@ -6269,7 +6269,7 @@ module X11
     # `add_host`, `add_hosts`, `disable_access_control`, `enable_access_control`,
     # `hosts`, `remove_host`, `remove_hosts`, `set_access_control`.
     def remove_hosts(hosts : Array(HostAddress)) : Int32
-      X.remove_hosts @dpy, hosts.to_unsafe, hosts.size
+      X.remove_hosts @dpy, hosts.to_unsafe.as(X11::C::X::PHostAddress), hosts.size
     end
 
     # Places the window in the stacking order on top with respect to sibling windows.
@@ -6732,7 +6732,7 @@ module X11
     # `set_clip_mask`, `set_clip_origin`, `set_fill_style`, `set_font`,
     # `set_line_attributes`, `set_state`, `set_title`.
     def set_clip_rectangles(gc : X11::C::X::GC, clip_x_origin : Int32, clip_y_origin : Int32, rectangles : Array(Rectangle), ordering : Int32) : Int32
-      X.set_clip_rectangles @dpy, gc, clip_x_origin, clip_y_origin, rectangles.to_unsafe, rectangles.size, ordering
+      X.set_clip_rectangles @dpy, gc, clip_x_origin, clip_y_origin, rectangles.to_unsafe.as(X11::C::X::PRectangle), rectangles.size, ordering
     end
 
     # Defines what will happen to the client's resources at connection close.
@@ -6784,7 +6784,7 @@ module X11
     # `set_wm_icon_name`, `set_wm_name`, `set_wm_properties`,
     # `set_wm_protocols`, `X11::string_list_to_text_property`.
     def set_command(w : X11::C::Window, argv : Array(String)) : Int32
-      pargv = argb.map(&.to_unsafe)
+      pargv = argv.map(&.to_unsafe)
       X.set_command @dpy, w, pargv.to_unsafe, pargv.size
     end
 
@@ -7732,7 +7732,7 @@ module X11
     # `alloc_color`, `create_colormap`, `query_color`, `store_color`,
     # `store_colors`, `store_named_color`.
     def store_colors(colormap : X11::C::Colormap, color : Array(Color)) : Int32
-      X.store_colors @dpy, colormap, color.to_unsafe
+      X.store_colors @dpy, colormap, color.to_unsafe.as(X11::C::X::PColor)
     end
 
     # Assigns the name passed to window_name to the specified window.

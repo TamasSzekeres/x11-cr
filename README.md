@@ -58,7 +58,7 @@ You can generate documentation for yourself:
 ```shell
 crystal doc
 ```
-Then you can open `/doc/index.html` in your browser.
+Then you can open `/docs/index.html` in your browser.
 
 Or you can view last commited documentation online at: [https://tamasszekeres.github.io/x11-cr/](https://tamasszekeres.github.io/x11-cr/).
 
