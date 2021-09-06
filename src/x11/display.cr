@@ -2365,10 +2365,11 @@ module X11
     # `delete_property`, `window_property`, `properties`, `rotate_window_properties`.
     def change_property(w : X11::C::Window, property : Atom | X11::C::Atom, type : Atom | X11::C::Atom, mode : Int32, data : Bytes | Slice(Int16) | Slice(Int32)) : Int32
       format = case data
-      when Bytes then 8
-      when Slice(Int16) then 16
-      when Slice(Int32) then 32
+        in Bytes then 8
+        in Slice(Int16) then 16
+        in Slice(Int32) then 32
       end
+
       X.change_property @dpy, w, property.to_u64, type.to_u64, format, mode, data.to_unsafe, data.size
     end
 
