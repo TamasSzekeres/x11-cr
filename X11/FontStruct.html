@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="generator" content="Crystal Docs 0.36.1">
+<meta name="generator" content="Crystal Docs 1.0.0">
 <meta name="crystal_docs.project_version" content="master">
 <meta name="crystal_docs.project_name" content="x11">
 
@@ -658,7 +658,7 @@
   </h2>
   
     
-      <a href="https://github.com/TamasSzekeres/x11-cr/blob/e700f732a57d17e334188739b7be6b198328b7d9/src/x11/font_struct.cr#L7" target="_blank">
+      <a href="https://github.com/TamasSzekeres/x11-cr/blob/a1fe16ffd4463ad3b2b911616cd4411bd3df13ef/src/x11/font_struct.cr#L7" target="_blank">
         x11/font_struct.cr
       </a>
     
@@ -735,14 +735,14 @@
       </li>
     
       <li class="entry-summary">
-        <a href="#text_extents(string:String):NamedTuple()-instance-method" class="signature"><strong>#text_extents</strong>(string : String) : NamedTuple()</a>
+        <a href="#text_extents(string:String):NamedTuple(direction:Int32,font_ascent:Int32,font_descent:Int32,overall:CharStruct,res:Int32)-instance-method" class="signature"><strong>#text_extents</strong>(string : String) : NamedTuple(direction: Int32, font_ascent: Int32, font_descent: Int32, overall: CharStruct, res: Int32)</a>
         
           <div class="summary"><p>Performs the size computation locally.</p></div>
         
       </li>
     
       <li class="entry-summary">
-        <a href="#text_extents_16(string:Array(X11::C::X::Char2b)):NamedTuple()-instance-method" class="signature"><strong>#text_extents_16</strong>(string : Array(X11::C::X::Char2b)) : NamedTuple()</a>
+        <a href="#text_extents_16(string:Array(X11::C::X::Char2b)):NamedTuple(direction:Int32,font_ascent:Int32,font_descent:Int32,overall:CharStruct,res:Int32)-instance-method" class="signature"><strong>#text_extents_16</strong>(string : Array(X11::C::X::Char2b)) : NamedTuple(direction: Int32, font_ascent: Int32, font_descent: Int32, overall: CharStruct, res: Int32)</a>
         
           <div class="summary"><p>Performs the size computation locally.</p></div>
         
@@ -823,7 +823,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/e700f732a57d17e334188739b7be6b198328b7d9/src/x11/font_struct.cr#L11" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/a1fe16ffd4463ad3b2b911616cd4411bd3df13ef/src/x11/font_struct.cr#L11" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -853,7 +853,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/e700f732a57d17e334188739b7be6b198328b7d9/src/x11/font_struct.cr#L8" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/a1fe16ffd4463ad3b2b911616cd4411bd3df13ef/src/x11/font_struct.cr#L8" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -869,7 +869,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/e700f732a57d17e334188739b7be6b198328b7d9/src/x11/font_struct.cr#L15" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/a1fe16ffd4463ad3b2b911616cd4411bd3df13ef/src/x11/font_struct.cr#L15" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -885,7 +885,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/e700f732a57d17e334188739b7be6b198328b7d9/src/x11/font_struct.cr#L9" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/a1fe16ffd4463ad3b2b911616cd4411bd3df13ef/src/x11/font_struct.cr#L9" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -906,7 +906,7 @@
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/e700f732a57d17e334188739b7be6b198328b7d9/src/x11/font_struct.cr#L20" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/a1fe16ffd4463ad3b2b911616cd4411bd3df13ef/src/x11/font_struct.cr#L20" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -957,7 +957,7 @@ Although it is not guaranteed, it is likely that the predefined font properties 
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/e700f732a57d17e334188739b7be6b198328b7d9/src/x11/font_struct.cr#L40" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/a1fe16ffd4463ad3b2b911616cd4411bd3df13ef/src/x11/font_struct.cr#L40" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -973,17 +973,17 @@ Although it is not guaranteed, it is likely that the predefined font properties 
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/e700f732a57d17e334188739b7be6b198328b7d9/src/x11/font_struct.cr#L45" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/a1fe16ffd4463ad3b2b911616cd4411bd3df13ef/src/x11/font_struct.cr#L45" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="text_extents(string:String):NamedTuple()-instance-method">
+    <div class="entry-detail" id="text_extents(string:String):NamedTuple(direction:Int32,font_ascent:Int32,font_descent:Int32,overall:CharStruct,res:Int32)-instance-method">
       <div class="signature">
         
-        def <strong>text_extents</strong>(string : String) : NamedTuple()
+        def <strong>text_extents</strong>(string : String) : NamedTuple(direction: Int32, font_ascent: Int32, font_descent: Int32, overall: <a href="../X11/CharStruct.html">CharStruct</a>, res: Int32)
 
-        <a class="method-permalink" href="#text_extents(string:String):NamedTuple()-instance-method">#</a>
+        <a class="method-permalink" href="#text_extents(string:String):NamedTuple(direction:Int32,font_ascent:Int32,font_descent:Int32,overall:CharStruct,res:Int32)-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1013,7 +1013,7 @@ Although it is not guaranteed, it is likely that the predefined font properties 
   </svg>
 </a>Description</h3>
 
-<p>The <code><a href="../X11/FontStruct.html#text_extents(string:String):NamedTuple()-instance-method">#text_extents</a></code> function performs the size computation locally and,
+<p>The <code><a href="../X11/FontStruct.html#text_extents(string:String):NamedTuple(direction:Int32,font_ascent:Int32,font_descent:Int32,overall:CharStruct,res:Int32)-instance-method">#text_extents</a></code> function performs the size computation locally and,
 thereby, avoid the round-trip overhead of <code>query_text_extents</code> and
 <code>query_text_extents_16</code>. The function returns an <code><a href="../X11/CharStruct.html">CharStruct</a></code> structure,
 whose members are set to the values as follows.</p>
@@ -1039,23 +1039,23 @@ character, undefined characters in the string are taken to have all zero metrics
   </svg>
 </a>See also</h3>
 
-<p><code><a href="../X11/Display.html">Display</a>::query_text_extents</code>, <code><a href="../X11/Display.html">Display</a>::query_text_extents_16</code>, <code><a href="../X11/FontStruct.html#text_extents_16(string:Array(X11::C::X::Char2b)):NamedTuple()-instance-method">#text_extents_16</a></code>.</p>
+<p><code><a href="../X11/Display.html">Display</a>::query_text_extents</code>, <code><a href="../X11/Display.html">Display</a>::query_text_extents_16</code>, <code><a href="../X11/FontStruct.html#text_extents_16(string:Array(X11::C::X::Char2b)):NamedTuple(direction:Int32,font_ascent:Int32,font_descent:Int32,overall:CharStruct,res:Int32)-instance-method">#text_extents_16</a></code>.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/e700f732a57d17e334188739b7be6b198328b7d9/src/x11/font_struct.cr#L88" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/a1fe16ffd4463ad3b2b911616cd4411bd3df13ef/src/x11/font_struct.cr#L88" target="_blank">View source</a>]
         
       </div>
     </div>
   
-    <div class="entry-detail" id="text_extents_16(string:Array(X11::C::X::Char2b)):NamedTuple()-instance-method">
+    <div class="entry-detail" id="text_extents_16(string:Array(X11::C::X::Char2b)):NamedTuple(direction:Int32,font_ascent:Int32,font_descent:Int32,overall:CharStruct,res:Int32)-instance-method">
       <div class="signature">
         
-        def <strong>text_extents_16</strong>(string : Array(X11::C::X::Char2b)) : NamedTuple()
+        def <strong>text_extents_16</strong>(string : Array(X11::C::X::Char2b)) : NamedTuple(direction: Int32, font_ascent: Int32, font_descent: Int32, overall: <a href="../X11/CharStruct.html">CharStruct</a>, res: Int32)
 
-        <a class="method-permalink" href="#text_extents_16(string:Array(X11::C::X::Char2b)):NamedTuple()-instance-method">#</a>
+        <a class="method-permalink" href="#text_extents_16(string:Array(X11::C::X::Char2b)):NamedTuple(direction:Int32,font_ascent:Int32,font_descent:Int32,overall:CharStruct,res:Int32)-instance-method">#</a>
       </div>
       
         <div class="doc">
@@ -1085,7 +1085,7 @@ character, undefined characters in the string are taken to have all zero metrics
   </svg>
 </a>Description</h3>
 
-<p>The <code><a href="../X11/FontStruct.html#text_extents_16(string:Array(X11::C::X::Char2b)):NamedTuple()-instance-method">#text_extents_16</a></code> function performs the size computation locally and,
+<p>The <code><a href="../X11/FontStruct.html#text_extents_16(string:Array(X11::C::X::Char2b)):NamedTuple(direction:Int32,font_ascent:Int32,font_descent:Int32,overall:CharStruct,res:Int32)-instance-method">#text_extents_16</a></code> function performs the size computation locally and,
 thereby, avoid the round-trip overhead of <code>query_text_extents</code> and
 <code>query_text_extents_16</code>. The function returns an <code><a href="../X11/CharStruct.html">CharStruct</a></code> structure,
 whose members are set to the values as follows.</p>
@@ -1111,13 +1111,13 @@ character, undefined characters in the string are taken to have all zero metrics
   </svg>
 </a>See also</h3>
 
-<p><code><a href="../X11/Display.html">Display</a>::query_text_extents</code>, <code><a href="../X11/Display.html">Display</a>::query_text_extents_16</code>, <code><a href="../X11/FontStruct.html#text_extents(string:String):NamedTuple()-instance-method">#text_extents</a></code>.</p>
+<p><code><a href="../X11/Display.html">Display</a>::query_text_extents</code>, <code><a href="../X11/Display.html">Display</a>::query_text_extents_16</code>, <code><a href="../X11/FontStruct.html#text_extents(string:String):NamedTuple(direction:Int32,font_ascent:Int32,font_descent:Int32,overall:CharStruct,res:Int32)-instance-method">#text_extents</a></code>.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/e700f732a57d17e334188739b7be6b198328b7d9/src/x11/font_struct.cr#L128" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/a1fe16ffd4463ad3b2b911616cd4411bd3df13ef/src/x11/font_struct.cr#L128" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1148,13 +1148,13 @@ character, undefined characters in the string are taken to have all zero metrics
   </svg>
 </a>See also</h3>
 
-<p><code><a href="../X11/FontStruct.html#text_width_16(string:Array(X11::C::X::Char2b)):Int32-instance-method">#text_width_16</a></code>, <code><a href="../X11/Display.html">Display</a>::load_font</code>, <code><a href="../X11/FontStruct.html#text_extents(string:String):NamedTuple()-instance-method">#text_extents</a></code>.</p>
+<p><code><a href="../X11/FontStruct.html#text_width_16(string:Array(X11::C::X::Char2b)):Int32-instance-method">#text_width_16</a></code>, <code><a href="../X11/Display.html">Display</a>::load_font</code>, <code><a href="../X11/FontStruct.html#text_extents(string:String):NamedTuple(direction:Int32,font_ascent:Int32,font_descent:Int32,overall:CharStruct,res:Int32)-instance-method">#text_extents</a></code>.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/e700f732a57d17e334188739b7be6b198328b7d9/src/x11/font_struct.cr#L140" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/a1fe16ffd4463ad3b2b911616cd4411bd3df13ef/src/x11/font_struct.cr#L140" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1185,13 +1185,13 @@ character, undefined characters in the string are taken to have all zero metrics
   </svg>
 </a>See also</h3>
 
-<p><code><a href="../X11/FontStruct.html#text_width(string:String):Int32-instance-method">#text_width</a></code>, <code><a href="../X11/Display.html">Display</a>::load_font</code>, <code><a href="../X11/FontStruct.html#text_extents(string:String):NamedTuple()-instance-method">#text_extents</a></code>.</p>
+<p><code><a href="../X11/FontStruct.html#text_width(string:String):Int32-instance-method">#text_width</a></code>, <code><a href="../X11/Display.html">Display</a>::load_font</code>, <code><a href="../X11/FontStruct.html#text_extents(string:String):NamedTuple(direction:Int32,font_ascent:Int32,font_descent:Int32,overall:CharStruct,res:Int32)-instance-method">#text_extents</a></code>.</p>
         </div>
       
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/e700f732a57d17e334188739b7be6b198328b7d9/src/x11/font_struct.cr#L151" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/a1fe16ffd4463ad3b2b911616cd4411bd3df13ef/src/x11/font_struct.cr#L151" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1207,7 +1207,7 @@ character, undefined characters in the string are taken to have all zero metrics
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/e700f732a57d17e334188739b7be6b198328b7d9/src/x11/font_struct.cr#L155" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/a1fe16ffd4463ad3b2b911616cd4411bd3df13ef/src/x11/font_struct.cr#L155" target="_blank">View source</a>]
         
       </div>
     </div>
@@ -1223,7 +1223,7 @@ character, undefined characters in the string are taken to have all zero metrics
       <br/>
       <div>
         
-          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/e700f732a57d17e334188739b7be6b198328b7d9/src/x11/font_struct.cr#L159" target="_blank">View source</a>]
+          [<a href="https://github.com/TamasSzekeres/x11-cr/blob/a1fe16ffd4463ad3b2b911616cd4411bd3df13ef/src/x11/font_struct.cr#L159" target="_blank">View source</a>]
         
       </div>
     </div>
