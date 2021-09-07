@@ -2463,7 +2463,7 @@ module X11
     # `map_window`, `raise_window`, `set_window_background`, `set_window_background_pixmap`,
     # `set_window_border`, `set_window_border_pixmap`, `set_window_colormap`, `unmap_window`.
     def change_window_attributes(w : X11::C::Window, valuemask : UInt64, attributes : SetWindowAttributes) : Int32
-      X.change_window_attributes @dpy, w, value, attributes.to_unsafe
+      X.change_window_attributes @dpy, w, valuemask, attributes.to_unsafe
     end
 
     # When the predicate procedure finds a match, returns the matched event.
