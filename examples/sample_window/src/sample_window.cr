@@ -7,11 +7,10 @@ module X11Sample
   WM_DELETE_WINDOW_STR = "WM_DELETE_WINDOW"
 
   def self.main
-    d = uninitialized X::PDisplay
     d = X.open_display(nil)
     wm_delete_window = X.intern_atom(d, WM_DELETE_WINDOW_STR, 0)
 
-    if d.is_a?(Nil)
+    if d.nil?
       return 1
     end
 
@@ -33,7 +32,7 @@ module X11Sample
     display_string = "Hello X11!"
 
     e = uninitialized X::Event
-    while true
+    loop do
       if X.pending d
         X.next_event(d, pointerof(e))
         case e.type

@@ -12,8 +12,8 @@ module X11::C
     True = 1
     False = 0
 
-    alias WChar_t = UInt64
-    alias PWChar_t = WChar_t*
+    alias WCharT = UInt64
+    alias PWCharT = WCharT*
 
     $_Xdebug : Int32
 
@@ -964,7 +964,7 @@ module X11::C
 
     alias PwcTextItem = XwcTextItem*
     struct XwcTextItem
-      chars : PWChar_t
+      chars : PWCharT
       nchars : Int32
       delta : Int32
       font_set : FontSet
@@ -1117,7 +1117,7 @@ module X11::C
 
     struct IM_Text_string
       multi_byte : PChar
-      wide_char : PWChar_t
+      wide_char : PWCharT
     end
 
     alias PIMText = IMText*
@@ -1158,7 +1158,7 @@ module X11::C
 
     union IMStringConversionText_string
       mbs : PChar
-      wcs: PWChar_t
+      wcs: PWCharT
     end
 
     alias PIMStringConversionText = IMStringConversionText*
@@ -3565,7 +3565,7 @@ module X11::C
 
     fun wc_text_escapement = XwcTextEscapement(
       font_set : FontSet,
-      text : PWChar_t,
+      text : PWCharT,
       num_wchars : Int32
     ) : Int32
 
@@ -3585,7 +3585,7 @@ module X11::C
 
     fun wc_text_extents = XwcTextExtents(
       font_set : FontSet,
-      text : PWChar_t,
+      text : PWCharT,
       num_wchars : Int32,
       overall_ink_return : PRectangle,
       overall_logical_return : PRectangle
@@ -3613,7 +3613,7 @@ module X11::C
 
     fun wc_text_per_char_extents = XwcTextPerCharExtents(
       font_set : FontSet,
-      text : PWChar_t,
+      text : PWCharT,
       num_wchars : Int32,
       ink_extents_buffer : PRectangle,
       logical_extents_buffer : PRectangle,
@@ -3683,7 +3683,7 @@ module X11::C
       gc : GC,
       x : Int32,
       y : Int32,
-      text : PWChar_t,
+      text : PWCharT,
       num_wchars : Int32
     ) : NoReturn
 
@@ -3716,7 +3716,7 @@ module X11::C
       gc : GC,
       x : Int32,
       y : Int32,
-      text : PWChar_t,
+      text : PWCharT,
       num_wchars : Int32
     ) : NoReturn
 
@@ -3779,7 +3779,7 @@ module X11::C
 
     fun wc_reset_ic = XwcResetIC(
       ic : XIC
-    ) : PWChar_t
+    ) : PWCharT
 
     fun mb_reset_ic = XmbResetIC(
       ic : XIC
@@ -3820,7 +3820,7 @@ module X11::C
     fun wc_lookup_string = XwcLookupString(
       ic : XIC,
       event : PKeyPressedEvent,
-      buffer_return : PWChar_t,
+      buffer_return : PWCharT,
       wchars_buffer : Int32,
       keysym_return : PKeySym,
       status_return : PStatus
@@ -3893,14 +3893,14 @@ module X11::C
     ) : NoReturn
 
     fun mbtowc = _Xmbtowc(
-      wstr : PWChar_t,
+      wstr : PWCharT,
       str : PChar,
       len : Int32
     ) : Int32
 
     fun wctomb = _Xwctomb(
       str : PChar,
-      wc : PWChar_t
+      wc : PWCharT
     ) : Int32
 
     fun get_event_data = XGetEventData(
@@ -3977,7 +3977,7 @@ module X11::C
     self.screen_of_display(dpy, scr).root_depth
   end
 
-  def self.displayCells(dpy, scr)
+  def self.display_cells(dpy, scr)
     self.default_visual(dpy, scr).value.map_entries
   end
 

@@ -17,7 +17,7 @@ module X11
     end
 
     def to_unsafe : X11::C::X::PCirculateRequestEvent
-      return pointerof(@event)
+      pointerof(@event)
     end
 
     def to_x : X11::C::X::CirculateRequestEvent

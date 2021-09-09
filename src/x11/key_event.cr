@@ -37,12 +37,12 @@ module X11
     # Translates key event to a string and a keysym.
     def lookup_string : NamedTuple(string: String, keysym: KeySym)
       buffer = StaticArray(UInt8, 10).new(0)
-      len = X.lookup_string(to_unsafe, buffer.to_unsafe, 10, out keysym, nil)
+      X.lookup_string(to_unsafe, buffer.to_unsafe, 10, out keysym, nil)
       {string: String.new(buffer.to_unsafe), keysym: keysym}
     end
 
     def to_unsafe : X11::C::X::PKeyEvent
-      return pointerof(@event)
+      pointerof(@event)
     end
 
     def to_x : X11::C::X::KeyEvent

@@ -623,7 +623,7 @@ module X11::C
 
     fun wc_text_list_to_text_property = XwcTextListToTextProperty(
       display : PDisplay,
-      list : PWChar_t*,
+      list : PWCharT*,
       count : Int32,
       style : ICCEncodingStyle,
       text_prop_return : PTextProperty
@@ -638,7 +638,7 @@ module X11::C
     ) : Int32
 
     fun wc_free_string_list = XwcFreeStringList(
-      list : PWChar_t*
+      list : PWCharT*
     ) : NoReturn
 
     fun text_property_to_string_list = XTextPropertyToStringList(
@@ -657,7 +657,7 @@ module X11::C
     fun wc_text_property_to_text_list = XwcTextPropertyToTextList(
       display : PDisplay,
       text_prop : PTextProperty,
-      list_return : PWChar_t**,
+      list_return : PWCharT**,
       count_return : Int32
     ) : Int32
 

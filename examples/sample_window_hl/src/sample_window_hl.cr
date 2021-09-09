@@ -27,7 +27,7 @@ module X11Sample
 
     display_string = "Hello X11!"
 
-    while true
+    loop do
       if d.pending
         e = d.next_event
         case e

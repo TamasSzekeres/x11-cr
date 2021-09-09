@@ -1,5 +1,5 @@
 module X11::C
-  XK_VoidSymbol = 0xffffff # Void symbol
+  XK_VOID_SYMBOL = 0xffffff # Void symbol
 
   {% if XK_MISCELLANY %}
     # TTY function keys, cleverly chosen to map to ASCII, for convenience of

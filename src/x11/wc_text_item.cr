@@ -23,11 +23,11 @@ module X11
       @text_item
     end
 
-    def chars : X11::C::X::PWChar_t
+    def chars : X11::C::X::PWCharT
       @text_item.chars
     end
 
-    def chars=(chars : X11::C::X::PWChar_t)
+    def chars=(chars : X11::C::X::PWCharT)
       @text_item.chars = chars
     end
 

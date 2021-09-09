@@ -2,6 +2,7 @@ require "./c/Xlib"
 
 module X11
   abstract class Event
+    # ameba:disable Metrics/CyclomaticComplexity
     def self.from_xevent(xevent : X11::C::X::Event) : Event
       case xevent.type
       when KeyPress, KeyRelease then KeyEvent.new xevent.key

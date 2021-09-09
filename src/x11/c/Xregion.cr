@@ -27,7 +27,7 @@ module X11::C
 
     struct REGION
       size : Int64
-      numRects : Int64
+      num_rects : Int64
       rects : PBOX
       extents : BOX
     end
@@ -62,24 +62,24 @@ module X11::C
   # Remember, x2 and y2 are not in the region
   def self.extent_check(r1, r2)
     r1.value.x2 > r2.value.x1 &&
-      r1.value.x1 < r2.value.x2 &&
-      r1.value.y2 > r2.value.y1 &&
-      r1.value.y1 < r2.value.y2
+    r1.value.x1 < r2.value.x2 &&
+    r1.value.y2 > r2.value.y1 &&
+    r1.value.y1 < r2.value.y2
   end
 
   # update region extents
-  def self.extents(r, idRect)
-    if r.value.x1 < idRect.value.extents.x1
-      idRect.value.extents.x1 = r.value.x1
+  def self.extents(r, id_rect)
+    if r.value.x1 < id_rect.value.extents.x1
+      id_rect.value.extents.x1 = r.value.x1
     end
-    if r.value.y1 < idRect.value.extents.y1
-      idRect.value.extents.y1 = r.value.y1
+    if r.value.y1 < id_rect.value.extents.y1
+      id_rect.value.extents.y1 = r.value.y1
     end
-    if r.value.x2 > idRect.value.extents.x2
-      idRect.value.extents.x2 = r.value.x2
+    if r.value.x2 > id_rect.value.extents.x2
+      id_rect.value.extents.x2 = r.value.x2
     end
-    if r.value.y2 > idRect.value.extents.y2
-      idRect.value.extents.y2 = r.value.y2
+    if r.value.y2 > id_rect.value.extents.y2
+      id_rect.value.extents.y2 = r.value.y2
     end
   end
 
@@ -115,7 +115,7 @@ module X11::C
       r.value.y2 = ry2
       self.extents(r, reg)
       reg.value.numRects = reg.value.numRects + 1
-      r = r + 1
+      r + 1
     end
   end
 
@@ -127,16 +127,16 @@ module X11::C
       r.value.x2 = rx2
       r.value.y2 = ry2
       reg.value.numRects = reg.value.numRects + 1
-      r = r + 1
+      r + 1
     end
   end
 
-  def self.empty_region(pReg)
-    pReg.value.numRects = 0
+  def self.empty_region(p_reg)
+    p_reg.value.numRects = 0
   end
 
-  def self.region_not_empty(pReg)
-    pReg.value.numRects
+  def self.region_not_empty(p_reg)
+    p_reg.value.numRects
   end
 
   def self.inbox(r, x, y)

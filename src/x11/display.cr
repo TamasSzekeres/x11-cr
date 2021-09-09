@@ -4565,7 +4565,7 @@ module X11
     # `change_keyboard_control`, `change_keyboard_mapping`, `set_pointer_mapping`.
     def pointer_mapping(nmap : Int32) : Array(UInt8)
       X.get_pointer_mapping @dpy, out map_return, nmap
-      map = Array(UInt8).new(nmap) do |i|
+      Array(UInt8).new(nmap) do |i|
         (pointerof(map_return) + i).value
       end
     end
@@ -4691,11 +4691,11 @@ module X11
     # `change_property`, `delete_property`, `properties`, `rotate_window_properties`.
     def window_property(w : X11::C::Window, property : Atom | X11::C::Atom, long_offset : Int64, long_length : Int64, delete : Bool, req_type : Atom | X11::C::Atom) : NamedTuple(actual_type: X11::C::Atom, actual_format: Int32, nitems: UInt64, bytes_after: UInt64, prop: String, res: Int32)
       res = X.get_window_property @dpy, w, property.to_u64, long_offset, long_length, delete ? X::True : X::False, req_type.to_u64, out actual_type_return, out actual_format_return, out nitems_return, out bytes_after_return, out prop_return
-      unless prop_return.null?
+      if prop_return.null?
+        string = ""
+      else
         string = String.new prop_return
         X.free prop_return
-      else
-        string = ""
       end
       {actual_type: actual_type_return, actual_format: actual_format_return, nitems: nitems_return, bytes_after: bytes_after_return, prop: string, res: res}
     end
@@ -7857,7 +7857,7 @@ module X11
     # ###Diagnostics
     # - **BadWindow** A value for a *Window* argument does not name a defined *Window*.
     def translate_coordinates(src_w : X11::C::Window, dest_w : X11::C::Window, src_x : Int32, src_y : Int32) : NamedTuple(dest_x: Int32, dest_y: Int32, child: X11::C::Window, res: Bool)
-      res = X.translate_coordinates @dpy, src_w, dest_w, src_x, src_y, out dest_x_return, out dest_y_return, out child_return
+      X.translate_coordinates @dpy, src_w, dest_w, src_x, src_y, out dest_x_return, out dest_y_return, out child_return
       {dest_x: dest_x_return, dest_y: dest_y_return, child: child_return}
     end
 
@@ -8255,7 +8255,7 @@ module X11
       X.mb_draw_string @dpy, s, font_set, gc, x, y, text.to_unsafe, text.size
     end
 
-    def wc_draw_string(d : X11::C::Drawable, font_set : X11::C::X::FontSet, gc : X11::C::X::GC, x : Int32, y : Int32, text : X11::C::X::PWChar_t, num_wchars : Int32)
+    def wc_draw_string(d : X11::C::Drawable, font_set : X11::C::X::FontSet, gc : X11::C::X::GC, x : Int32, y : Int32, text : X11::C::X::PWCharT, num_wchars : Int32)
       X.wc_draw_string @dpy, d, font_set, gc, x, y, text, num_wchars
     end
 
@@ -8267,7 +8267,7 @@ module X11
       X.mb_draw_image_string @dpy, d, font_set, gc, x, y, text.to_unsafe, text.size
     end
 
-    def wc_draw_image_string(d : X11::C::Drawable, font_set : X11::C::X::FontSet, gc : X11::C::X::GC, x : Int32, y : Int32, text : X11::C::X::PWChar_t, num_wchars : Int32)
+    def wc_draw_image_string(d : X11::C::Drawable, font_set : X11::C::X::FontSet, gc : X11::C::X::GC, x : Int32, y : Int32, text : X11::C::X::PWCharT, num_wchars : Int32)
       X.wc_draw_image_string @dpy, font_set, gc, x, y, text, num_wchars
     end
 
