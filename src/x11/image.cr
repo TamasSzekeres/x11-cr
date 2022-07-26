@@ -35,5 +35,9 @@ module X11
     def finalize
       X.destroy_image @image
     end
+
+    def to_unsafe : X11::C::X::PImage
+      @image
+    end
   end
 end
