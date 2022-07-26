@@ -5638,7 +5638,7 @@ module X11
     # `add_pixel`, `create_image`, `destroy_image`, `get_pixel`, `init_image`,
     # `put_pixel`, `get_sub_image`.
     def put_image(d : X11::C::Drawable, gc : X11::C::X::GC, image : Image, src_x : Int32, src_y : Int32, dest_x : Int32, dest_y : Int32, width : UInt32, height : UInt32) : Int32
-      X.put_image @dpy, d, gc, image.to_unsafe, src_x, xrc_y, dest_x, dest_y, width, height
+      X.put_image @dpy, d, gc, image.to_unsafe, src_x, src_y, dest_x, dest_y, width, height
     end
 
     # Returns the length of the event queue for the connected display. Note that
