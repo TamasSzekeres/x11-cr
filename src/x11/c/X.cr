@@ -305,21 +305,21 @@ module X11::C
 
   # Window attributes for CreateWindow and ChangeWindowAttributes
 
-  CWBackPixmap       = (1_i64 << 0)
-  CWBackPixel        = (1_i64 << 1)
-  CWBorderPixmap     = (1_i64 << 2)
-  CWBorderPixel      = (1_i64 << 3)
-  CWBitGravity       = (1_i64 << 4)
-  CWWinGravity       = (1_i64 << 5)
-  CWBackingStore     = (1_i64 << 6)
-  CWBackingPlanes    = (1_i64 << 7)
-  CWBackingPixel     = (1_i64 << 8)
-  CWOverrideRedirect = (1_i64 << 9)
-  CWSaveUnder        = (1_i64 << 10)
-  CWEventMask        = (1_i64 << 11)
-  CWDontPropagate    = (1_i64 << 12)
-  CWColormap         = (1_i64 << 13)
-  CWCursor           = (1_i64 << 14)
+  CWBackPixmap       = (1_u64 << 0)
+  CWBackPixel        = (1_u64 << 1)
+  CWBorderPixmap     = (1_u64 << 2)
+  CWBorderPixel      = (1_u64 << 3)
+  CWBitGravity       = (1_u64 << 4)
+  CWWinGravity       = (1_u64 << 5)
+  CWBackingStore     = (1_u64 << 6)
+  CWBackingPlanes    = (1_u64 << 7)
+  CWBackingPixel     = (1_u64 << 8)
+  CWOverrideRedirect = (1_u64 << 9)
+  CWSaveUnder        = (1_u64 << 10)
+  CWEventMask        = (1_u64 << 11)
+  CWDontPropagate    = (1_u64 << 12)
+  CWColormap         = (1_u64 << 13)
+  CWCursor           = (1_u64 << 14)
 
   # ConfigureWindow structure
 
