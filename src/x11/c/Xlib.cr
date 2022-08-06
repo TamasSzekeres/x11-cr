@@ -2885,7 +2885,7 @@ module X11::C
 
     fun query_keymap = XQueryKeymap(
       display : PDisplay,
-      keys_return : Char[32]
+      keys_return : CChar[32]
     ) : Int32
 
     fun query_pointer = XQueryPointer(
