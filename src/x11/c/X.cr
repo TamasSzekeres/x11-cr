@@ -4,7 +4,7 @@ module X11::C
   X_PROTOCOL          = 11 # current protocol version
   X_PROTOCOL_REVISION =  0 # current minor version
 
-  alias Char = UInt8
+  alias CChar = UInt8
 
   alias PChar = UInt8*
   alias PPChar = PChar*
