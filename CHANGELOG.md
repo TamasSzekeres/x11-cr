@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.0] - 2022-08-06
+### Added
+- `Image::to_unsafe`
+### Fixed
+- `Display::change_window_attributes` undefined variable name
+- `Image::finalize` invalid pointer
+### Changed
+- **(breaking change)** `X11::C::Char` renamed to `X11::C::CChar` (#15)
+- Window Attribute contants changed to `UInt64`
+
 ## [1.0.1] - 2021-09-06
 ### Fixed
 - `Display::change_property` (#7, thanks @cmizzi)
