@@ -24,10 +24,10 @@ module X11
     #
     # Example usage:
     # ```
-	  # range = record.create_range
-	  # range.device_events.first = ::X11::KeyPress
-	  # range.device_events.last = ::X11::ButtonRelease
-	  # context = record.create_context(record_range)
+    # range = record.create_range
+    # range.device_events.first = ::X11::KeyPress
+    # range.device_events.last = ::X11::ButtonRelease
+    # context = record.create_context(record_range)
     # ```
     def create_context(range : X::RecordRange, *, flags = 0, client_spec = X::RecordClientSpec::AllClients)
       p_range = pointerof(range)
@@ -56,14 +56,14 @@ module X11
     #   next if repeat
     #   type = xevent[0]
     #   keycode = xevent[1]
-    #   state = xevent[28].unsafe_as(UInt8)
+    #   state = xevent[28]
     #   pp! type, keycode, state
     # end
-		# fd = IO::FileDescriptor.new record.data_display.connection_number
-		# loop do
-		#   dpy_fd.wait_readable
-		#   record.process_replies
-		# end
+    # fd = IO::FileDescriptor.new record.data_display.connection_number
+    # loop do
+    #   dpy_fd.wait_readable
+    #   record.process_replies
+    # end
     # ```
     def enable_context_async(context : X::RecordContext, &callback : X::RecordInterceptData ->)
       boxed = Box.box(callback)
