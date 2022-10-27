@@ -4854,7 +4854,7 @@ module X11
     # `allow_events`, `change_active_pointer_grab`, `grab_key`, `grab_keyboard`,
     # `grab_pointer`, `ungrab_pointer`.
     def grab_button(button : UInt32, modifiers : UInt32, grab_window : X11::C::Window, owner_events : Bool, event_mask : UInt32, pointer_mode : Int32, keyboard_mode : Int32, confine_to : X11::C::Window, cursor : X11::C::Cursor) : Int32
-      X.grab_button @dpy, buton, modifiers, grab_window, owner_events ? X::True : X::False, event_mask, pointer_mode, keyboard_mode, confine_to, cursor
+      X.grab_button @dpy, button, modifiers, grab_window, owner_events ? X::True : X::False, event_mask, pointer_mode, keyboard_mode, confine_to, cursor
     end
 
     # Establishes a passive grab on the keyboard.
