@@ -5074,7 +5074,7 @@ module X11
     # `allow_events`, `change_active_pointer_grab`, `grab_button`, `grab_key`,
     # `grab_keyboard`, `ungrab_pointer`.
     def grab_pointer(grab_window : X11::C::Window, owner_events : Bool, event_mask : UInt32, pointer_mode : Int32, keyboard_mode : Int32, confine_to : X11::C::Window, cursor : X11::C::Cursor, time : X11::C::Time) : Int32
-      X.grab_pointer @dpy, owner_events ? X::True : X::False, event_mask, pointer_mode, keyboard_mode, confine_to, cursor, time
+      X.grab_pointer @dpy, grab_window, owner_events ? X::True : X::False, event_mask, pointer_mode, keyboard_mode, confine_to, cursor, time
     end
 
     # Disables processing of requests and close downs
