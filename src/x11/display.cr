@@ -4689,15 +4689,14 @@ module X11
     #
     # ###See also
     # `change_property`, `delete_property`, `properties`, `rotate_window_properties`.
-    def window_property(w : X11::C::Window, property : Atom | X11::C::Atom, long_offset : Int64, long_length : Int64, delete : Bool, req_type : Atom | X11::C::Atom) : NamedTuple(actual_type: X11::C::Atom, actual_format: Int32, nitems: UInt64, bytes_after: UInt64, prop: String, res: Int32)
+    def window_property(w : X11::C::Window, property : Atom | X11::C::Atom, long_offset : Int64, long_length : Int64, delete : Bool, req_type : Atom | X11::C::Atom) : NamedTuple(actual_type: X11::C::Atom, actual_format: Int32, nitems: UInt64, bytes_after: UInt64, prop_string: String, prop: UInt8*, res: Int32)
       res = X.get_window_property @dpy, w, property.to_u64, long_offset, long_length, delete ? X::True : X::False, req_type.to_u64, out actual_type_return, out actual_format_return, out nitems_return, out bytes_after_return, out prop_return
       if prop_return.null?
         string = ""
       else
         string = String.new prop_return
-        X.free prop_return
       end
-      {actual_type: actual_type_return, actual_format: actual_format_return, nitems: nitems_return, bytes_after: bytes_after_return, prop: string, res: res}
+      {actual_type: actual_type_return, actual_format: actual_format_return, nitems: nitems_return, bytes_after: bytes_after_return, prop_string: string, prop: prop_return, res: res}
     end
 
     # Returns the specified window's attributes in the `WindowAttributes` structure.
